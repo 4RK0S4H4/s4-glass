@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Components – S4 Glass</title>
+<meta name="description" content="S4 Glass: a frosted-glass design language for apps and web pages, light and dark, phone to desktop.">
+<script data-s4 src="../toolkit/s4.js"></script>
+<link data-s4 rel="stylesheet" href="../toolkit/fonts.css">
+<link data-s4 rel="stylesheet" href="../toolkit/s4.css">
+<style>
+  :root { --accent: #4f46e5; --accent-2: #6d28d9; --accent-light: #a5b4fc; }
+  .guide { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: var(--s-10); align-items: start; padding-block: var(--s-10) var(--s-16); }
+  .toc { position: sticky; top: 76px; max-height: calc(100dvh - 96px); overflow: auto; display: flex; flex-direction: column; gap: 2px; font-size: var(--fs-ui); }
+  .toc b { padding: 0 10px 6px; font-size: var(--fs-xs); color: var(--text3); }
+  .toc a { padding: 6px 10px; border-radius: var(--r-sm); color: var(--text2); text-decoration: none; }
+  .toc a:hover { background: var(--hov); color: var(--text); }
+  .doc { min-width: 0; max-width: 900px; }
+  .doc > h1 { margin: 0 0 var(--s-3); font-size: var(--fs-page-h2); letter-spacing: -.02em; line-height: 1.15; }
+  .doc h2 { margin: var(--s-12) 0 var(--s-3); padding-top: var(--s-6); border-top: 1px solid var(--border); font-size: var(--fs-page-h3); scroll-margin-top: 76px; }
+  .doc h3 { margin: var(--s-6) 0 var(--s-2); font-size: var(--fs-title); scroll-margin-top: 76px; }
+  .doc p, .doc li { line-height: var(--lh-prose); max-width: var(--prose-max); }
+  .doc ul, .doc ol { padding-left: 1.3em; } .doc li + li { margin-top: .3em; }
+  .doc :not(pre) > code { padding: 1px 5px; border-radius: var(--r-xs); background: var(--well); border: 1px solid var(--border); font-size: .92em; }
+  .doc pre { margin: var(--s-3) 0; padding: var(--s-3) var(--s-4); overflow: auto; border-radius: var(--r); background: var(--glass); border: 1px solid var(--border); font-size: var(--fs-ui); line-height: 1.55; }
+  .doc .table-wrap { margin: var(--s-3) 0; border: 1px solid var(--border); border-radius: var(--r); background: var(--glass); }
+  .doc table.t th { position: static; } .doc table.t td { white-space: normal; }
+  .doc a { color: var(--accent-text); }
+  .doc td code { font-size: inherit; }
+  @media (pointer: coarse) { .toc a { display: flex; align-items: center; min-height: var(--tap); } }
+  .swatches { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .swatches button { width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--bg); background: var(--c); box-shadow: 0 0 0 1px var(--border2); cursor: pointer; }
+  .swatches button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--text); }
+  .demo-card { display: flex; flex-direction: column; gap: var(--s-2); height: 100%; color: inherit; text-decoration: none; }
+  .demo-card:hover { color: inherit; }
+  .demo-card .ic.lg { color: var(--accent-text); }
+  .demo-card p { margin: 0; color: var(--text2); }
+  .demo-card .go { margin-top: auto; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--accent-text); }
+  .steps-list code { padding: 1px 5px; border-radius: var(--r-xs); background: var(--well); border: 1px solid var(--border); font-size: .92em; }
+  .steps-list { counter-reset: n; display: grid; gap: var(--s-3); padding: 0; list-style: none; }
+  .steps-list li { counter-increment: n; display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: var(--s-3); align-items: start; }
+  .steps-list li::before { content: counter(n); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-ink); font-weight: 700; font-size: var(--fs-ui); }
+  @media (max-width: 980px) { .guide { grid-template-columns: minmax(0, 1fr); gap: var(--s-6); padding-block: var(--s-6) var(--s-12); } .toc { position: static; max-height: none; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: calc(-1 * var(--s-4)); padding-inline: var(--s-4); } .toc b { display: none; } .toc a { flex: none; white-space: nowrap; background: var(--bg-hover); } }
+</style>
+<script data-s4 src="../toolkit/icons.js"></script>
+</head>
+<body class="site">
+<header class="site-head">
+  <div class="container">
+    <a class="brand" href="../index.html"><svg data-ic-duo="stars"></svg>S4 Glass</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="../index.html">Overview</a>
+      <a href="../guide/design.html">Design Language</a>
+      <a href="../guide/components.html" aria-current="page">Components</a>
+      <a href="../demo/components.html">Gallery</a>
+    </nav>
+    <div class="site-acts">
+      <button class="btn icon subtle" type="button" data-theme-toggle aria-label="Switch Light or Dark"><svg data-ic="moon"></svg></button>
+      <button class="btn icon menu-btn" type="button" aria-label="Menu" aria-expanded="false"><svg data-ic="hamburger-menu"></svg></button>
+    </div>
+  </div>
+</header>
+<main class="container guide">
+  <nav class="toc" aria-label="On this page"><b>On This Page</b><a href="#page-setup">Page setup</a><a href="#app-shell">App shell</a><a href="#phone-tab-bar">Phone tab bar</a><a href="#list-and-detail">List and detail</a><a href="#buttons">Buttons</a><a href="#fields">Fields</a><a href="#choosers">Choosers</a><a href="#status">Status</a><a href="#cards">Cards</a><a href="#tables">Tables</a><a href="#copy-chips-and-keys">Copy chips and keys</a><a href="#menus">Menus</a><a href="#dialogs-and-sheets">Dialogs and sheets</a><a href="#toasts-and-tooltips">Toasts and tooltips</a><a href="#folds-and-steps">Folds and steps</a><a href="#web-page">Web page</a><a href="#layout-helpers">Layout helpers</a></nav>
+  <article class="doc"><h1 id="s4-glass-20-component-markup">S4 Glass 2.0 – component markup</h1>
+<p>Copy-paste markup for every component in <code>toolkit/s4.css</code>. Icons are shown as <code>&lt;svg data-ic="name"&gt;</code> (filled in by <code>icons.js</code>); in a built app paste the SVG itself. See <code>DESIGN.md</code> for when to use what. <code>demo/components.html</code> shows them all live.</p>
+<h2 id="page-setup">Page setup</h2>
+<pre><code class="language-html">&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, viewport-fit=cover&quot;&gt;
+&lt;script data-s4 src=&quot;toolkit/s4.js&quot;&gt;&lt;/script&gt;                      &lt;!-- first: sets the theme before paint --&gt;
+&lt;link data-s4 rel=&quot;stylesheet&quot; href=&quot;toolkit/fonts.css&quot;&gt;
+&lt;link data-s4 rel=&quot;stylesheet&quot; href=&quot;toolkit/s4.css&quot;&gt;
+&lt;style&gt;:root { --accent: #047857; --accent-2: #0f766e; --accent-light: #6ee7b7; }&lt;/style&gt;
+&lt;script data-s4 src=&quot;toolkit/icons.js&quot;&gt;&lt;/script&gt;                   &lt;!-- quick pages only --&gt;
+</code></pre>
+<p><code>python3 toolkit/inline.py page.html out.html</code> makes it one self-contained file. <code>viewport-fit=cover</code> is what lets the safe-area insets work on iPhones.</p>
+<h2 id="app-shell">App shell</h2>
+<pre><code class="language-html">&lt;div class=&quot;app&quot;&gt;
+  &lt;nav class=&quot;nav&quot; aria-label=&quot;Main&quot;&gt;
+    &lt;div class=&quot;brand&quot;&gt;&lt;img src=&quot;logo.png&quot; alt=&quot;&quot;&gt;&lt;span&gt;App Name&lt;small&gt;Company&lt;/small&gt;&lt;/span&gt;&lt;/div&gt;
+    &lt;a class=&quot;item active&quot; href=&quot;#&quot; aria-current=&quot;page&quot;&gt;&lt;svg data-ic-duo=&quot;widget-5&quot;&gt;&lt;/svg&gt;&lt;span class=&quot;lbl&quot;&gt;Dashboard&lt;/span&gt;&lt;/a&gt;
+    &lt;div class=&quot;group&quot;&gt;Reconcile&lt;/div&gt;
+    &lt;a class=&quot;item&quot; href=&quot;#&quot;&gt;&lt;svg data-ic-duo=&quot;checklist-minimalistic&quot;&gt;&lt;/svg&gt;&lt;span class=&quot;lbl&quot;&gt;Transactions&lt;/span&gt;&lt;span class=&quot;count&quot;&gt;39&lt;/span&gt;&lt;/a&gt;
+    &lt;div class=&quot;foot&quot;&gt;Saved in this browser&lt;/div&gt;
+  &lt;/nav&gt;
+  &lt;div class=&quot;main&quot;&gt;
+    &lt;div class=&quot;banner info&quot;&gt;&lt;svg data-ic=&quot;info-circle&quot;&gt;&lt;/svg&gt;Time for a backup.&lt;button class=&quot;btn sm&quot;&gt;Save a Backup&lt;/button&gt;&lt;/div&gt;
+    &lt;header class=&quot;topbar&quot;&gt;
+      &lt;div class=&quot;ttl&quot;&gt;&lt;h1&gt;Transactions&lt;/h1&gt;&lt;span class=&quot;sub&quot;&gt;Go down the list: assign it, match it, or flag it.&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;actions&quot;&gt;
+        &lt;button class=&quot;btn icon subtle&quot; data-theme-toggle aria-label=&quot;Switch Light or Dark&quot;&gt;&lt;svg data-ic=&quot;moon&quot;&gt;&lt;/svg&gt;&lt;/button&gt;
+        &lt;button class=&quot;btn primary&quot;&gt;&lt;svg data-ic=&quot;upload&quot;&gt;&lt;/svg&gt;Import&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/header&gt;
+    &lt;main class=&quot;content&quot;&gt;…&lt;/main&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p>Wrap nav labels in <code>.lbl</code> so the ≤980px icon rail can hide them. <code>.content.flush</code> removes padding (full-bleed split views); <code>.content.center</code> caps width for single-page tools. A single-page tool with no nav: <code>&lt;div class="app solo"&gt;&lt;div class="main"&gt;…&lt;/div&gt;&lt;/div&gt;</code>.</p>
+<h2 id="phone-tab-bar">Phone tab bar</h2>
+<pre><code class="language-html">&lt;div class=&quot;app has-tabbar&quot;&gt;
+  &lt;nav class=&quot;nav&quot;&gt;…&lt;/nav&gt;                 &lt;!-- desktop --&gt;
+  &lt;div class=&quot;main&quot;&gt;…&lt;/div&gt;
+  &lt;nav class=&quot;tabbar&quot; aria-label=&quot;Main&quot;&gt;    &lt;!-- phone (≤760px) --&gt;
+    &lt;a class=&quot;tab on&quot; href=&quot;#&quot; aria-current=&quot;page&quot;&gt;&lt;svg data-ic-duo=&quot;widget-5&quot;&gt;&lt;/svg&gt;Home&lt;/a&gt;
+    &lt;a class=&quot;tab&quot; href=&quot;#&quot;&gt;&lt;svg data-ic-duo=&quot;document-text&quot;&gt;&lt;/svg&gt;Invoices&lt;span class=&quot;count&quot;&gt;4&lt;/span&gt;&lt;/a&gt;
+  &lt;/nav&gt;
+&lt;/div&gt;
+&lt;button class=&quot;btn primary fab&quot;&gt;&lt;svg data-ic=&quot;add-circle&quot;&gt;&lt;/svg&gt;New&lt;/button&gt;   &lt;!-- optional, floats above the tab bar on phones --&gt;
+</code></pre>
+<p>3–5 tabs. Without <code>.has-tabbar</code>, the nav becomes a scrolling row under the top bar on phones.</p>
+<h2 id="list-and-detail">List and detail</h2>
+<pre><code class="language-html">&lt;main class=&quot;content flush&quot;&gt;
+  &lt;div class=&quot;split&quot;&gt;
+    &lt;section class=&quot;list-pane&quot;&gt;&lt;div class=&quot;filters&quot;&gt;…&lt;/div&gt;&lt;div class=&quot;table-wrap&quot;&gt;…&lt;/div&gt;&lt;/section&gt;
+    &lt;aside class=&quot;detail open&quot;&gt;…&lt;/aside&gt;   &lt;!-- ≤980px: covers the list; toggle .open, add a Back button --&gt;
+  &lt;/div&gt;
+&lt;/main&gt;
+</code></pre>
+<h2 id="buttons">Buttons</h2>
+<pre><code class="language-html">&lt;button class=&quot;btn primary&quot;&gt;&lt;svg data-ic=&quot;upload&quot;&gt;&lt;/svg&gt;Import&lt;/button&gt;   &lt;!-- one per area --&gt;
+&lt;button class=&quot;btn&quot;&gt;Export&lt;/button&gt;
+&lt;button class=&quot;btn subtle&quot;&gt;Cancel&lt;/button&gt;
+&lt;button class=&quot;btn icon&quot; aria-label=&quot;Undo&quot;&gt;&lt;svg data-ic=&quot;undo-left&quot;&gt;&lt;/svg&gt;&lt;/button&gt;
+&lt;button class=&quot;btn sm&quot;&gt;Small&lt;/button&gt;  &lt;button class=&quot;btn lg&quot;&gt;Web CTA&lt;/button&gt;  &lt;button class=&quot;btn block&quot;&gt;Full Width&lt;/button&gt;
+&lt;button class=&quot;btn on&quot; aria-pressed=&quot;true&quot;&gt;&lt;svg data-ic=&quot;lock-keyhole-minimalistic&quot;&gt;&lt;/svg&gt;Locked&lt;/button&gt;
+&lt;button class=&quot;btn attn&quot;&gt;&lt;svg data-ic=&quot;diskette&quot;&gt;&lt;/svg&gt;Backup&lt;span class=&quot;pill&quot;&gt;52&lt;/span&gt;&lt;/button&gt;   &lt;!-- steady, never blinks --&gt;
+&lt;button class=&quot;btn danger&quot;&gt;Delete&lt;/button&gt;  &lt;button class=&quot;btn danger-fill&quot;&gt;Delete All Data&lt;/button&gt;
+&lt;button class=&quot;btn primary&quot;&gt;Accept&lt;span class=&quot;kbd on-pri&quot;&gt;Enter&lt;/span&gt;&lt;/button&gt;
+&lt;button class=&quot;lnk&quot;&gt;Show All&lt;/button&gt;
+</code></pre>
+<h2 id="fields">Fields</h2>
+<pre><code class="language-html">&lt;div class=&quot;form-grid&quot;&gt;
+  &lt;label class=&quot;f&quot;&gt;Company&lt;select&gt;&lt;option&gt;2101 · Northwind Tech&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+  &lt;label class=&quot;f&quot;&gt;GL Account&lt;input type=&quot;text&quot; inputmode=&quot;numeric&quot; placeholder=&quot;e.g. 61500000&quot;&gt;&lt;span class=&quot;hint&quot;&gt;8 digits&lt;/span&gt;&lt;/label&gt;
+  &lt;label class=&quot;f&quot;&gt;SAP Document&lt;input type=&quot;text&quot; class=&quot;bad&quot;&gt;&lt;span class=&quot;err&quot;&gt;10 digits needed&lt;/span&gt;&lt;/label&gt;
+  &lt;label class=&quot;f span2&quot;&gt;Note&lt;textarea&gt;&lt;/textarea&gt;&lt;/label&gt;
+&lt;/div&gt;
+&lt;label class=&quot;chk&quot;&gt;&lt;input type=&quot;checkbox&quot;&gt;The full statement is in&lt;/label&gt;
+&lt;label class=&quot;chk big&quot;&gt;&lt;input type=&quot;checkbox&quot;&gt;&lt;span&gt;Test Mode&lt;small&gt;No reminders while on&lt;/small&gt;&lt;/span&gt;&lt;/label&gt;
+&lt;label class=&quot;switch&quot;&gt;&lt;input type=&quot;checkbox&quot;&gt;&lt;span class=&quot;track&quot;&gt;&lt;/span&gt;Test Mode&lt;/label&gt;
+&lt;input type=&quot;search&quot; class=&quot;search&quot; placeholder=&quot;Search description, amount, SAP Document…&quot;&gt;
+</code></pre>
+<p>Use <code>inputmode</code> (numeric / decimal / email) so phones show the right keyboard.</p>
+<h2 id="choosers">Choosers</h2>
+<pre><code class="language-html">&lt;div class=&quot;seg&quot; role=&quot;group&quot; aria-label=&quot;Filter&quot;&gt;               &lt;!-- one of many; starts on All --&gt;
+  &lt;button class=&quot;on&quot; aria-pressed=&quot;true&quot;&gt;All&lt;span class=&quot;n&quot;&gt;46&lt;/span&gt;&lt;/button&gt;&lt;button aria-pressed=&quot;false&quot;&gt;Matched&lt;span class=&quot;n&quot;&gt;3&lt;/span&gt;&lt;/button&gt;
+&lt;/div&gt;
+&lt;div class=&quot;seg scroll&quot;&gt;…&lt;/div&gt;                                   &lt;!-- one row that scrolls on a phone --&gt;
+&lt;button class=&quot;fchip&quot; aria-pressed=&quot;true&quot;&gt;To Sort&lt;span class=&quot;n&quot;&gt;39&lt;/span&gt;&lt;/button&gt;   &lt;!-- independent toggles --&gt;
+&lt;div class=&quot;ptabs&quot;&gt;                                               &lt;!-- choose a mode --&gt;
+  &lt;button class=&quot;on&quot;&gt;&lt;svg class=&quot;ic lg&quot; data-ic-duo=&quot;link-circle&quot;&gt;&lt;/svg&gt;Match&lt;/button&gt;
+  &lt;button class=&quot;flag&quot;&gt;&lt;svg class=&quot;ic lg&quot; data-ic-duo=&quot;document-text&quot;&gt;&lt;/svg&gt;Journal Entry&lt;/button&gt;
+&lt;/div&gt;
+&lt;button class=&quot;tile on&quot;&gt;&lt;b&gt;Nets to $0&lt;/b&gt;&lt;small&gt;Two rows cancel out&lt;/small&gt;&lt;/button&gt;
+</code></pre>
+<p><code>s4.js</code> wires <code>.seg</code> and <code>.ptabs</code> clicks and the sliding pill automatically; add <code>data-manual</code> to a <code>.seg</code> you drive yourself.</p>
+<h2 id="status">Status</h2>
+<pre><code class="language-html">&lt;span class=&quot;badge ok&quot;&gt;Matched&lt;/span&gt; &lt;span class=&quot;badge warn&quot;&gt;To Sort&lt;/span&gt; &lt;span class=&quot;badge bad&quot;&gt;Difference&lt;/span&gt;
+&lt;span class=&quot;badge mute&quot;&gt;Carried&lt;/span&gt; &lt;span class=&quot;badge accent&quot;&gt;Journal Entry&lt;/span&gt; &lt;span class=&quot;badge&quot;&gt;No Data&lt;/span&gt;
+&lt;span class=&quot;badge solid&quot;&gt;&lt;svg data-ic=&quot;stars&quot;&gt;&lt;/svg&gt;Suggested&lt;/span&gt;   &lt;!-- needs your decision --&gt;
+&lt;span class=&quot;chip&quot;&gt;40100100&lt;/span&gt;  &lt;span class=&quot;dot ok&quot;&gt;&lt;/span&gt;
+&lt;div class=&quot;bar&quot; role=&quot;img&quot; aria-label=&quot;58% matched&quot;&gt;&lt;i class=&quot;ok&quot; style=&quot;width:58%&quot;&gt;&lt;/i&gt;&lt;i class=&quot;warn&quot; style=&quot;width:12%&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+&lt;article class=&quot;card edge warn&quot;&gt;…&lt;/article&gt;   &lt;!-- status as a coloured top edge --&gt;
+&lt;tr class=&quot;st-ok&quot;&gt;…&lt;/tr&gt;                       &lt;!-- status as the slim left edge of a row --&gt;
+</code></pre>
+<h2 id="cards">Cards</h2>
+<pre><code class="language-html">&lt;section class=&quot;card&quot;&gt;
+  &lt;div class=&quot;card-head&quot;&gt;&lt;h3&gt;Bank Statement&lt;/h3&gt;&lt;span class=&quot;badge ok&quot;&gt;Ties&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;kv&quot;&gt;&lt;span class=&quot;k&quot;&gt;Beginning Balance&lt;/span&gt;&lt;span class=&quot;num&quot;&gt;403,443.13&lt;/span&gt;
+    &lt;span class=&quot;k sum&quot;&gt;Ending Balance&lt;/span&gt;&lt;span class=&quot;num sum&quot;&gt;124,100.11&lt;/span&gt;&lt;/div&gt;
+&lt;/section&gt;
+&lt;div class=&quot;card stat&quot;&gt;&lt;span&gt;Outstanding&lt;/span&gt;&lt;b&gt;18,420.00&lt;/b&gt;&lt;/div&gt;
+&lt;div class=&quot;grid-4&quot;&gt;…one .card per entity…&lt;/div&gt;
+&lt;div class=&quot;sug&quot;&gt;&lt;b&gt;Suggested Match&lt;/b&gt;&lt;span class=&quot;fs-sm muted&quot;&gt;Doc 400001234 · same amount&lt;/span&gt;&lt;/div&gt;
+&lt;div class=&quot;note warn&quot;&gt;Closing day passed – Month End not tied.&lt;/div&gt;
+&lt;div class=&quot;hidden-note&quot;&gt;Row hidden by the current filter.&lt;button class=&quot;lnk&quot;&gt;Show All&lt;/button&gt;&lt;/div&gt;
+&lt;div class=&quot;card empty&quot;&gt;&lt;svg class=&quot;ic lg&quot; data-ic-duo=&quot;check-circle&quot;&gt;&lt;/svg&gt;&lt;h2&gt;Nothing left to match&lt;/h2&gt;&lt;p&gt;…&lt;/p&gt;&lt;/div&gt;
+&lt;div class=&quot;card flush&quot;&gt;&lt;div class=&quot;list&quot;&gt;
+  &lt;a class=&quot;li&quot; href=&quot;#&quot;&gt;&lt;svg class=&quot;ic&quot; data-ic=&quot;document-text&quot;&gt;&lt;/svg&gt;&lt;span class=&quot;li-main&quot;&gt;&lt;b&gt;Title&lt;/b&gt;&lt;small&gt;Meta&lt;/small&gt;&lt;/span&gt;&lt;span class=&quot;li-end num&quot;&gt;(62,931.96)&lt;/span&gt;&lt;/a&gt;
+&lt;/div&gt;&lt;/div&gt;
+</code></pre>
+<h2 id="tables">Tables</h2>
+<pre><code class="language-html">&lt;div class=&quot;table-wrap scroll&quot;&gt;                       &lt;!-- .scroll: sticky header inside a scrolling box --&gt;
+  &lt;table class=&quot;t cards&quot;&gt;                             &lt;!-- .cards: rows become cards on a phone --&gt;
+    &lt;thead&gt;&lt;tr&gt;
+      &lt;th class=&quot;sortable sorted&quot;&gt;&lt;button class=&quot;th-sort&quot;&gt;Date&lt;svg class=&quot;sort-ic&quot; data-ic=&quot;alt-arrow-down&quot;&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/th&gt;
+      &lt;th class=&quot;dcol&quot;&gt;Description&lt;/th&gt;&lt;th&gt;Status&lt;/th&gt;&lt;th class=&quot;num&quot;&gt;Amount&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr class=&quot;r st-ok&quot;&gt;&lt;td data-label=&quot;Date&quot;&gt;9/28&lt;/td&gt;
+        &lt;td class=&quot;dcol lead&quot;&gt;&lt;span class=&quot;trunc&quot;&gt;Pre-authorized ACH Debit&lt;/span&gt;&lt;span class=&quot;sub&quot;&gt;Second line&lt;/span&gt;&lt;/td&gt;
+        &lt;td data-label=&quot;Status&quot;&gt;&lt;span class=&quot;badge ok&quot;&gt;Matched&lt;/span&gt;&lt;/td&gt;
+        &lt;td class=&quot;num&quot; data-label=&quot;Amount&quot;&gt;&lt;span class=&quot;brk&quot;&gt;(&lt;/span&gt;3,688.74&lt;span class=&quot;brk&quot;&gt;)&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;
+</code></pre>
+<p>Sorting is automatic for <code>th.sortable</code> (<code>s4Sort</code>); give status cells <code>data-sort</code> with their urgency rank (bad 1 … mute 6) and cells whose text doesn't sort well (dates as 9/28) an ISO <code>data-sort</code>. <code>tr.r</code> clickable · <code>tr.sel</code> selected (neutral) · <code>tr.done</code> finished (quieter) · <code>td.row-acts</code> row buttons · <code>table.t.compact</code> dense · <code>td.wrap</code> lets a short column wrap. On phones every <code>td</code> needs <code>data-label</code>; the description cell gets <code>.lead</code> and moves to the top.</p>
+<h2 id="copy-chips-and-keys">Copy chips and keys</h2>
+<pre><code class="language-html">&lt;button class=&quot;copy&quot; data-copy=&quot;-1289.30&quot;&gt;&lt;span&gt;&lt;span class=&quot;brk&quot;&gt;(&lt;/span&gt;1,289.30&lt;span class=&quot;brk&quot;&gt;)&lt;/span&gt;&lt;/span&gt;&lt;svg data-ic=&quot;copy&quot;&gt;&lt;/svg&gt;&lt;/button&gt;
+&lt;button class=&quot;copy&quot; data-copy=&quot;124100.11&quot;&gt;&lt;span&gt;124,100.11&lt;span class=&quot;psp&quot;&gt;)&lt;/span&gt;&lt;/span&gt;&lt;svg data-ic=&quot;copy&quot;&gt;&lt;/svg&gt;&lt;/button&gt;
+&lt;span class=&quot;copy empty&quot;&gt;–&lt;/span&gt;
+&lt;div class=&quot;keys&quot;&gt;&lt;span class=&quot;kh&quot;&gt;&lt;span class=&quot;kbd&quot;&gt;J&lt;/span&gt;Journal Entry&lt;/span&gt;&lt;span class=&quot;kh&quot;&gt;&lt;span class=&quot;kbd&quot;&gt;Enter ↵&lt;/span&gt;Match&lt;/span&gt;&lt;/div&gt;
+</code></pre>
+<p>Wrap the value in its own <code>&lt;span&gt;</code> (the chip is a flex box). Negatives copy as <code>-1289.30</code>.</p>
+<h2 id="menus">Menus</h2>
+<pre><code class="language-html">&lt;button class=&quot;btn&quot; data-menu=&quot;backup&quot; aria-haspopup=&quot;menu&quot; aria-expanded=&quot;false&quot;&gt;Backup&lt;svg data-ic=&quot;alt-arrow-down&quot;&gt;&lt;/svg&gt;&lt;/button&gt;
+&lt;div class=&quot;menu&quot; id=&quot;backup&quot; role=&quot;menu&quot; hidden&gt;
+  &lt;div class=&quot;menu-h&quot;&gt;Backup&lt;/div&gt;
+  &lt;button role=&quot;menuitem&quot;&gt;&lt;svg data-ic=&quot;diskette&quot;&gt;&lt;/svg&gt;&lt;span&gt;&lt;b&gt;Save a Backup&lt;/b&gt;&lt;small&gt;9 changes since Oct 23, 2026, 6:10 PM&lt;/small&gt;&lt;/span&gt;&lt;/button&gt;
+  &lt;hr&gt;
+  &lt;button role=&quot;menuitem&quot;&gt;&lt;svg data-ic=&quot;history&quot;&gt;&lt;/svg&gt;&lt;span&gt;&lt;b&gt;Restore from a Backup…&lt;/b&gt;&lt;/span&gt;&lt;/button&gt;
+&lt;/div&gt;
+</code></pre>
+<p><code>s4Menu()</code> places it under the button and inside the window; Escape and outside clicks close it.</p>
+<h2 id="dialogs-and-sheets">Dialogs and sheets</h2>
+<pre><code class="language-html">&lt;button class=&quot;btn&quot; data-open=&quot;del&quot;&gt;Delete All Data…&lt;/button&gt;
+&lt;div class=&quot;scrim&quot; id=&quot;del&quot; hidden&gt;                     &lt;!-- add data-dirty to stop backdrop clicks closing it --&gt;
+  &lt;div class=&quot;modal narrow&quot; role=&quot;dialog&quot; aria-modal=&quot;true&quot; aria-labelledby=&quot;del-h&quot;&gt;
+    &lt;div class=&quot;grab&quot;&gt;&lt;/div&gt;                             &lt;!-- the handle, shown on phones --&gt;
+    &lt;header&gt;&lt;h2 id=&quot;del-h&quot;&gt;Delete all data?&lt;/h2&gt;&lt;button class=&quot;btn icon subtle&quot; data-close aria-label=&quot;Close&quot;&gt;&lt;svg data-ic=&quot;close-circle&quot;&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/header&gt;
+    &lt;div class=&quot;body&quot;&gt;…&lt;/div&gt;
+    &lt;footer&gt;&lt;button class=&quot;btn&quot; data-close&gt;Cancel&lt;/button&gt;&lt;button class=&quot;btn danger-fill&quot;&gt;Delete All Data&lt;/button&gt;&lt;/footer&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p>On phones every dialog is a bottom sheet with full-width footer buttons.</p>
+<h2 id="toasts-and-tooltips">Toasts and tooltips</h2>
+<pre><code class="language-js">s4Toast(&quot;Undone: Match 40&quot;, { action: &quot;Redo&quot;, onAction: redo });
+</code></pre>
+<p>Cut-off text with <code>.trunc</code> gets a <code>.tip</code> tooltip on hover automatically (<code>s4Tips</code>), only when it is actually cut off.</p>
+<h2 id="folds-and-steps">Folds and steps</h2>
+<pre><code class="language-html">&lt;div class=&quot;card flush steps&quot;&gt;                          &lt;!-- numbered: only for a real sequence --&gt;
+  &lt;details class=&quot;fold done&quot;&gt;&lt;summary&gt;&lt;b&gt;Fill In the Entry&lt;/b&gt;&lt;span class=&quot;sec-sub&quot;&gt;GL 61500000&lt;/span&gt;&lt;/summary&gt;&lt;div class=&quot;fold-body&quot;&gt;…&lt;/div&gt;&lt;/details&gt;
+  &lt;details class=&quot;fold&quot; open&gt;&lt;summary&gt;&lt;b&gt;Copy Into SAP&lt;/b&gt;&lt;/summary&gt;&lt;div class=&quot;fold-body&quot;&gt;…&lt;/div&gt;&lt;/details&gt;
+&lt;/div&gt;
+</code></pre>
+<h2 id="web-page">Web page</h2>
+<pre><code class="language-html">&lt;body class=&quot;site&quot;&gt;
+&lt;header class=&quot;site-head&quot;&gt;&lt;div class=&quot;container&quot;&gt;
+  &lt;a class=&quot;brand&quot; href=&quot;/&quot;&gt;&lt;img src=&quot;logo.svg&quot; alt=&quot;&quot;&gt;Name&lt;/a&gt;
+  &lt;nav class=&quot;site-nav&quot;&gt;&lt;a href=&quot;#&quot; aria-current=&quot;page&quot;&gt;Product&lt;/a&gt;&lt;a href=&quot;#&quot;&gt;Pricing&lt;/a&gt;&lt;/nav&gt;
+  &lt;div class=&quot;site-acts&quot;&gt;&lt;button class=&quot;btn icon subtle&quot; data-theme-toggle aria-label=&quot;Switch Light or Dark&quot;&gt;&lt;svg data-ic=&quot;moon&quot;&gt;&lt;/svg&gt;&lt;/button&gt;
+    &lt;button class=&quot;btn icon menu-btn&quot; aria-label=&quot;Menu&quot; aria-expanded=&quot;false&quot;&gt;&lt;svg data-ic=&quot;hamburger-menu&quot;&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/header&gt;
+&lt;main&gt;
+  &lt;section class=&quot;hero&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;h1&gt;Say the one thing.&lt;/h1&gt;&lt;p class=&quot;lead&quot;&gt;…&lt;/p&gt;&lt;a class=&quot;btn primary lg&quot;&gt;Start&lt;/a&gt;&lt;/div&gt;&lt;/section&gt;
+  &lt;section class=&quot;section&quot;&gt;&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;section-head&quot;&gt;&lt;h2&gt;Heading&lt;/h2&gt;&lt;p&gt;Supporting line.&lt;/p&gt;&lt;/div&gt;
+    &lt;div class=&quot;grid-auto&quot; style=&quot;--min: 240px&quot;&gt;&lt;div class=&quot;feature&quot;&gt;&lt;svg class=&quot;ic lg&quot; data-ic-duo=&quot;bolt&quot;&gt;&lt;/svg&gt;&lt;h3&gt;Title&lt;/h3&gt;&lt;p&gt;…&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/section&gt;
+  &lt;section class=&quot;section&quot;&gt;&lt;div class=&quot;container prose&quot;&gt;…long text…&lt;/div&gt;&lt;/section&gt;
+  &lt;section class=&quot;section&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;cta-band&quot;&gt;&lt;h2&gt;…&lt;/h2&gt;&lt;a class=&quot;btn primary lg&quot;&gt;…&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;
+&lt;/main&gt;
+&lt;footer class=&quot;site-foot&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;span&gt;© Name&lt;/span&gt;&lt;a href=&quot;#&quot;&gt;Privacy&lt;/a&gt;&lt;/div&gt;&lt;/footer&gt;
+&lt;/body&gt;
+</code></pre>
+<p>Spend boldness in one place, usually the hero; everything else stays quiet.</p>
+<h2 id="layout-helpers">Layout helpers</h2>
+<pre><code class="language-html">&lt;div class=&quot;stack&quot; style=&quot;--gap: var(--s-2)&quot;&gt;…&lt;/div&gt;        &lt;!-- vertical, gap from the scale --&gt;
+&lt;div class=&quot;cluster&quot;&gt;…&lt;/div&gt;                                 &lt;!-- wrapping row --&gt;
+&lt;div class=&quot;spread&quot;&gt;…&lt;/div&gt;                                  &lt;!-- left and right ends --&gt;
+&lt;div class=&quot;grid-auto&quot; style=&quot;--min: 300px&quot;&gt;…&lt;/div&gt;          &lt;!-- as many columns as fit --&gt;
+&lt;div class=&quot;grid-4&quot;&gt;…&lt;/div&gt;                                  &lt;!-- 4 → 2 → 1 --&gt;
+&lt;div class=&quot;container&quot;&gt;…&lt;/div&gt;  &lt;div class=&quot;form-page&quot;&gt;…&lt;/div&gt;
+</code></pre>
+<p><code>--gap</code> and <code>--min</code> are the only inline styles allowed besides values measured at run time (widths of progress bars, menu positions).</p></article>
+</main>
+<footer class="site-foot">
+  <div class="container"><span>S4 Glass 2.0 · <a href="https://github.com/4RK0S4H4/s4-glass">Source on GitHub</a></span><span>Inter (SIL OFL) · Solar icons (CC BY 4.0, 480 Design)</span></div>
+</footer>
+</body>
+</html>

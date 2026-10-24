@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>S4 Glass – One Look for Every App</title>
+<meta name="description" content="S4 Glass is a frosted-glass design language for apps and web pages: one accent, light and dark, phone to desktop.">
+<script data-s4 src="../toolkit/s4.js"></script>
+<link data-s4 rel="stylesheet" href="../toolkit/fonts.css">
+<link data-s4 rel="stylesheet" href="../toolkit/s4.css">
+<style>
+  :root { --accent: #4f46e5; --accent-2: #6d28d9; --accent-light: #a5b4fc; }
+  /* page-specific: the live specimen in the hero */
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: var(--s-12); align-items: center; }
+  .swatches { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .swatches button { width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--bg); background: var(--c); box-shadow: 0 0 0 1px var(--border2); cursor: pointer; }
+  .swatches button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--text); }
+  .specimen { display: flex; flex-direction: column; gap: var(--s-3); padding: var(--s-5); }
+  .specimen .row-amt { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); }
+  @media (max-width: 980px) { .hero-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-8); } }
+</style>
+<script data-s4 src="../toolkit/icons.js"></script>
+</head>
+<body class="site">
+<header class="site-head">
+  <div class="container">
+    <a class="brand" href="#"><svg data-ic-duo="stars"></svg>S4 Glass</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="#principles" aria-current="page">Principles</a>
+      <a href="#components">Components</a>
+      <a href="#start">Get Started</a>
+    </nav>
+    <div class="site-acts">
+      <button class="btn icon subtle" type="button" data-theme-toggle aria-label="Switch Light or Dark"><svg data-ic="moon"></svg></button>
+      <button class="btn icon menu-btn" type="button" aria-label="Menu" aria-expanded="false"><svg data-ic="hamburger-menu"></svg></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <h1>One look for every app you build.</h1>
+        <p class="lead">Frosted glass in light and dark, one accent that does all the colour work, and numbers that line up. Pick an accent and the whole page follows.</p>
+        <div class="swatches" role="group" aria-label="Try an accent">
+          <button type="button" style="--c:#4f46e5" data-a="#4f46e5,#6d28d9,#a5b4fc" aria-pressed="true" aria-label="Indigo"></button>
+          <button type="button" style="--c:#047857" data-a="#047857,#0f766e,#6ee7b7" aria-pressed="false" aria-label="Emerald"></button>
+          <button type="button" style="--c:#1d64d8" data-a="#1d64d8,#3b3fc4,#93c5fd" aria-pressed="false" aria-label="Blue"></button>
+          <button type="button" style="--c:#c2410c" data-a="#c2410c,#be123c,#fdba74" aria-pressed="false" aria-label="Orange"></button>
+          <button type="button" style="--c:#ce0057" data-a="#ce0057,#8a0069,#ff5c9d" aria-pressed="false" aria-label="Emovis Pink"></button>
+          <button type="button" style="--c:#334155" data-a="#334155,#1e293b,#cbd5e1" aria-pressed="false" aria-label="Slate"></button>
+        </div>
+        <div class="cluster mt-8" style="--gap: var(--s-3)"><a class="btn primary lg" href="#start">Get Started</a><a class="btn lg" href="#components">See the Components</a></div>
+      </div>
+      <div class="card specimen" aria-label="Example card">
+        <div class="spread"><span class="title">September Close</span><span class="badge ok">Ties Out</span></div>
+        <div class="row-amt"><span class="muted">Bank Ending Balance</span><span class="bigamt">124,100.11</span></div>
+        <div class="bar" role="img" aria-label="Progress"><i class="ok" style="width:72%"></i><i class="warn" style="width:18%"></i></div>
+        <div class="kv"><span class="k">Matched</span><span class="num">412</span><span class="k">Still to Match</span><span class="num">39</span><span class="k">Differences</span><span class="num"><span class="brk">(</span>10.00<span class="brk">)</span></span></div>
+        <div class="seg" role="group" aria-label="Filter"><button class="on" type="button">All<span class="n">451</span></button><button type="button">To Do<span class="n">39</span></button><button type="button">Done<span class="n">412</span></button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="principles">
+    <div class="container">
+      <div class="section-head"><h2>Rules that keep every screen calm</h2><p>Decided once, on a real app, so no new project has to argue them again.</p></div>
+      <div class="grid-auto" style="--min: 240px; --gap: var(--s-8)">
+        <div class="feature"><svg class="ic lg" data-ic-duo="magic-stick"></svg><h3>One loud colour</h3><p>The accent fills the main action, the current place and what needs attention. Everything else stays neutral.</p></div>
+        <div class="feature"><svg class="ic lg" data-ic-duo="moon"></svg><h3>Dark is glass, not grey</h3><p>A near-black page with a faint bloom of the accent; fills glow softly, text never turns accent-coloured.</p></div>
+        <div class="feature"><svg class="ic lg" data-ic-duo="calculator-minimalistic"></svg><h3>Numbers that line up</h3><p>Inter with open digits, tabular figures in data and brackets centred on negative amounts.</p></div>
+        <div class="feature"><svg class="ic lg" data-ic-duo="smartphone"></svg><h3>Phone to 2560 wide</h3><p>Rails, bottom sheets, a tab bar and tables that turn into cards. Wide layouts never move.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="start">
+    <div class="container">
+      <div class="cta-band">
+        <div class="stack" style="--gap: var(--s-2)"><h2 class="page-h2">Start a new app</h2><p class="m-0 muted">Copy the toolkit, set three accent values, build from the components.</p></div>
+        <a class="btn primary lg" href="app.html">Open the App Template</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="container"><span>S4 Glass 2.0</span><span>Inter (SIL OFL) · Solar icons (CC BY 4.0)</span></div>
+</footer>
+<script>
+  document.querySelector(".swatches").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return; var v = b.dataset.a.split(","), r = document.documentElement.style;
+    r.setProperty("--accent", v[0]); r.setProperty("--accent-2", v[1]); r.setProperty("--accent-light", v[2]);
+    this.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", x === b); });
+  });
+</script>
+</body>
+</html>

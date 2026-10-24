@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Invoices – S4 Glass App Template</title>
+<!-- S4 Glass: theme script first (no white flash), then fonts + stylesheet. python3 toolkit/inline.py makes this one file. -->
+<script data-s4 src="../toolkit/s4.js"></script>
+<link data-s4 rel="stylesheet" href="../toolkit/fonts.css">
+<link data-s4 rel="stylesheet" href="../toolkit/s4.css">
+<style>
+  /* the app's accent trio – the only colour decision an app makes */
+  :root { --accent: #047857; --accent-2: #0f766e; --accent-light: #6ee7b7; }
+  /* app-specific styles go here, built from tokens only */
+</style>
+<script data-s4 src="../toolkit/icons.js"></script>
+</head>
+<body>
+<div class="app has-tabbar">
+  <nav class="nav" aria-label="Main">
+    <div class="brand"><svg data-ic-duo="wallet" class="ic lg"></svg><span>Invoices<small>Studio North</small></span></div>
+    <a class="item active" href="#" aria-current="page"><svg data-ic-duo="widget-5"></svg><span class="lbl">Overview</span></a>
+    <div class="group">Billing</div>
+    <a class="item" href="#"><svg data-ic-duo="document-text"></svg><span class="lbl">Invoices</span><span class="count">4</span></a>
+    <a class="item" href="#"><svg data-ic-duo="card"></svg><span class="lbl">Payments</span></a>
+    <a class="item" href="#"><svg data-ic-duo="users-group-rounded"></svg><span class="lbl">Clients</span></a>
+    <div class="group">Setup</div>
+    <a class="item" href="#"><svg data-ic-duo="settings"></svg><span class="lbl">Settings</span></a>
+    <div class="foot">Saved in this browser</div>
+  </nav>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="ttl"><h1>Overview</h1><span class="sub">What's due, what's paid and what needs a reminder.</span></div>
+      <div class="actions">
+        <button class="btn icon subtle" type="button" data-theme-toggle aria-label="Switch Light or Dark"><svg data-ic="moon"></svg></button>
+        <button class="btn icon desk-only" type="button" data-menu="more" aria-label="More" aria-haspopup="menu" aria-expanded="false"><svg data-ic="menu-dots"></svg></button>
+        <button class="btn primary" type="button" data-open="new"><svg data-ic="add-circle"></svg><span>New Invoice</span></button>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="grid-4">
+        <div class="card stat"><span>Outstanding</span><b>$18,420.00</b></div>
+        <div class="card stat"><span>Overdue</span><b class="c-bad">$3,150.00</b></div>
+        <div class="card stat"><span>Paid This Month</span><b>$26,980.50</b></div>
+        <div class="card stat"><span>Average Days to Pay</span><b>17</b></div>
+      </div>
+
+      <section class="card flush">
+        <div class="card-head">
+          <div class="stack" style="--gap: 2px"><h3>Invoices</h3><span class="sec-sub">12 this month · $45,400.50</span></div>
+          <div class="seg scroll" role="group" aria-label="Filter invoices">
+            <button class="on" type="button" aria-pressed="true">All<span class="n">12</span></button>
+            <button type="button" aria-pressed="false">Due<span class="n">4</span></button>
+            <button type="button" aria-pressed="false">Overdue<span class="n">1</span></button>
+            <button type="button" aria-pressed="false">Paid<span class="n">7</span></button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="t cards">
+            <thead><tr><th>Invoice</th><th class="dcol">Client</th><th>Due</th><th>Status</th><th class="num">Amount</th></tr></thead>
+            <tbody>
+              <tr class="r st-bad"><td data-label="Invoice"><button class="copy" data-copy="INV-1042"><span>INV-1042</span><svg data-ic="copy"></svg></button></td><td class="dcol lead"><span class="trunc">Harbour &amp; Pine Architects – spring brand refresh, phase two</span></td><td data-label="Due">Oct 2</td><td data-label="Status"><span class="badge bad">Overdue</span></td><td class="num" data-label="Amount">3,150.00<span class="psp">)</span></td></tr>
+              <tr class="r st-warn"><td data-label="Invoice"><button class="copy" data-copy="INV-1047"><span>INV-1047</span><svg data-ic="copy"></svg></button></td><td class="dcol lead"><span class="trunc">Meadow Lane Bakery</span></td><td data-label="Due">Oct 28</td><td data-label="Status"><span class="badge warn">Due Soon</span></td><td class="num" data-label="Amount">1,280.00<span class="psp">)</span></td></tr>
+              <tr class="r st-accent"><td data-label="Invoice"><button class="copy" data-copy="INV-1049"><span>INV-1049</span><svg data-ic="copy"></svg></button></td><td class="dcol lead"><span class="trunc">Kestrel Outdoor Co.</span></td><td data-label="Due">Nov 4</td><td data-label="Status"><span class="badge solid"><svg data-ic="stars"></svg>Send Reminder?</span></td><td class="num" data-label="Amount">6,400.00<span class="psp">)</span></td></tr>
+              <tr class="r st-ok done"><td data-label="Invoice"><button class="copy" data-copy="INV-1039"><span>INV-1039</span><svg data-ic="copy"></svg></button></td><td class="dcol lead"><span class="trunc">Northwind Physio</span></td><td data-label="Due">Sep 30</td><td data-label="Status"><span class="badge ok">Paid</span></td><td class="num" data-label="Amount">2,975.50<span class="psp">)</span></td></tr>
+              <tr class="r st-mute"><td data-label="Invoice"><button class="copy" data-copy="CRN-0007"><span>CRN-0007</span><svg data-ic="copy"></svg></button></td><td class="dcol lead"><span class="trunc">Meadow Lane Bakery – credit note</span></td><td data-label="Due">Oct 12</td><td data-label="Status"><span class="badge mute">Credit</span></td><td class="num" data-label="Amount"><span class="brk">(</span>120.00<span class="brk">)</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="grid-auto" style="--min: 320px">
+        <section class="card">
+          <h3>This Month</h3>
+          <div class="kv"><span class="k">Invoiced</span><span class="num">45,400.50</span><span class="k">Paid</span><span class="num">26,980.50</span><span class="k">Credit Notes</span><span class="num"><span class="brk">(</span>120.00<span class="brk">)</span></span><span class="k sum">Still Due</span><span class="num sum">18,300.00</span></div>
+        </section>
+        <section class="card">
+          <h3>Collected</h3>
+          <div class="bar" role="img" aria-label="59% paid, 34% due, 7% overdue"><i class="ok" style="width:59%"></i><i class="warn" style="width:34%"></i><i class="bad" style="width:7%"></i></div>
+          <p class="fs-sm muted mb-0">59% paid · 34% due · 7% overdue</p>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <nav class="tabbar" aria-label="Main">
+    <a class="tab on" href="#" aria-current="page"><svg data-ic-duo="widget-5"></svg>Overview</a>
+    <a class="tab" href="#"><svg data-ic-duo="document-text"></svg>Invoices<span class="count">4</span></a>
+    <a class="tab" href="#"><svg data-ic-duo="card"></svg>Payments</a>
+    <a class="tab" href="#"><svg data-ic-duo="settings"></svg>Settings</a>
+  </nav>
+</div>
+
+<div class="menu" id="more" role="menu" hidden>
+  <button role="menuitem" type="button"><svg data-ic="download"></svg><span><b>Export to Excel</b><small>All invoices this month</small></span></button>
+  <button role="menuitem" type="button"><svg data-ic="diskette"></svg><span><b>Save a Backup</b><small>Last saved Oct 23, 2026, 6:10 PM</small></span></button>
+  <hr>
+  <button role="menuitem" type="button"><svg data-ic="settings"></svg><span><b>Settings</b></span></button>
+</div>
+
+<div class="scrim" id="new" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="new-h">
+    <div class="grab"></div>
+    <header><h2 id="new-h">New Invoice</h2><button class="btn icon subtle" type="button" data-close aria-label="Close"><svg data-ic="close-circle"></svg></button></header>
+    <div class="body">
+      <div class="form-grid">
+        <label class="f span2">Client<select><option>Kestrel Outdoor Co.</option><option>Meadow Lane Bakery</option></select></label>
+        <label class="f">Amount<input type="text" inputmode="decimal" placeholder="0.00"></label>
+        <label class="f">Due Date<input type="date" value="2026-11-24"></label>
+        <label class="f span2">Note<textarea placeholder="Shown on the invoice"></textarea><span class="hint">Optional</span></label>
+      </div>
+    </div>
+    <footer><button class="btn" type="button" data-close>Cancel</button><button class="btn primary" type="button" data-close onclick="s4Toast('Invoice created', {action: 'Undo'})">Create Invoice</button></footer>
+  </div>
+</div>
+</body>
+</html>

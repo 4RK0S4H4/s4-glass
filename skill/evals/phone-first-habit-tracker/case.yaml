@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: phone-first-habit-tracker
+expected_outcome: |
+  A single self-contained habits.html in S4 Glass: an accent trio chosen for the subject (not copied blindly), the bottom tab bar or a phone-friendly single-page layout, embedded Inter, light and dark themes, checked at 390px and desktop.

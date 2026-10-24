@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: emovis-landing-page
+expected_outcome: |
+  launch.html built on the S4 Glass web-page layer (body.site, site-head, hero, section, cta-band, site-foot) with the Emovis accent trio #ce0057 / #8a0069 / #ff5c9d, no invented logo, fluid type, and a phone menu.

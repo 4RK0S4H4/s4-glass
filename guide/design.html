@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Design Language – S4 Glass</title>
+<meta name="description" content="S4 Glass: a frosted-glass design language for apps and web pages, light and dark, phone to desktop.">
+<script data-s4 src="../toolkit/s4.js"></script>
+<link data-s4 rel="stylesheet" href="../toolkit/fonts.css">
+<link data-s4 rel="stylesheet" href="../toolkit/s4.css">
+<style>
+  :root { --accent: #4f46e5; --accent-2: #6d28d9; --accent-light: #a5b4fc; }
+  .guide { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: var(--s-10); align-items: start; padding-block: var(--s-10) var(--s-16); }
+  .toc { position: sticky; top: 76px; max-height: calc(100dvh - 96px); overflow: auto; display: flex; flex-direction: column; gap: 2px; font-size: var(--fs-ui); }
+  .toc b { padding: 0 10px 6px; font-size: var(--fs-xs); color: var(--text3); }
+  .toc a { padding: 6px 10px; border-radius: var(--r-sm); color: var(--text2); text-decoration: none; }
+  .toc a:hover { background: var(--hov); color: var(--text); }
+  .doc { min-width: 0; max-width: 900px; }
+  .doc > h1 { margin: 0 0 var(--s-3); font-size: var(--fs-page-h2); letter-spacing: -.02em; line-height: 1.15; }
+  .doc h2 { margin: var(--s-12) 0 var(--s-3); padding-top: var(--s-6); border-top: 1px solid var(--border); font-size: var(--fs-page-h3); scroll-margin-top: 76px; }
+  .doc h3 { margin: var(--s-6) 0 var(--s-2); font-size: var(--fs-title); scroll-margin-top: 76px; }
+  .doc p, .doc li { line-height: var(--lh-prose); max-width: var(--prose-max); }
+  .doc ul, .doc ol { padding-left: 1.3em; } .doc li + li { margin-top: .3em; }
+  .doc :not(pre) > code { padding: 1px 5px; border-radius: var(--r-xs); background: var(--well); border: 1px solid var(--border); font-size: .92em; }
+  .doc pre { margin: var(--s-3) 0; padding: var(--s-3) var(--s-4); overflow: auto; border-radius: var(--r); background: var(--glass); border: 1px solid var(--border); font-size: var(--fs-ui); line-height: 1.55; }
+  .doc .table-wrap { margin: var(--s-3) 0; border: 1px solid var(--border); border-radius: var(--r); background: var(--glass); }
+  .doc table.t th { position: static; } .doc table.t td { white-space: normal; }
+  .doc a { color: var(--accent-text); }
+  .doc td code { font-size: inherit; }
+  @media (pointer: coarse) { .toc a { display: flex; align-items: center; min-height: var(--tap); } }
+  .swatches { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .swatches button { width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--bg); background: var(--c); box-shadow: 0 0 0 1px var(--border2); cursor: pointer; }
+  .swatches button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--text); }
+  .demo-card { display: flex; flex-direction: column; gap: var(--s-2); height: 100%; color: inherit; text-decoration: none; }
+  .demo-card:hover { color: inherit; }
+  .demo-card .ic.lg { color: var(--accent-text); }
+  .demo-card p { margin: 0; color: var(--text2); }
+  .demo-card .go { margin-top: auto; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--accent-text); }
+  .steps-list code { padding: 1px 5px; border-radius: var(--r-xs); background: var(--well); border: 1px solid var(--border); font-size: .92em; }
+  .steps-list { counter-reset: n; display: grid; gap: var(--s-3); padding: 0; list-style: none; }
+  .steps-list li { counter-increment: n; display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: var(--s-3); align-items: start; }
+  .steps-list li::before { content: counter(n); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-ink); font-weight: 700; font-size: var(--fs-ui); }
+  @media (max-width: 980px) { .guide { grid-template-columns: minmax(0, 1fr); gap: var(--s-6); padding-block: var(--s-6) var(--s-12); } .toc { position: static; max-height: none; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: calc(-1 * var(--s-4)); padding-inline: var(--s-4); } .toc b { display: none; } .toc a { flex: none; white-space: nowrap; background: var(--bg-hover); } }
+</style>
+<script data-s4 src="../toolkit/icons.js"></script>
+</head>
+<body class="site">
+<header class="site-head">
+  <div class="container">
+    <a class="brand" href="../index.html"><svg data-ic-duo="stars"></svg>S4 Glass</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="../index.html">Overview</a>
+      <a href="../guide/design.html" aria-current="page">Design Language</a>
+      <a href="../guide/components.html">Components</a>
+      <a href="../demo/components.html">Gallery</a>
+    </nav>
+    <div class="site-acts">
+      <button class="btn icon subtle" type="button" data-theme-toggle aria-label="Switch Light or Dark"><svg data-ic="moon"></svg></button>
+      <button class="btn icon menu-btn" type="button" aria-label="Menu" aria-expanded="false"><svg data-ic="hamburger-menu"></svg></button>
+    </div>
+  </div>
+</header>
+<main class="container guide">
+  <nav class="toc" aria-label="On this page"><b>On This Page</b><a href="#principles">Principles</a><a href="#colour">Colour</a><a href="#type-and-numbers">Type and numbers</a><a href="#space-shape-depth-motion">Space, shape, depth, motion</a><a href="#layouts">Layouts</a><a href="#phone-to-2560">Phone to 2560</a><a href="#components">Components</a><a href="#writing">Writing</a><a href="#icons">Icons</a><a href="#accessibility">Accessibility</a><a href="#decided-with-the-owner-dont-redo-these">Decided with the owner (don&#x27;t redo these)</a><a href="#what-changed-in-20">What changed in 2.0</a><a href="#checklist">Checklist</a></nav>
+  <article class="doc"><h1 id="s4-glass-20-the-design-language">S4 Glass 2.0 – the design language</h1>
+<p>S4 Glass is one look for every app, tool and web page: frosted glass surfaces in light and dark, a faint tint of one accent running through the greys, one loud accent used as a fill, Inter with open digits, and Solar icons. It is brand-neutral. Every colour comes from three accent values, so a new app makes exactly one colour decision.</p>
+<p>The look was settled over many rounds of feedback on a real, heavily used app (Bank Reconciliation, Emovis). Version 2.0 keeps every decision from that work and adds what the app had to invent on its own: a type scale, a status system, phone patterns and a web-page layer. This file is the spec. The code is in <code>toolkit/</code>, starters in <code>templates/</code>, every component on one page in <code>demo/components.html</code>.</p>
+<h2 id="principles">Principles</h2>
+<ol>
+<li><strong>Frosted glass, tinted by the accent.</strong> Cards, the nav, the top bar, fields and dialogs are translucent with a background blur: white at 62% over an off-white page in light mode, white at 4.5% over a near-black gradient in dark mode. Greys, borders and shadows carry a faint tint of the accent, so an emerald app feels green-grey without anything being loudly coloured. <code>data-neutrals="mono"</code> turns the tint off.</li>
+<li><strong>One loud colour.</strong> The accent fills the primary action, the current place (active nav item, selected filter or tile) and things that need a decision. Nowhere else. A mark that repeats (done days in a calendar, ticked cells, chart bars) gets the soft fill (<code>--tile-on</code>, <code>--accent-bar</code>); solid accent is for the one current or selected thing. If everything is accent, nothing stands out.</li>
+<li><strong>Filled, not outlined.</strong> Hover and selected states are soft fills, never high-contrast accent outlines, double rings or green rings (a soft 35–45% accent line, <code>--soft-ring</code>, is fine). Every button-like control hovers with the same faint accent tint; table rows and lists hover and select in neutral grey. Keyboard focus is a thin neutral ring.</li>
+<li><strong>Quiet chrome, readable data.</strong> Inter at 14px, tabular figures on data, one text size inside table cells, sizes from one named scale, corners from one radius scale, spacing from one scale, hairline borders, soft shadows. No emoji as icons.</li>
+<li><strong>Dark mode is glass, not grey.</strong> A near-black gradient with a faint bloom of the two accent colours. In dark mode the accent is for fills only; text and icons use the normal text colours. Only three things glow, faintly: the primary button (a backlight behind it), the active nav item and the selected filter pill.</li>
+<li><strong>Fast and few keystrokes.</strong> One-click chips, segmented filters, keyboard shortcuts shown as keycaps, click-to-copy values, suggestions accepted with Enter.</li>
+<li><strong>Phone to 2560 wide.</strong> Every layout is checked at 390, 1280, 1366, 1920 and 2560. Narrow screens get their own patterns (rail, tab bar, bottom sheets, table rows as cards) through <code>max-width</code> rules only, so wide layouts never move.</li>
+<li><strong>Readable for everyone.</strong> WCAG AA contrast against what is actually painted behind the text, in both themes; visible focus; 40px touch targets (44px on phones); reduced motion respected.</li>
+<li><strong>Tokens or nothing.</strong> Colours, font sizes, radii, spacing, shadows, z-index and durations come from tokens. <code>check_css.py</code> (in <code>tools/</code> in the repo, <code>toolkit/</code> in the skill) enforces it, so consistency is checked, not hoped for.</li>
+</ol>
+<h2 id="colour">Colour</h2>
+<h3 id="the-accent-trio">The accent trio</h3>
+<p>Each app sets three values and nothing else:</p>
+<div class="table-wrap"><table class="t compact">
+<thead>
+<tr>
+<th>Token</th>
+<th>What it is</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--accent</code></td>
+<td>the main colour</td>
+<td>white text on it reaches 4.5:1 (5:1 is better: the nav pill starts a touch brighter). No pale yellow, lime or light cyan.</td>
+</tr>
+<tr>
+<td><code>--accent-2</code></td>
+<td>a neighbouring hue, same lightness or darker, 20–40° round the wheel</td>
+<td>ends the nav gradient; tints borders, shadows, dark surfaces and the second dark bloom</td>
+</tr>
+<tr>
+<td><code>--accent-light</code></td>
+<td>a light tint of the accent</td>
+<td>dark mode's accent for lines, hover tints and badge text; never running text</td>
+</tr>
+</tbody>
+</table></div>
+<p>Starting points (all checked in both themes):</p>
+<div class="table-wrap"><table class="t compact">
+<thead>
+<tr>
+<th>Feel / subject</th>
+<th>--accent</th>
+<th>--accent-2</th>
+<th>--accent-light</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Money, finance, trackers</td>
+<td><code>#047857</code> emerald</td>
+<td><code>#0f766e</code></td>
+<td><code>#6ee7b7</code></td>
+</tr>
+<tr>
+<td>Calm tools, health, planning</td>
+<td><code>#0f766e</code> teal</td>
+<td><code>#155e75</code></td>
+<td><code>#5eead4</code></td>
+</tr>
+<tr>
+<td>Productivity, study, notes</td>
+<td><code>#4f46e5</code> indigo</td>
+<td><code>#6d28d9</code></td>
+<td><code>#a5b4fc</code></td>
+</tr>
+<tr>
+<td>Creative, music, personal</td>
+<td><code>#7c3aed</code> violet</td>
+<td><code>#a21caf</code></td>
+<td><code>#c4b5fd</code></td>
+</tr>
+<tr>
+<td>Travel, weather, general</td>
+<td><code>#1d64d8</code> blue</td>
+<td><code>#3b3fc4</code></td>
+<td><code>#93c5fd</code></td>
+</tr>
+<tr>
+<td>Fitness, food, energetic</td>
+<td><code>#c2410c</code> orange</td>
+<td><code>#be123c</code></td>
+<td><code>#fdba74</code></td>
+</tr>
+<tr>
+<td>Media, games, sports</td>
+<td><code>#c81e3a</code> red</td>
+<td><code>#9f1239</code></td>
+<td><code>#fda4af</code></td>
+</tr>
+<tr>
+<td>Bold, fashion, social</td>
+<td><code>#be185d</code> pink</td>
+<td><code>#9d174d</code></td>
+<td><code>#f9a8d4</code></td>
+</tr>
+<tr>
+<td>Serious, admin, neutral</td>
+<td><code>#334155</code> slate</td>
+<td><code>#1e293b</code></td>
+<td><code>#cbd5e1</code></td>
+</tr>
+<tr>
+<td><strong>Emovis</strong> (brand)</td>
+<td><code>#ce0057</code></td>
+<td><code>#8a0069</code></td>
+<td><code>#ff5c9d</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>A brand comes in through these three values only, never as a hex value in the stylesheet. Red and green accents sit close to the status colours: keep status meaning in badge text and don't fill success or error states with the accent.</p>
+<h3 id="what-the-trio-becomes">What the trio becomes</h3>
+<p>Everything else is a <code>color-mix()</code> of the trio with a neutral (and OKLCH relative colours for the "vivid" glow versions, with a plain-mix fallback):</p>
+<ul>
+<li>Surfaces: <code>--page</code>, <code>--bg</code>, <code>--glass</code>, <code>--glass2</code>, <code>--bg2</code>, <code>--bg3</code>, <code>--well</code>, <code>--nav-bg</code>, <code>--bar-bg</code>, <code>--th-bg</code>, <code>--field-bg</code>, <code>--panel-bg</code>, <code>--modal-bg</code>, <code>--pop-bg</code> (solid), <code>--toast-bg</code>, <code>--tip-bg</code>.</li>
+<li>Text and lines: <code>--text</code>, <code>--text2</code>, <code>--text3</code> (the faintest text that still passes AA), <code>--border</code>, <code>--border2</code>.</li>
+<li>States: <code>--hov</code>, <code>--press</code> (accent tint for button-like controls), <code>--fill</code>, <code>--fill2</code>, <code>--soft-ring</code>, <code>--tile-on</code> (selected), <code>--bg-hover</code>, <code>--bg-sel</code> (neutral, for rows), <code>--focus</code> (neutral ring).</li>
+<li>Accent roles: <code>--btn</code>, <code>--btn-hover</code>, <code>--btn-edge</code>, <code>--accent-soft</code> (a quiet accent area), <code>--accent-chip</code> (a badge fill), <code>--accent-text</code> (accent text on plain surfaces; the text colour in dark), <code>--accent-ink</code> (text on accent fills; the accent darkened 25% in light so it passes AA), <code>--acc</code> (the accent as a line), <code>--nav-grad</code>, <code>--vivid</code>, <code>--backlight</code>.</li>
+</ul>
+<h3 id="status">Status</h3>
+<p>Status colours are fixed, so "ok" means the same in every app whatever its accent. Each status has five tokens:</p>
+<div class="table-wrap"><table class="t compact">
+<thead>
+<tr>
+<th>Role</th>
+<th>Text</th>
+<th>Soft area (banners, notes)</th>
+<th>Chip fill + ink (badges)</th>
+<th>Bar (row edge, progress, card top)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ok</td>
+<td><code>--ok</code></td>
+<td><code>--ok-bg</code></td>
+<td><code>--ok-chip</code> / <code>--ok-ink</code></td>
+<td><code>--ok-bar</code></td>
+</tr>
+<tr>
+<td>warn</td>
+<td><code>--warn</code></td>
+<td><code>--warn-bg</code></td>
+<td><code>--warn-chip</code> / <code>--warn-ink</code></td>
+<td><code>--warn-bar</code></td>
+</tr>
+<tr>
+<td>bad</td>
+<td><code>--bad</code></td>
+<td><code>--bad-bg</code></td>
+<td><code>--bad-chip</code> / <code>--bad-ink</code></td>
+<td><code>--bad-bar</code></td>
+</tr>
+<tr>
+<td>mute (parked, carried, not this month)</td>
+<td><code>--text2</code></td>
+<td><code>--mute-bg</code></td>
+<td><code>--mute-chip</code> / <code>--mute-ink</code></td>
+<td><code>--mute-bar</code></td>
+</tr>
+<tr>
+<td>accent (in progress on our side)</td>
+<td><code>--accent-text</code></td>
+<td><code>--accent-soft</code></td>
+<td><code>--accent-chip</code> / <code>--accent-ink</code></td>
+<td><code>--accent-bar</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>One more state belongs to the accent: <strong>needs your decision</strong> (a suggestion). It is a solid accent badge with the stars icon (<code>.badge.solid</code>), the only solid badge in the system, because a decision waiting for the user is exactly what the one loud colour is for.</p>
+<p>An app with its own status vocabulary (Matched, To Sort, Journal Entry…) maps each of its states onto one of these six roles. It never invents a seventh colour.</p>
+<h2 id="type-and-numbers">Type and numbers</h2>
+<p><strong>Inter only</strong>, weights 400, 500, 600 and 700, embedded as data URIs built by <code>toolkit/build_fonts.py</code> (the Google Fonts and <code>@fontsource</code> builds have the stylistic sets stripped, so the house digits silently disappear). No second family, no monospace: <code>--mono</code> is Inter, so IDs and document numbers match the amounts around them.</p>
+<p><strong>Named sizes.</strong> Use the name, never a pixel value:</p>
+<div class="table-wrap"><table class="t compact">
+<thead>
+<tr>
+<th>Token</th>
+<th>Size</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--fs-cap</code></td>
+<td>11px</td>
+<td>tiny all-caps group labels in the side nav; keycaps</td>
+</tr>
+<tr>
+<td><code>--fs-badge</code></td>
+<td>11.5px</td>
+<td>badges and count pills only</td>
+</tr>
+<tr>
+<td><code>--fs-xs</code></td>
+<td>12px</td>
+<td>table headers, sub-lines, field labels, footnotes, error lines</td>
+</tr>
+<tr>
+<td><code>--fs-sm</code></td>
+<td>12.5px</td>
+<td>hints, secondary lines, small buttons, filter pills</td>
+</tr>
+<tr>
+<td><code>--fs-ui</code></td>
+<td>13px</td>
+<td>menus, banners, tooltips, compact lists, key/value lists</td>
+</tr>
+<tr>
+<td><code>--fs-base</code></td>
+<td>14px</td>
+<td>body, table values, buttons, fields</td>
+</tr>
+<tr>
+<td><code>--fs-title</code></td>
+<td>15px</td>
+<td>a title that leads a block or list</td>
+</tr>
+<tr>
+<td><code>--fs-h2</code></td>
+<td>18px</td>
+<td>dialog titles, entity names on overview cards</td>
+</tr>
+<tr>
+<td><code>--fs-h1</code></td>
+<td>20px</td>
+<td>the page title in the top bar</td>
+</tr>
+<tr>
+<td><code>--fs-stat</code></td>
+<td>22px</td>
+<td>a number over a label</td>
+</tr>
+<tr>
+<td><code>--fs-big</code></td>
+<td>26px</td>
+<td>the one amount a panel is about</td>
+</tr>
+<tr>
+<td><code>--fs-hero</code></td>
+<td>30px</td>
+<td>the headline number on a card</td>
+</tr>
+<tr>
+<td><code>--fs-display</code>, <code>--fs-page-h2</code>, <code>--fs-page-h3</code>, <code>--fs-lead</code></td>
+<td>fluid</td>
+<td>web pages only (clamp between 390 and 1440 wide)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Weights: 400 text, 500 emphasis and nav, 600 labels/titles/buttons, 700 counts, the hero number and page display type. No 650 (the static faces would round it).</p>
+<p><strong>Numbers.</strong>
+- <code>font-feature-settings: "ss01", "cv09"</code> once on <code>body</code>: open 4, 6 and 9, flat-top 3. The only other rule that sets it is <code>.brk</code>, which repeats both. Everything else uses <code>font-variant-numeric</code>.
+- Tabular figures on everything that holds data (tables, inputs, chips, badges, counts, stats). Running paragraphs stay proportional.
+- Negative money is <code>(1,234.56)</code> with each bracket in <code>&lt;span class="brk"&gt;</code>, Inter's centred bracket forms, which sit on the digits' centre at every size. Positive amounts in a column end with a hidden <code>&lt;span class="psp"&gt;)&lt;/span&gt;</code> so digits line up. Negatives copy as <code>-1234.56</code>. Positive amounts may be green (<code>.pos</code>); money going out is never red just for being negative.
+- No slashed zero or other number features.</p>
+<h2 id="space-shape-depth-motion">Space, shape, depth, motion</h2>
+<ul>
+<li><strong>Spacing</strong> <code>--s-1…--s-24</code>: 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 96. Apps use 4–24; web pages use the large steps between sections.</li>
+<li><strong>Radii</strong> <code>--r-xs</code> 6 (chips, checkboxes), <code>--r-sm</code> 8 (small buttons, menu items), <code>--r-md</code> 10 (buttons, fields), <code>--r</code> 12 (cards, nav items, tiles, menus), <code>--r-xl</code> 16 (dialogs, filter pills), <code>--r-2xl</code> 24 (bottom sheets, web CTA bands), <code>--r-pill</code>. Nested corners get smaller as they go in.</li>
+<li><strong>Elevation</strong> <code>--shadow-1</code> cards and bars, <code>--shadow-2</code> menus and pop-overs, <code>--shadow-3</code> dialogs. No white inset "shine" on surfaces (removed in the Bank Rec app, #191); only keycaps keep a highlight.</li>
+<li><strong>Motion</strong> <code>--dur-1</code> .12s, <code>--dur-2</code> .18s, <code>--dur-3</code> .24s, <code>--ease</code>. The content fades up 6px on arrival, menus pop, the selection pill slides, sheets slide up. The slide happens only after a click (never on arrival, resize or font load). Reduced motion turns all of it off. Nothing blinks or pulses: "needs attention" is steady.</li>
+<li><strong>Layers</strong> <code>--z-sticky</code> 2, <code>--z-bar</code> 20, <code>--z-panel</code> 40, <code>--z-modal</code> 50, <code>--z-toast</code> 80, <code>--z-menu</code> 130, <code>--z-tip</code> 200.</li>
+</ul>
+<h2 id="layouts">Layouts</h2>
+<p>Pick one per app; never mix two systems in one app.</p>
+<ul>
+<li><strong>App shell</strong> (<code>.app</code>): 220px side nav + main column; the top bar and nav stay put and only <code>.content</code> scrolls. For many screens.</li>
+<li><strong>Tabs app</strong>: 2–3 screens as <code>.seg</code> tabs in the top bar, no side nav.</li>
+<li><strong>Single-page tool</strong>: <code>.app.solo</code> (top bar + content, no nav); <code>.content.center</code> caps the content at about 1100px.</li>
+<li><strong>Phone-first app</strong>: <code>.app.has-tabbar</code> with a bottom <code>.tabbar</code> on phones and the side nav on desktop.</li>
+<li><strong>Web page</strong> (<code>body.site</code>): sticky glass header, <code>.hero</code>, <code>.section</code> blocks inside <code>.container</code> (max 1200px), <code>.site-foot</code>. Same tokens and components; fluid display type.</li>
+</ul>
+<p>Widths: form-style pages (settings, rules, lookups) share <code>--form-max</code> (760px); wide tables may go full width; running text stops at <code>--prose-max</code> (68ch).</p>
+<p>Overview of several entities (companies, accounts, projects): one vertical card each in <code>.grid-4</code> (4 → 2 → 1 per row), a coloured top edge for status (<code>.card.edge.ok</code>), the vital numbers at a glance, and "Show Details" for the rest.</p>
+<h2 id="phone-to-2560">Phone to 2560</h2>
+<div class="table-wrap"><table class="t compact">
+<thead>
+<tr>
+<th>Width</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>≥ 1301</td>
+<td>the design as drawn; 1920 and 2560 never change</td>
+</tr>
+<tr>
+<td>≤ 1300 (a 1920×1200 laptop at 150%)</td>
+<td>nav 200px, tighter top bar, page subtitle hidden, list/detail panel 360px</td>
+</tr>
+<tr>
+<td>≤ 1200</td>
+<td>overview cards two per row</td>
+</tr>
+<tr>
+<td>≤ 980 (tablet, small window)</td>
+<td>the side nav becomes a 68px icon rail (labels hidden, counts become corner pips); list/detail: the detail panel covers the list (<code>.detail.open</code>)</td>
+</tr>
+<tr>
+<td>≤ 760 (phone)</td>
+<td>one column; nav becomes a scrolling row under the top bar, or a bottom tab bar with <code>.has-tabbar</code>; dialogs become bottom sheets; <code>table.t.cards</code> rows become cards; fields 16px (iOS doesn't zoom); 44px touch targets; safe-area insets on bars, sheets and toasts</td>
+</tr>
+</tbody>
+</table></div>
+<p>Phone rules:
+- The top bar is one short row: the title shrinks with an ellipsis, actions stay on the first line. A sticky bar takes at most a fifth of the screen.
+- Wide data tables either become cards (<code>table.t.cards</code>, each cell with <code>data-label</code>, the description cell <code>.lead</code>) or scroll sideways inside <code>.table-wrap</code>. The page itself never scrolls sideways.
+- A tool that is really a desktop job (many columns, copy-and-paste into other systems) shows a read-only overview on the phone and says the rest needs a computer, rather than squeezing every screen.
+- Touch: every control at least <code>--tap</code> tall; spacing between tap targets at least 4px.</p>
+<h2 id="components">Components</h2>
+<p>All in <code>toolkit/s4.css</code>; every one is on <code>demo/components.html</code>. Markup for each is in the skill's <code>references/components.md</code>.</p>
+<ul>
+<li><strong>Shell</strong>: <code>.app</code>, <code>.nav</code> (<code>.brand</code>, <code>.group</code>, <code>.item</code> + <code>.lbl</code> + <code>.count</code>, <code>.foot</code>), <code>.main</code>, <code>.topbar</code> (<code>.ttl</code> h1 + <code>.sub</code>, <code>.actions</code>), <code>.content</code>, <code>.banner</code> (<code>.info</code>, <code>.ok</code>, <code>.bad</code>; plain is a warning), <code>.split</code> (<code>.list-pane</code> + <code>.detail</code>), <code>.filters</code>, <code>.tabbar</code> + <code>.tab</code>, <code>.fab</code>.</li>
+<li><strong>Buttons</strong>: <code>.btn</code>, <code>.primary</code>, <code>.subtle</code>, <code>.icon</code>, <code>.sm</code>, <code>.lg</code>, <code>.block</code>, <code>.on</code>, <code>.attn</code>, <code>.danger</code>, <code>.danger-fill</code>, <code>.pill</code> inside, <code>button.lnk</code>.</li>
+<li><strong>Fields</strong>: native inputs, <code>select</code> (with the S4 chevron), <code>textarea</code>, <code>label.f</code> (+ <code>.hint</code>, <code>.err</code>), <code>.form-grid</code>, <code>.search</code>, <code>.switch</code>, checkbox, radio, <code>.chk</code>.</li>
+<li><strong>Choosers</strong>: <code>.seg</code> (+ <code>.scroll</code>), <code>.fchip</code>, <code>.ptabs</code>, <code>.tile</code>, sliding selection (<code>s4Slider</code>).</li>
+<li><strong>Status</strong>: <code>.badge</code> (<code>.ok</code>, <code>.warn</code>, <code>.bad</code>, <code>.mute</code>, <code>.accent</code>, <code>.solid</code>), <code>.chip</code>, <code>.dot</code>, <code>.bar</code>, <code>.card.edge</code>, table row edges <code>tr.st-*</code>.</li>
+<li><strong>Surfaces</strong>: <code>.card</code> (<code>.flush</code>, <code>.lift</code>, <code>.card-head</code>), <code>.stat</code>, <code>.kv</code>, <code>.bigamt</code>, <code>.hero-num</code>, <code>.sug</code>, <code>.note</code>, <code>.hidden-note</code>, <code>.empty</code>, <code>.drop</code>, <code>.skeleton</code>, <code>.fold</code> / <code>.steps</code> (native <code>&lt;details&gt;</code>), <code>.list</code> + <code>.li</code>.</li>
+<li><strong>Tables</strong>: <code>.table-wrap</code> (<code>.scroll</code>), <code>table.t</code> (<code>.compact</code>, <code>.cards</code>), <code>th.sortable</code> + <code>.th-sort</code>, <code>td.dcol</code>, <code>.trunc</code>, <code>.sub</code>, <code>td.num</code>, <code>tr.r</code>, <code>tr.sel</code>, <code>tr.done</code>, <code>tfoot</code>.</li>
+<li><strong>Copy and keys</strong>: <code>.copy</code> (+ <code>data-copy</code>), <code>.copy.empty</code>, <code>.kbd</code>, <code>.kbd.on-pri</code>, <code>.keys</code> / <code>.kh</code>.</li>
+<li><strong>Overlays</strong>: <code>.menu</code> (<code>.menu-h</code>, <code>hr</code>), <code>.scrim</code> + <code>.modal</code> (<code>header</code>, <code>.body</code>, <code>footer</code>, <code>.grab</code>, <code>.wide</code>, <code>.narrow</code>), <code>.toast</code>, <code>.tip</code>.</li>
+<li><strong>Web page</strong>: <code>.site</code>, <code>.site-head</code> (<code>.brand</code>, <code>.site-nav</code>, <code>.site-acts</code>, <code>.menu-btn</code>), <code>.hero</code>, <code>.display</code>, <code>.lead</code>, <code>.section</code>, <code>.section-head</code>, <code>.prose</code>, <code>.feature</code>, <code>.cta-band</code>, <code>.site-foot</code>, <code>.container</code>.</li>
+<li><strong>Layout helpers</strong>: <code>.stack</code>, <code>.cluster</code>, <code>.spread</code>, <code>.grid-auto</code> (<code>--min</code>), <code>.grid-4</code>, <code>.grow</code>, <code>.form-page</code>; spacing/type utilities on the scales only.</li>
+</ul>
+<p>Component rules that matter most:
+- <strong>One accent-filled button per area</strong>, usually the main forward action. When there is nothing left to do, hide it rather than grey it out. <code>.btn.attn</code> (steady solid accent with a white count) may sit beside it while something needs attention.
+- <strong>The top bar stays put</strong>: global actions keep their position on every screen; one that doesn't apply is disabled, not removed.
+- <strong>Active nav item</strong>: the accent gradient, a white label and icon (the duotone's faded half at 62%), a darker count pill, a faint diffuse glow. <code>background-origin: border-box</code>. About 6px between items.
+- <strong>Tables</strong>: one text size (values 14, headers and sub-lines 12, badges 11.5); short columns never wrap; the description column takes the leftover width and shows a tooltip only when cut off; status is one badge plus the slim left edge, never a tinted row; every table sorts by its headers (asc → desc → default; <code>s4Sort</code> does it) unless it mirrors an external layout, and a status column sorts by urgency (bad, warn, needs a decision, accent, ok, mute – put the rank in <code>data-sort</code>); don't show the same text twice.
+- <strong>Filters start on All</strong> and change only when clicked; a jump to a row the filter hides keeps the filter and shows <code>.hidden-note</code> with Show All.
+- <strong>Copy chips</strong>: click to copy, a 0.6s green flash that never stays; in tables they read as plain text until hovered.
+- <strong>Pop-overs</strong> are solid (<code>--pop-bg</code>); dialogs are glass over a blurred scrim; toasts are dark with one optional action ("Undone: Match 40 [Redo]").
+- <strong>Cards fit their content</strong>; spare space goes below a list card, not inside it.
+- <strong>Say things once</strong>: a hint that applies to every row goes in the line above the list.
+- <strong>Uncluttered headers</strong>: the title stands alone; counts and totals are quieter text beside or under it. No title · count · dot · chip strings.</p>
+<h2 id="writing">Writing</h2>
+<ul>
+<li><strong>Title Case for labels</strong>: field labels, headings of cards, sections, panels and dialogs, column headers, buttons, tabs, menu items, stat labels and badges. Capitalise major words; a, an, the, and, or, to, of, in, on, for, as, by stay lowercase unless first, and a little word that ends the label or belongs to the verb is capitalised ("Fill In the Entry", "The Full Statement Is In"). Acronyms stay (SAP, GL, JE).</li>
+<li><strong>Sentence case for sentences</strong>: empty-state headings that read as sentences ("Nothing left to match"), question dialog titles ("Delete all data?"), tooltips, hints, helper text, toasts and messages.</li>
+<li><strong>All caps only</strong> for the tiny side-nav group labels. No all-caps eyebrows over headings.</li>
+<li>An action keeps one name through the whole flow: the button "Save a Backup" produces the toast "Backup saved"; the same action has the same name on every screen.</li>
+<li>Errors say what happened and how to fix it ("10 digits needed"), in the interface's voice; no apologies. Empty states invite the next action.</li>
+<li>Dates and times in one format per app (e.g. "Oct 23, 2026, 6:10 PM").</li>
+</ul>
+<h2 id="icons">Icons</h2>
+<p><strong>Solar</strong> (CC BY 4.0, 480 Design), two styles: <strong>Bold Duotone</strong> where the icon carries the screen (nav items, big mode tiles, empty states, the suggestion sparkle) at 20–24px; <strong>Linear</strong> everywhere else (top bar, chips, close, arrows, inline) at 14–18px. Never every icon duotone. <code>toolkit/icons.js</code> holds a curated set (<code>tools/build_icons.mjs</code> adds more). A single-file page inlines only the icons it uses (<code>build_icons.mjs --only copy,moon,refresh --out icons-page.js</code>); built apps inline only the SVGs they use. Icons use <code>currentColor</code>.</p>
+<h2 id="accessibility">Accessibility</h2>
+<ul>
+<li>AA contrast for all text against what is painted behind it, both themes (<code>--text3</code> is the faintest allowed; <code>--accent-ink</code> for accent text on accent fills; no accent text in dark).</li>
+<li>Focus: a visible neutral ring on every control (<code>:focus-visible</code>), never removed. Fields show focus with fill + border.</li>
+<li>Dialogs trap focus and return it; Escape closes the innermost thing; a dirty dialog asks before closing.</li>
+<li>Touch targets 40px (44px on phones); <code>button.lnk</code> gets a larger hit area without moving.</li>
+<li>Reduced motion stops all animation and transitions.</li>
+<li>Colour is never the only signal: status always has a text badge.</li>
+</ul>
+<h2 id="decided-with-the-owner-dont-redo-these">Decided with the owner (don't redo these)</h2>
+<p>Every rule below came from the owner's issues on the Bank Reconciliation app (issue numbers in brackets). New apps start from them; change one only when the user asks.</p>
+<p><strong>Rejected – never bring back:</strong> high-contrast accent outlines, double rings and green "copied" rings (#49, #57) · dashed or dotted outline chips (#189) · icons inside status chips, except the suggestion's stars (#110, #189) · accent-coloured selected rows or list highlights (#90, #103, #109) · accent text in dark mode (#100) · white hover washes and the white top "shine" on surfaces (#94, #99, #191) · a border on the light-mode segmented control (#101) · blinking or pulsing warnings (#86) · see-through menus (#56) · browser-default checkboxes and blue radios (#75, #122) · all-caps titles (#9) · bulk-accept buttons (#70) · internal or system terms in the UI, such as Excel column letters (#44) · filters that switch by themselves (#108) · save-on-blur for important values (#88).</p>
+<p><strong>Colour:</strong> every accent is the same accent: the selected pill, the primary button and a solid badge use one value (#77). Green means money coming in; outgoing totals are never green (#130). One status chip per track; few chips per row (#110).</p>
+<p><strong>Spacing and alignment</strong> (the most frequent complaint): hover bands get breathing room and never hug the text (#106, #109); about 4px between segmented options and 6px between nav items (#74, #80); labels sit next to their values with no dead space, and inputs are sized for their content (#42, #52, #89, #124); things in a row line up – inputs on one line, the same input size, a "–" placeholder in the value column when a value is missing, the same columns from card to card (#39, #62–#64, #160); pages use the full width consistently (#65, #72); digits sit optically centred in count pills (#53, #58, #69).</p>
+<p><strong>Text:</strong> show text once (#81, #133); show full descriptions, with a tooltip as the fallback; never cut mid-word or leave a space before "…" (#61, #83); one term per concept and one date format (#38, #159); plain, self-explanatory names ("General Ledger", "Vendor ID", "Export Unmatched") over abbreviations or system names (#92, #105, #180, #181).</p>
+<p><strong>Behaviour:</strong>
+- A workflow fits a 1080p screen without scrolling: steps as an accordion, finished steps fold to a summary (#33, #97).
+- The button is the control: no checkbox next to a button that does the same thing (#28, #29). One primary action per step, with secondary actions after it (#79).
+- Disabled controls don't react to hover (#94). The copied state wins over hover and reverts after 0.6s (#67, #87).
+- Rows never vanish when their state changes: finished rows move down or quiet down, and a row the current filter hides gets a notice, not a view switch (#88, #108).
+- Values are saved with an explicit Save or Enter (#88). Confirmations are in-app dialogs, never <code>confirm()</code>; destructive buttons are red and offer a backup first (#51, #152, #174). Deletes can be undone, and the undo pop-up appears next to the undo buttons (#20, #178). A dialog with unsaved input doesn't close on a backdrop click (#176).
+- Nothing is dropped silently: imports and bulk actions end on a summary of what was kept and what was skipped (#141, #142, #151, #168).
+- Let the user review decisions one at a time ("Review 39 Suggestions", not "Accept All") (#70).
+- Motion only answers the user's action: no slide when a screen opens, no two-tone trail, no flash (#74, #78, #93).
+- On a phone, nothing that looks like a button may be inert: show plain text instead (#183).</p>
+<p><strong>Process:</strong> for any visible change that isn't obvious, show a draft or 2–3 lettered samples on real content first, and build the pick (#75, #81, #97, #102, #110, #124). Settle tricky details (brackets, count-pill centring) with measured checks, not by eye (#102, #125, #69).</p>
+<h2 id="what-changed-in-20">What changed in 2.0</h2>
+<p>From the review of the Bank Reconciliation app against 1.x:</p>
+<div class="table-wrap"><table class="t compact">
+<thead>
+<tr>
+<th>Seen in the app</th>
+<th>2.0 answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>16 different font sizes, set as pixel literals</td>
+<td>a named scale (<code>--fs-*</code>), checked by <code>tools/check_css.py</code></td>
+</tr>
+<tr>
+<td>a second, app-only status chip palette (<code>--sc-*</code>, "option D") beside the generic one</td>
+<td>one status system with chip / ink / bar tokens; apps map their states onto six roles</td>
+</tr>
+<tr>
+<td>brand pink hard-coded in ~30 places (<code>#ce0057</code>, <code>rgba(206,0,87,…)</code>)</td>
+<td>everything derived from the trio; Emovis is just <code>#ce0057 / #8a0069 / #ff5c9d</code></td>
+</tr>
+<tr>
+<td>white inset shine on cards removed by hand (#191)</td>
+<td>no shine in the elevation tokens (keycaps keep theirs)</td>
+</tr>
+<tr>
+<td>accent outlines on hover/open (open drop-down, to-do chips, file drop, carried section)</td>
+<td>soft fills or neutral lines only</td>
+</tr>
+<tr>
+<td>all-caps eyebrow labels on the dashboard and panels</td>
+<td>Title Case labels; all caps only in the nav groups</td>
+</tr>
+<tr>
+<td>weight 650 in places</td>
+<td>400 / 500 / 600 / 700 only</td>
+</tr>
+<tr>
+<td>phone handled by hiding screens</td>
+<td>real phone patterns: tab bar, rail, bottom sheets, table rows as cards, 16px fields, safe areas</td>
+</tr>
+<tr>
+<td>no pattern for web pages</td>
+<td><code>body.site</code> layer with fluid type</td>
+</tr>
+<tr>
+<td>off-scale spacing utilities (<code>gap-14px</code>, <code>p-30px</code>)</td>
+<td>utilities on the scale; <code>--gap</code> / <code>--min</code> knobs on layout helpers</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="checklist">Checklist</h2>
+<ul>
+<li>Exactly one accent-filled primary action per area; the active nav item uses the gradient with a faint glow; the accent was chosen for this app (or the brand's trio).</li>
+<li>Every colour comes from the trio or the status tokens; <code>python3 tools/check_css.py</code> reports 0 problems for the app's own stylesheet.</li>
+<li>Hover and selected states are fills; rows and selections are neutral; no accent text in dark.</li>
+<li>Font sizes are tokens; weights 400–700; digits show the open 4, 6, 9 and flat-top 3; brackets centred; tabular figures on data only.</li>
+<li>Labels Title Case, sentences sentence case, headers uncluttered.</li>
+<li>Checked at 390, 1280, 1920 (2560 for desktop tools; 820×1180 and 1024×768 for anything used on tablets) in light and dark: no sideways scroll, no clipped text, AA contrast, targets ≥ 40px on touch.</li>
+</ul></article>
+</main>
+<footer class="site-foot">
+  <div class="container"><span>S4 Glass 2.0 · <a href="https://github.com/4RK0S4H4/s4-glass">Source on GitHub</a></span><span>Inter (SIL OFL) · Solar icons (CC BY 4.0, 480 Design)</span></div>
+</footer>
+</body>
+</html>

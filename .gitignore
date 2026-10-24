@@ -1,0 +1,5 @@
+out/
+node_modules/
+*.skill
+__pycache__/
+build/
