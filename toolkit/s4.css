@@ -1,0 +1,682 @@
+/* ==========================================================================
+   S4 Glass 2.0 – design tokens + components for apps and web pages,
+   phone to 2560px desktop, light and dark.
+
+   Brand-neutral: every colour is worked out from the three accent values,
+   so any accent gives the same glass surfaces, accent-tinted greys, soft
+   shadows and vivid highlights. A brand comes in through those three values
+   only (e.g. Emovis: #ce0057 / #8a0069 / #ff5c9d).
+
+   Per app: set --accent, --accent-2 and --accent-light on :root (here, or in
+   an app stylesheet loaded after this one). Nothing else needs editing.
+
+   House rules (checked by tools/check_css.py):
+   - Dark mode changes TOKENS only. No component rule is written inside a
+     dark block and there are no `[data-theme="dark"] .x` rules: give the
+     value a token and set it in both dark blocks. The two dark blocks are
+     identical on purpose (one follows the device, one wins when
+     data-theme="dark" is set; s4.js always sets it). Edit them together.
+   - Tokens, not literals: colours, font sizes (--fs-*), radii (--r-*),
+     spacing (--s-*), shadows (--shadow-*), z-index (--z-*), durations (--dur-*).
+   - One rule per control type; variants are modifiers. No !important
+     (except [hidden] and the reduced-motion override).
+   - Filled, not outlined: hover and selected states are soft fills; focus
+     is a neutral ring; rows and selected rows stay neutral grey.
+   - Narrow screens: max-width media rules only, so wide layouts never move.
+
+   Sections: 1 tokens · 2 dark · 3 base · 4 layout primitives · 5 app shell ·
+   6 buttons · 7 fields · 8 choosers · 9 status · 10 surfaces · 11 tables ·
+   12 copy chips + keycaps · 13 overlays · 14 web pages · 15 utilities ·
+   16 motion · 17 touch · 18 narrow screens · 19 phone
+   ========================================================================== */
+
+/* ---------- 1. tokens (light) ---------- */
+:root {
+  --accent: #4f46e5; --accent-2: #6d28d9; --accent-light: #a5b4fc;   /* set per app */
+
+  /* Greys, lines and shadows take a faint tint from --tint / --tint2. [data-neutrals="mono"] makes them grey. */
+  --tint: var(--accent); --tint2: var(--accent-2); --bloom-1: var(--accent); --bloom-2: var(--accent-2);
+
+  /* type: one family, named sizes. Use these names, never a px literal. */
+  --font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; --mono: var(--font);
+  --fs-cap: 11px;      /* tiny all-caps group labels (side-nav sections) – the only all-caps text */
+  --fs-badge: 11.5px;  /* badges and count pills only */
+  --fs-xs: 12px;       /* table headers, sub-lines, field labels, footnotes */
+  --fs-sm: 12.5px;     /* hints, secondary lines, small buttons, filter pills */
+  --fs-ui: 13px;       /* menus, banners, tooltips, compact lists */
+  --fs-base: 14px;     /* body, table values, buttons, fields */
+  --fs-title: 15px;    /* card and list titles that lead a block */
+  --fs-h2: 18px;       /* dialog titles, company/entity names */
+  --fs-h1: 20px;       /* page title in the top bar */
+  --fs-stat: 22px;     /* a number over a label */
+  --fs-big: 26px;      /* the one amount a panel is about */
+  --fs-hero: 30px;     /* the headline number of a card */
+  /* web pages: fluid sizes between a 390px phone and a 1440px desktop */
+  --fs-display: clamp(2.25rem, 1.6rem + 2.8vw, 4rem);
+  --fs-page-h2: clamp(1.5rem, 1.2rem + 1.3vw, 2.25rem);
+  --fs-page-h3: clamp(1.125rem, 1.04rem + .4vw, 1.375rem);
+  --fs-lead: clamp(1rem, .96rem + .3vw, 1.1875rem);
+  --lh: 1.45; --lh-tight: 1.15; --lh-prose: 1.65;
+
+  /* scales */
+  --r-xs: 6px; --r-sm: 8px; --r-md: 10px; --r: 12px; --r-xl: 16px; --r-2xl: 24px; --r-pill: 999px;
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 20px; --s-6: 24px; --s-8: 32px; --s-10: 40px; --s-12: 48px; --s-16: 64px; --s-24: 96px;
+  --ease: cubic-bezier(.2, .8, .2, 1); --dur-1: .12s; --dur-2: .18s; --dur-3: .24s;
+  --z-sticky: 2; --z-bar: 20; --z-panel: 40; --z-modal: 50; --z-toast: 80; --z-menu: 130; --z-tip: 200;
+  --nav-w: 220px; --rail-w: 68px; --tabbar-h: 64px; --page-max: 1200px; --form-max: 760px; --prose-max: 68ch;
+  --tap: 40px;   /* smallest touch target on touch screens */
+  --blur: 24px; --sat: 150%;
+
+  color-scheme: light;
+  /* page and glass surfaces */
+  --bg: color-mix(in srgb, var(--tint) 1.5%, #f5f5f5); --page: var(--bg);
+  --glass: rgba(255,255,255,.62); --glass2: rgba(255,255,255,.82); --stroke: rgba(255,255,255,.85);
+  --bg2: var(--glass); --bg3: rgba(255,255,255,.5); --well: var(--bg3);
+  --nav-bg: var(--glass); --tabbar-bg: color-mix(in srgb, var(--bg) 90%, transparent); --bar-bg: var(--glass); --th-bg: var(--glass2); --field-bg: var(--glass2); --panel-bg: var(--bg3);
+  --modal-bg: var(--glass2); --modal-line: var(--stroke); --scrim: rgba(0,0,0,.35);
+  --pop-bg: #ffffff;   /* menus and drop-down lists: solid */
+  --toast-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 7%, #151515) 88%, transparent);
+  --tip-bg: color-mix(in srgb, var(--text) 95%, transparent); --tip-line: transparent;
+  --on-dark: #ffffff; --on-dark2: rgba(255,255,255,.72);   /* text on toasts, tooltips and accent fills */
+  /* text, lines and shadows: tinted toward the accent family */
+  --text: color-mix(in srgb, var(--tint) 8%, #161616); --text2: color-mix(in srgb, var(--tint) 8.5%, #5c5c5c); --text3: color-mix(in srgb, var(--tint) 8.5%, #666666);
+  --line: color-mix(in srgb, var(--tint2) 43.5%, #656565);
+  --border: color-mix(in srgb, var(--line) 13%, transparent); --border2: color-mix(in srgb, var(--line) 22%, transparent);
+  --shade: color-mix(in srgb, var(--tint2) 28.5%, #191919); --shade-deep: color-mix(in srgb, var(--tint2) 21%, #0c0c0c);
+  /* elevation: 1 cards and bars · 2 menus and pop-overs · 3 dialogs. No white inset "shine" on surfaces (only keycaps keep one). */
+  --shadow-1: 0 8px 28px color-mix(in srgb, var(--shade) 9%, transparent), 0 1px 2px color-mix(in srgb, var(--shade) 6%, transparent);
+  --shadow-2: 0 18px 50px color-mix(in srgb, var(--shade-deep) 22%, transparent);
+  --shadow-3: 0 24px 70px rgba(0,0,0,.35);
+  --mute-bg: color-mix(in srgb, var(--tint) 4%, #f2f2f2);
+  /* states: one accent hover tint for every button-like control; rows and selections are neutral */
+  --hov: color-mix(in srgb, var(--accent) 7%, transparent); --press: color-mix(in srgb, var(--accent) 13%, transparent);
+  --fill: color-mix(in srgb, var(--btn) 12%, transparent); --fill2: color-mix(in srgb, var(--btn) 18%, transparent);
+  --soft-ring: color-mix(in srgb, var(--btn) 34%, transparent);
+  --bg-hover: color-mix(in srgb, var(--text) 5%, transparent); --bg-sel: color-mix(in srgb, var(--text) 8%, transparent);
+  --focus: color-mix(in srgb, var(--text) 42%, transparent);
+  --field-line: var(--border2); --field-focus-line: color-mix(in srgb, var(--text) 40%, transparent); --field-focus-bg: color-mix(in srgb, var(--text) 6%, var(--field-bg));
+  --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5l3 3 3-3' fill='none' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  /* accent: --acc is the accent as a line colour (the light tint in dark mode); --accent-text on plain surfaces,
+     --accent-ink on accent-tinted fills (darker, so it passes AA); in dark mode both are the normal text colour */
+  --acc: var(--accent); --accent-text: var(--accent); --accent-ink: color-mix(in srgb, var(--accent) 75%, #000);
+  --accent-soft: color-mix(in srgb, var(--accent) 9.5%, #fff);
+  --btn: var(--accent); --btn-fg: #fff; --btn-hover: color-mix(in srgb, var(--accent) 87%, #000); --btn-edge: color-mix(in srgb, var(--accent) 81.5%, #080808);
+  --pri-shadow: 0 8px 22px -14px color-mix(in srgb, var(--accent) 45%, transparent); --pri-shadow-hover: 0 4px 16px color-mix(in srgb, var(--accent) 42%, transparent);
+  --attn-shadow: 0 3px 12px color-mix(in srgb, var(--accent) 28%, transparent);
+  --vivid: var(--accent);   /* a brighter, more saturated accent for glows (oklch below where supported) */
+  --backlight: transparent;   /* soft light behind primary buttons (dark only) */
+  --nav-1: var(--accent); --nav-2: color-mix(in oklch, var(--accent) 48%, var(--accent-2)); --nav-3: var(--accent-2);
+  --nav-grad: linear-gradient(150deg, var(--nav-1) 0%, var(--nav-2) 55%, var(--nav-3) 100%); --nav-shadow: var(--pri-shadow);
+  --tile-on: var(--fill2);
+  --seg-track: color-mix(in srgb, var(--text) 7%, transparent); --seg-line: transparent; --seg-pad: 4px; --seg-pill-shadow: none;   /* 4px + a 1px border (transparent in light) = the same size in both themes */
+  --kbd-bg: linear-gradient(180deg, color-mix(in srgb, var(--bg2), #fff 30%), var(--bg2)); --kbd-line: color-mix(in srgb, var(--text) 16%, transparent);
+  --kbd-shadow: 0 1.5px 0 color-mix(in srgb, var(--text) 18%, transparent), inset 0 1px 0 rgba(255,255,255,.7);
+
+  /* status: each has a text colour, a soft area fill (banners, notes), a chip fill + ink (badges) and a bar (row edge, progress, top edge).
+     Fixed values: status means the same in every app, whatever the accent. */
+  --ok: #107c10;   --ok-bg: #e7f4e7;   --ok-chip: #cbeccf;   --ok-ink: #0e6b1c;   --ok-bar: #2f9e44;
+  --warn: #9a5b00; --warn-bg: #fff3d6; --warn-chip: #ffe39a; --warn-ink: #7f4d00; --warn-bar: #d99a00;
+  --bad: #b3261e;  --bad-bg: #fde8e7;  --bad-chip: #fcccd2;  --bad-ink: #b3001b;  --bad-bar: #d4182f;
+  --mute-chip: color-mix(in srgb, var(--tint) 6%, #e4e4e4); --mute-ink: color-mix(in srgb, var(--tint) 6%, #4c4c4c); --mute-bar: color-mix(in srgb, var(--tint) 6%, #b5b5b5);
+  --accent-chip: color-mix(in srgb, var(--accent) 18%, #fff); --accent-bar: color-mix(in srgb, var(--accent) 85%, #fff);
+  --danger-fill: var(--bad);
+  --bloom-a: transparent; --bloom-b: transparent; --page-1: var(--bg); --page-3: var(--bg);   /* page bloom (dark only) */
+  --xl-back: .5;
+}
+:root[data-neutrals="mono"] { --tint: #808080; --tint2: #808080; --bloom-1: transparent; --bloom-2: transparent; }
+
+/* ---------- 2. dark: two identical blocks (device setting / data-theme="dark") ---------- */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  color-scheme: dark; --blur: 30px; --sat: 170%;
+  --bg: color-mix(in srgb, var(--tint2) 1.5%, #0a0a0a);
+  --page: radial-gradient(1400px 900px at 100% -10%, var(--bloom-a), transparent 60%), radial-gradient(1200px 800px at -10% 115%, var(--bloom-b), transparent 60%), linear-gradient(165deg, var(--page-1) 0%, #0b0b0b 55%, var(--page-3) 100%) fixed;
+  --bloom-a: color-mix(in srgb, var(--bloom-1) 11%, transparent); --bloom-b: color-mix(in srgb, var(--bloom-2) 9%, transparent);
+  --page-1: color-mix(in srgb, var(--tint2) 2%, #141414); --page-3: color-mix(in srgb, var(--tint2) 1.5%, #0c0c0c);
+  --glass: rgba(255,255,255,.045); --glass2: rgba(255,255,255,.075); --stroke: rgba(255,255,255,.12);
+  --bg2: rgba(255,255,255,.05); --bg3: rgba(255,255,255,.03); --well: rgba(255,255,255,.05);
+  --nav-bg: rgba(255,255,255,.035); --tabbar-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 3%, #141414) 86%, transparent); --bar-bg: rgba(255,255,255,.03); --th-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 2.5%, #191919) 55%, transparent); --field-bg: rgba(255,255,255,.05); --panel-bg: rgba(255,255,255,.025);
+  --modal-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 2.5%, #171717) 78%, transparent); --modal-line: rgba(255,255,255,.10); --scrim: rgba(0,0,0,.45);
+  --pop-bg: color-mix(in srgb, var(--tint2) 3.5%, #191919);
+  --toast-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 4%, #191919) 80%, transparent); --tip-bg: rgba(44,44,48,.97); --tip-line: rgba(255,255,255,.14);
+  --text: #f2f2f2; --text2: #b9b9b9; --text3: #999999; --border: rgba(255,255,255,.10); --border2: rgba(255,255,255,.17);
+  --shadow-1: 0 6px 28px rgba(0,0,0,.28); --shadow-2: 0 18px 50px rgba(0,0,0,.6); --shadow-3: 0 24px 70px rgba(0,0,0,.5);
+  --mute-bg: rgba(255,255,255,.07);
+  --hov: color-mix(in srgb, var(--accent-light) 11%, transparent); --press: color-mix(in srgb, var(--accent-light) 18%, transparent);
+  --bg-hover: rgba(255,255,255,.07);
+  --field-line: rgba(255,255,255,.14);
+  --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5l3 3 3-3' fill='none' stroke='%23b9b9b9' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --acc: var(--accent-light); --accent-text: var(--text); --accent-ink: var(--text);   /* no accent-coloured running text in dark */
+  --accent-soft: color-mix(in srgb, var(--accent-light) 14%, transparent);
+  --btn-hover: color-mix(in srgb, var(--accent) 85%, var(--accent-light)); --btn-edge: color-mix(in srgb, var(--accent-light) 78%, var(--accent));
+  --pri-shadow: 0 0 0 transparent; --pri-shadow-hover: 0 0 0 transparent; --attn-shadow: 0 3px 14px color-mix(in srgb, var(--vivid) 26%, transparent);
+  --vivid: color-mix(in srgb, var(--accent) 65%, var(--accent-light));
+  --backlight: color-mix(in srgb, var(--vivid) 15%, transparent);
+  --nav-1: color-mix(in srgb, var(--accent) 85%, var(--accent-light)); --nav-2: color-mix(in oklch, var(--nav-1) 45%, var(--nav-3)); --nav-3: var(--accent-2);
+  --nav-shadow: 0 0 14px color-mix(in srgb, var(--vivid) 13%, transparent);
+  --tile-on: color-mix(in srgb, var(--vivid) 20%, transparent);
+  --seg-track: rgba(255,255,255,.04); --seg-line: rgba(255,255,255,.14); --seg-pad: 4px; --seg-pill-shadow: 0 2px 14px color-mix(in srgb, var(--vivid) 20%, transparent);
+  --kbd-bg: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.05)); --kbd-line: rgba(255,255,255,.13); --kbd-shadow: 0 1.5px 0 rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08);
+  --ok: #6ccb6c;   --ok-bg: rgba(108,203,108,.13); --ok-chip: rgba(110,210,125,.20); --ok-ink: #7fdc8e; --ok-bar: #7fdc8e;
+  --warn: #f2b84b; --warn-bg: rgba(242,184,75,.13); --warn-chip: rgba(255,200,70,.20); --warn-ink: #ffcf5c; --warn-bar: #ffcf5c;
+  --bad: #ff8a80;  --bad-bg: rgba(255,138,128,.14); --bad-chip: rgba(255,70,90,.22);  --bad-ink: #ff7d8c; --bad-bar: #ff7d8c;
+  --mute-chip: rgba(255,255,255,.11); --mute-ink: #c4c4c4; --mute-bar: #8a8a8a;
+  --accent-chip: color-mix(in srgb, var(--accent-light) 22%, transparent); --accent-bar: var(--accent-light);
+  --danger-fill: #c62828;
+  --xl-back: .62;
+} }
+:root[data-theme="dark"] {
+  color-scheme: dark; --blur: 30px; --sat: 170%;
+  --bg: color-mix(in srgb, var(--tint2) 1.5%, #0a0a0a);
+  --page: radial-gradient(1400px 900px at 100% -10%, var(--bloom-a), transparent 60%), radial-gradient(1200px 800px at -10% 115%, var(--bloom-b), transparent 60%), linear-gradient(165deg, var(--page-1) 0%, #0b0b0b 55%, var(--page-3) 100%) fixed;
+  --bloom-a: color-mix(in srgb, var(--bloom-1) 11%, transparent); --bloom-b: color-mix(in srgb, var(--bloom-2) 9%, transparent);
+  --page-1: color-mix(in srgb, var(--tint2) 2%, #141414); --page-3: color-mix(in srgb, var(--tint2) 1.5%, #0c0c0c);
+  --glass: rgba(255,255,255,.045); --glass2: rgba(255,255,255,.075); --stroke: rgba(255,255,255,.12);
+  --bg2: rgba(255,255,255,.05); --bg3: rgba(255,255,255,.03); --well: rgba(255,255,255,.05);
+  --nav-bg: rgba(255,255,255,.035); --tabbar-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 3%, #141414) 86%, transparent); --bar-bg: rgba(255,255,255,.03); --th-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 2.5%, #191919) 55%, transparent); --field-bg: rgba(255,255,255,.05); --panel-bg: rgba(255,255,255,.025);
+  --modal-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 2.5%, #171717) 78%, transparent); --modal-line: rgba(255,255,255,.10); --scrim: rgba(0,0,0,.45);
+  --pop-bg: color-mix(in srgb, var(--tint2) 3.5%, #191919);
+  --toast-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 4%, #191919) 80%, transparent); --tip-bg: rgba(44,44,48,.97); --tip-line: rgba(255,255,255,.14);
+  --text: #f2f2f2; --text2: #b9b9b9; --text3: #999999; --border: rgba(255,255,255,.10); --border2: rgba(255,255,255,.17);
+  --shadow-1: 0 6px 28px rgba(0,0,0,.28); --shadow-2: 0 18px 50px rgba(0,0,0,.6); --shadow-3: 0 24px 70px rgba(0,0,0,.5);
+  --mute-bg: rgba(255,255,255,.07);
+  --hov: color-mix(in srgb, var(--accent-light) 11%, transparent); --press: color-mix(in srgb, var(--accent-light) 18%, transparent);
+  --bg-hover: rgba(255,255,255,.07);
+  --field-line: rgba(255,255,255,.14);
+  --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5l3 3 3-3' fill='none' stroke='%23b9b9b9' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --acc: var(--accent-light); --accent-text: var(--text); --accent-ink: var(--text);   /* no accent-coloured running text in dark */
+  --accent-soft: color-mix(in srgb, var(--accent-light) 14%, transparent);
+  --btn-hover: color-mix(in srgb, var(--accent) 85%, var(--accent-light)); --btn-edge: color-mix(in srgb, var(--accent-light) 78%, var(--accent));
+  --pri-shadow: 0 0 0 transparent; --pri-shadow-hover: 0 0 0 transparent; --attn-shadow: 0 3px 14px color-mix(in srgb, var(--vivid) 26%, transparent);
+  --vivid: color-mix(in srgb, var(--accent) 65%, var(--accent-light));
+  --backlight: color-mix(in srgb, var(--vivid) 15%, transparent);
+  --nav-1: color-mix(in srgb, var(--accent) 85%, var(--accent-light)); --nav-2: color-mix(in oklch, var(--nav-1) 45%, var(--nav-3)); --nav-3: var(--accent-2);
+  --nav-shadow: 0 0 14px color-mix(in srgb, var(--vivid) 13%, transparent);
+  --tile-on: color-mix(in srgb, var(--vivid) 20%, transparent);
+  --seg-track: rgba(255,255,255,.04); --seg-line: rgba(255,255,255,.14); --seg-pad: 4px; --seg-pill-shadow: 0 2px 14px color-mix(in srgb, var(--vivid) 20%, transparent);
+  --kbd-bg: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.05)); --kbd-line: rgba(255,255,255,.13); --kbd-shadow: 0 1.5px 0 rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08);
+  --ok: #6ccb6c;   --ok-bg: rgba(108,203,108,.13); --ok-chip: rgba(110,210,125,.20); --ok-ink: #7fdc8e; --ok-bar: #7fdc8e;
+  --warn: #f2b84b; --warn-bg: rgba(242,184,75,.13); --warn-chip: rgba(255,200,70,.20); --warn-ink: #ffcf5c; --warn-bar: #ffcf5c;
+  --bad: #ff8a80;  --bad-bg: rgba(255,138,128,.14); --bad-chip: rgba(255,70,90,.22);  --bad-ink: #ff7d8c; --bad-bar: #ff7d8c;
+  --mute-chip: rgba(255,255,255,.11); --mute-ink: #c4c4c4; --mute-bar: #8a8a8a;
+  --accent-chip: color-mix(in srgb, var(--accent-light) 22%, transparent); --accent-bar: var(--accent-light);
+  --danger-fill: #c62828;
+  --xl-back: .62;
+}
+/* Vivid highlights: the accent a little brighter and more saturated (oklch relative colours). Browsers without them keep the mixes above. */
+@supports (color: oklch(from red l c h)) {
+  :root { --nav-1: oklch(from var(--accent) calc(l + .02) calc(c + .01) h); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --vivid: oklch(from var(--accent) calc(l + .11) calc(c + .07) h); --nav-1: oklch(from var(--accent) calc(l + .04) calc(c + .02) h);
+    --nav-3: oklch(from var(--accent-2) calc(l + .02) calc(c + .01) h); --btn-hover: oklch(from var(--accent) calc(l + .04) calc(c + .02) h);
+    --btn-edge: oklch(from var(--accent-light) calc(l - .04) calc(c + .03) h);
+  } }
+  :root[data-theme="dark"] {
+    --vivid: oklch(from var(--accent) calc(l + .11) calc(c + .07) h); --nav-1: oklch(from var(--accent) calc(l + .04) calc(c + .02) h);
+    --nav-3: oklch(from var(--accent-2) calc(l + .02) calc(c + .01) h); --btn-hover: oklch(from var(--accent) calc(l + .04) calc(c + .02) h);
+    --btn-edge: oklch(from var(--accent-light) calc(l - .04) calc(c + .03) h);
+  }
+}
+/* browsers without backdrop blur get solid surfaces */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root { --bg2: #ffffff; --glass: #ffffff; --glass2: #ffffff; }
+  :root[data-theme="dark"] { --bg2: #1e1e1e; --glass: #1c1c1c; --glass2: #242424; --modal-bg: #1d1b1d; }
+}
+
+/* ---------- 3. base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+* { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--text3) 55%, transparent) transparent; }
+[hidden] { display: none !important; }   /* else .scrim, .menu or .toast with display:grid/flex would still show */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html, body { margin: 0; min-height: 100%; overflow-x: clip; }
+body { background: var(--page); background-color: var(--bg); color: var(--text); font: var(--fs-base)/var(--lh) var(--font); -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
+  font-feature-settings: "ss01", "cv09";   /* Inter open digits + flat-top 3. Set here once; only .brk repeats it */
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+code, kbd, samp, pre { font-family: var(--mono); font-size: inherit; }   /* no separate mono face */
+h1, h2, h3, h4 { text-wrap: balance; }
+p { text-wrap: pretty; }
+img, svg, video { max-width: 100%; }
+a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { color: var(--accent-text); }
+/* glass surfaces blur what is behind them */
+.nav, .topbar, .card, .modal, .toast, .banner, .tabbar, .site-head, .input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=date], textarea {
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--sat)); backdrop-filter: blur(var(--blur)) saturate(var(--sat)); }
+/* numbers: the house number style. Tabular figures on everything that holds data; running paragraphs stay proportional.
+   There is no separate mono font: --mono is Inter, so document numbers and IDs match the amounts around them. */
+table, input, select, textarea, .num, .mono, .chip, .kbd, .badge, .count, .pill, .n, .copy, .stat b, .bigamt { font-variant-numeric: tabular-nums; }
+.mono { font-family: var(--mono); }
+.num { white-space: nowrap; }
+/* negative amounts: <span class="brk">(</span>1,234.56<span class="brk">)</span>. Inter's centred bracket forms ("case")
+   sit on the digits' centre at every size and scaling. The only other place font-feature-settings is set: it repeats ss01 + cv09. */
+.brk { font-feature-settings: "ss01", "cv09", "case"; }
+.psp { visibility: hidden; }   /* a hidden ")" after positive amounts so a column of amounts lines up */
+.muted { color: var(--text2); } .faint { color: var(--text3); } .pos { color: var(--ok); }
+.ic, .btn > svg, .copy > svg, .menu svg, .banner > svg { width: 18px; height: 18px; flex: none; } .ic.sm { width: 14px; height: 14px; } .ic.lg { width: 21px; height: 21px; }
+.xl-back { opacity: var(--xl-back); }   /* back sheet of the Excel mark */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ---------- 4. layout primitives: stack, cluster, auto grid ---------- */
+.stack { display: flex; flex-direction: column; gap: var(--gap, var(--s-3)); min-width: 0; }
+.cluster { display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap, var(--s-2)); min-width: 0; }
+.spread { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-3); min-width: 0; }
+.grid-auto { display: grid; gap: var(--gap, var(--s-4)); grid-template-columns: repeat(auto-fill, minmax(min(var(--min, 260px), 100%), 1fr)); align-items: start; }
+.grid-auto > *, .stack > *, .cluster > * { min-width: 0; }
+.grid-4 { display: grid; gap: var(--s-4); grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: start; }   /* overview cards: 4 → 2 → 1 */
+.grow { flex: 1 1 0; min-width: 0; }
+.container { width: 100%; max-width: var(--page-max); margin-inline: auto; padding-inline: var(--s-6); }
+.form-page { width: 100%; max-width: var(--form-max); }   /* settings, rules, lookups: one width for all form-style pages */
+
+/* ---------- 5. app shell: side nav + top bar + content (full height; only the content scrolls) ----------
+   2-3 screens: .seg tabs in the top bar instead of the nav. Single-page tool: drop the nav, centre .content.
+   Phone-first app: add .tabbar (section 19) and class "has-tabbar" on .app. */
+.app { display: grid; grid-template-columns: var(--nav-w) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); height: 100vh; height: 100dvh; }
+.app.solo { grid-template-columns: minmax(0, 1fr); }   /* a single-page tool: top bar + content, no nav (add .content.center to cap the width) */
+.main { min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.nav { display: flex; flex-direction: column; gap: 6px; min-width: 0; padding: var(--s-4) var(--s-3); overflow: auto; background: var(--nav-bg); border-right: 1px solid var(--border); }
+.nav .brand { display: flex; align-items: center; gap: 10px; padding: 6px 10px 14px; font-weight: 600; font-size: var(--fs-title); line-height: var(--lh-tight); }
+.nav .brand img, .nav .brand svg { width: 30px; height: 30px; flex: none; }
+.nav .brand small { display: block; font-weight: 500; font-size: var(--fs-xs); color: var(--text3); }
+.nav .group { padding: 18px 12px 6px; margin: -3px 0; font-size: var(--fs-cap); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); }
+.nav .item { position: relative; display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 8px 12px; border: 1px solid transparent; border-radius: var(--r); background: transparent; color: var(--text2); font: inherit; text-align: left; text-decoration: none; cursor: pointer; transition: color .2s, background-color .15s; }
+.nav .item svg { width: 20px; height: 20px; flex: none; opacity: .9; }
+.nav .item .lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav .item:not(.active):hover { background: var(--hov); color: var(--text); }
+.nav .item.active { background: var(--nav-grad); background-origin: border-box; color: #fff; font-weight: 600; box-shadow: var(--nav-shadow); }
+.nav .item.active svg { color: #fff; opacity: 1; } .nav .item.active svg [opacity] { opacity: .62; }   /* duotone's faded half, not washed out */
+.nav .count, .btn .pill { display: inline-flex; align-items: center; justify-content: center; flex: none; height: 20px; min-width: 24px; padding: 2px 7px 0; line-height: 1; font-size: var(--fs-badge); font-weight: 700; border-radius: 10px; }   /* 2px top padding: Inter's digits sit high in a line-height:1 box */
+.nav .count { margin-left: auto; background: var(--accent-soft); color: var(--accent-text); }
+.nav .item.active .count { background: rgba(0,0,0,.2); color: #fff; }   /* a darker pill: a white one would drop the label's contrast */
+.nav .foot { margin-top: auto; padding: 8px 10px; border-top: 1px solid var(--border); font-size: var(--fs-xs); color: var(--text2); }
+.topbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: var(--s-3) var(--s-5); padding-top: max(var(--s-3), env(safe-area-inset-top)); border-bottom: 1px solid var(--border); background: var(--bar-bg); overflow-x: clip; }
+.topbar .ttl { display: flex; flex-direction: column; flex: 1 1 0; min-width: 180px; margin-right: 8px; }   /* the title shrinks (its subtitle wraps) before the buttons drop to a second line */
+.topbar h1 { margin: 0; font-size: var(--fs-h1); font-weight: 600; letter-spacing: -.2px; line-height: 1.25; }
+.topbar .sub { max-width: 60ch; color: var(--text2); font-size: var(--fs-sm); line-height: 1.3; }
+.topbar .actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.content { flex: 1; min-width: 0; min-height: 0; overflow: auto; padding: 18px var(--s-5) 28px; display: flex; flex-direction: column; gap: var(--s-4); }
+.content.flush { padding: 0; gap: 0; }
+.content.center > * { width: 100%; max-width: 1100px; margin-inline: auto; }
+.banner { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 9px var(--s-5); border-bottom: 1px solid var(--border); background: var(--warn-bg); color: var(--warn); font-size: var(--fs-ui); }
+.banner.info { background: var(--accent-soft); color: var(--text); } .banner.bad { background: var(--bad-bg); color: var(--bad); } .banner.ok { background: var(--ok-bg); color: var(--ok); }
+.banner svg { flex: none; }
+/* list | detail: the detail panel sits beside the list on desktop and covers it on narrow screens (section 18) */
+.split { display: grid; grid-template-columns: minmax(0, 1fr) clamp(360px, 36vw, 600px); min-height: 0; height: 100%; }
+.split > .list-pane { min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: auto; border-right: 1px solid var(--border); }
+.split > .detail { min-width: 0; min-height: 0; overflow: auto; background: var(--panel-bg); }
+.filters { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--border); background: var(--bar-bg); }
+
+/* ---------- 6. buttons ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 34px; padding: 0 14px; border: 1px solid var(--border2); border-radius: var(--r-md); background: var(--bg2); color: var(--text); font: inherit; line-height: 1.2; white-space: nowrap; text-decoration: none; cursor: pointer; transition: background-color .15s, color .15s, border-color .15s, box-shadow .15s; }
+.btn:hover:not(:disabled) { background: var(--hov); color: var(--text); } .btn:active:not(:disabled) { transform: translateY(1px); }
+.btn:disabled { opacity: .5; cursor: default; }
+.btn.subtle { background: transparent; border-color: transparent; } .btn.subtle:hover:not(:disabled) { background: var(--hov); } .btn.subtle:active:not(:disabled) { background: var(--press); }
+.btn.icon { width: 34px; padding: 0; }
+.btn.sm { min-height: 28px; padding: 0 11px; gap: 6px; font-size: var(--fs-sm); border-radius: var(--r-sm); } .btn.sm > svg { width: 15px; height: 15px; } .btn.sm.icon { width: 28px; padding: 0; }
+.btn.lg { min-height: 44px; padding: 0 20px; font-size: var(--fs-title); border-radius: var(--r); }   /* web-page calls to action */
+.btn.block { display: flex; width: 100%; }
+.btn.on { background: var(--fill2); border-color: var(--soft-ring); color: var(--accent-ink); font-weight: 600; }   /* a toggle that is switched on (e.g. Lock) */
+.btn.danger { color: var(--bad); } .btn.subtle.danger:hover:not(:disabled) { background: color-mix(in srgb, var(--bad) 14%, transparent); }
+.btn.danger-fill { background: var(--danger-fill); border-color: var(--danger-fill); color: #fff; font-weight: 600; } .btn.danger-fill:hover:not(:disabled) { background: var(--danger-fill); filter: brightness(1.08); }
+.btn.primary { background: var(--btn); color: var(--btn-fg); border-color: var(--btn-edge); font-weight: 600;
+  box-shadow: var(--pri-shadow), 0 0 38px 8px var(--backlight); }   /* light: a soft accent shadow underneath. dark: a diffuse backlight. box-shadow never adds scrollbars */
+.btn.primary:hover:not(:disabled) { background: var(--btn-hover); color: var(--btn-fg); box-shadow: var(--pri-shadow-hover), 0 0 38px 8px var(--backlight); } .btn.primary:disabled { box-shadow: none; }
+.btn .pill { margin: 0 2px 0 6px; background: var(--mute-bg); color: var(--text2); }
+/* needs attention (e.g. backup due): solid accent with a white count pill. Steady: never blinks or pulses */
+.btn.attn { background: var(--btn); color: var(--btn-fg); border-color: var(--btn-edge); font-weight: 600; box-shadow: var(--attn-shadow); }
+.btn.attn:hover:not(:disabled) { background: var(--btn); color: var(--btn-fg); filter: brightness(1.06); } .btn.attn .pill { background: #fff; color: var(--btn); } .btn.attn svg { color: #fff; }
+button.lnk { border: 0; background: none; padding: 0; color: inherit; font: inherit; cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; text-align: left; } button.lnk:hover { color: var(--accent-text); }
+
+/* ---------- 7. fields: focus = a slightly brighter fill and a neutral border, never an accent ring ---------- */
+.input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=date], select, textarea {
+  min-width: 0; min-height: 34px; padding: 6px 9px; border: 1px solid var(--field-line); border-radius: var(--r-md); background-color: var(--field-bg); color: var(--text); font: inherit; }
+select { appearance: none; -webkit-appearance: none; padding-right: 30px; background-image: var(--chev); background-repeat: no-repeat; background-position: right 10px center; background-size: 12px; cursor: pointer; }
+textarea { min-height: 72px; resize: vertical; }
+::placeholder { color: var(--text3); opacity: 1; }
+:is(.input, input, select, textarea):not([type=checkbox]):not([type=radio]):focus { outline: none; border-color: var(--field-focus-line); background-color: var(--field-focus-bg); }
+:is(.input, input, select, textarea).bad, :is(.input, input, select, textarea).bad:focus { border-color: var(--bad); }
+select option { background-color: var(--pop-bg); color: var(--text); }
+.search { width: clamp(220px, 21vw, 380px); padding-left: 12px; padding-right: 12px; }
+label.f { display: flex; flex-direction: column; gap: 4px; font-size: var(--fs-xs); color: var(--text2); }
+label.f :is(.input, input, select, textarea) { width: 100%; font-size: var(--fs-base); color: var(--text); }
+label.f.row { flex-direction: row; align-items: center; gap: var(--s-2); }
+label.f .err, .err { color: var(--bad); font-size: var(--fs-xs); font-weight: 500; }
+label.f .hint { color: var(--text3); font-size: var(--fs-xs); }
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3) var(--s-4); } .form-grid .span2 { grid-column: 1 / -1; }
+
+/* ---------- 8. choosers ---------- */
+/* segmented filter: "All 46 | Still to Do 12 | Done 34". Starts on All, changes only on a click. s4Slider() adds the sliding pill. */
+.seg { display: inline-flex; flex-wrap: wrap; width: max-content; align-self: flex-start; gap: 4px; padding: var(--seg-pad); border: 1px solid var(--seg-line); border-radius: calc(var(--r-xl) + 4px); background: var(--seg-track); max-width: 100%; }
+.seg button { border: 0; background: transparent; color: var(--text2); font: inherit; font-size: var(--fs-sm); font-weight: 500; padding: 4px 14px; border-radius: var(--r-xl); white-space: nowrap; cursor: pointer; transition: color .1s linear .06s, background-color .15s; }   /* text colour flips mid-slide */
+.seg button:not(.on):hover { background: var(--hov); color: var(--text); }
+.seg button.on { background: var(--btn); color: var(--btn-fg); font-weight: 600; }
+.seg button .n { opacity: .75; margin-left: 4px; } .seg button.on .n { opacity: .92; }
+.seg.scroll { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }   /* one row that scrolls sideways on a phone */
+/* filter chips that toggle on their own (not one-of-many): soft fill when on */
+.fchip { display: inline-flex; align-items: center; gap: 4px; min-height: 28px; padding: 3px 11px; border: 1px solid var(--border2); border-radius: var(--r-xl); background: var(--glass2); color: var(--text); font: inherit; font-size: var(--fs-sm); white-space: nowrap; cursor: pointer; transition: background-color .15s, border-color .15s; }
+.fchip:hover { background: var(--hov); } .fchip[aria-pressed="true"], .fchip.on { background: var(--fill2); border-color: var(--soft-ring); color: var(--accent-ink); font-weight: 600; }
+.fchip .n { opacity: .75; }
+/* big icon tabs (choose a mode): icon over label, filled when on */
+.ptabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.ptabs button { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 10px 6px 9px; border: 1px solid var(--border); border-radius: var(--r); background: var(--bg2); color: var(--text2); font: inherit; font-size: var(--fs-sm); line-height: 1.2; cursor: pointer; transition: color .2s, background-color .15s; }
+.ptabs button:not(.on):hover { color: var(--text); border-color: var(--border2); background: var(--hov); }
+.ptabs button.on { color: var(--accent-ink); border-color: transparent; background: var(--tile-on); font-weight: 600; }
+.ptabs button.flag::after { content: ""; position: absolute; top: 6px; right: 7px; width: 8px; height: 8px; border-radius: 50%; background: var(--btn); }   /* this option already holds something */
+/* selectable tiles (pick one of several options with a description) */
+.tile { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border: 1px solid var(--border2); border-radius: var(--r-sm); background: var(--bg2); color: inherit; font: inherit; text-align: left; cursor: pointer; transition: background-color .15s; }
+.tile:hover { background: var(--hov); } .tile small { color: var(--text2); font-size: var(--fs-sm); }
+.tile.on, .tile[aria-pressed="true"] { background: var(--tile-on); border-color: transparent; } .tile.on b { color: var(--accent-ink); }
+/* sliding selection (s4Slider in s4.js): one indicator that slides on click */
+.slider { position: relative; }
+.slider::before { content: ""; position: absolute; left: 0; top: 0; width: var(--sw, 0); height: var(--sh, 0); transform: translate(var(--sx, 0), var(--sy, 0)); opacity: 0; pointer-events: none; z-index: 0; }
+.slider.has-slide::before { opacity: 1; }
+.slider.slide-ready::before { transition: transform var(--dur-3) var(--ease), width var(--dur-3) var(--ease), height var(--dur-3) var(--ease); }
+.slider > * { position: relative; z-index: 1; }
+.seg.has-slide::before { border-radius: var(--r-xl); background: var(--btn); box-shadow: var(--seg-pill-shadow); } .seg.has-slide button.on { background: transparent; }
+.nav.has-slide::before { border-radius: var(--r); background: var(--nav-grad); box-shadow: var(--nav-shadow); } .nav.has-slide .item.active { background: transparent; box-shadow: none; }
+.ptabs.has-slide::before { border-radius: var(--r); background: var(--tile-on); } .ptabs.has-slide button.on { background: transparent; }
+/* toggle switch: <label class="switch"><input type="checkbox"><span class="track"></span>Label</label> */
+.switch { position: relative; display: inline-flex; align-items: center; gap: 9px; min-height: 32px; cursor: pointer; color: var(--text2); font-size: var(--fs-ui); }
+.switch input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+.switch .track { position: relative; flex: none; width: 34px; height: 20px; border-radius: var(--r-pill); background: var(--border2); transition: background .15s; }
+.switch .track::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.3); transition: transform .15s; }
+.switch input:checked + .track { background: var(--btn); }
+.switch input:checked + .track::after { transform: translateX(14px); }
+.switch input:focus-visible + .track { outline: 2px solid var(--focus); outline-offset: 2px; }
+/* checkbox and radio: soft rounded square, solid accent with a rounded tick; no outline after a click */
+input[type=checkbox]:not(.switch input) { appearance: none; -webkit-appearance: none; flex: none; width: 18px; height: 18px; margin: 0; display: inline-grid; place-items: center; vertical-align: middle; cursor: pointer; background: var(--bg2); border: 1.5px solid var(--border2); border-radius: var(--r-xs); transition: background-color .14s ease-out, border-color .14s ease-out; }
+input[type=checkbox]:not(.switch input)::after { content: ""; width: 11px; height: 11px; background: var(--btn-fg); transform: scale(.5); opacity: 0; transition: transform .16s cubic-bezier(.2, .9, .3, 1.15), opacity .1s linear;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3 4.7-5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3 4.7-5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat; }
+input[type=checkbox]:not(.switch input):checked { background: var(--btn); border-color: var(--btn); }
+input[type=checkbox]:not(.switch input):checked::after { transform: scale(1); opacity: 1; }
+input[type=checkbox]:not(.switch input):not(:checked):not(:disabled):hover { border-color: var(--acc); background: var(--bg-hover); }
+input[type=checkbox]:not(.switch input):focus { outline: none; }
+input[type=checkbox]:not(.switch input):focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--btn) 25%, transparent); }
+input[type=checkbox]:disabled { opacity: .45; cursor: default; }
+input[type=radio] { accent-color: var(--btn); width: 16px; height: 16px; margin: 0 2px; cursor: pointer; }
+.chk { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+.chk.big { align-items: flex-start; gap: 10px; } .chk.big input { margin-top: 2px; } .chk.big small { display: block; margin-top: 1px; color: var(--text3); font-size: var(--fs-xs); }
+
+/* ---------- 9. status: one badge plus a slim bar, from one set of status tokens ----------
+   .badge.ok|warn|bad|mute|accent – a soft chip with dark ink. .badge.solid – "needs your decision" (a suggestion): solid accent,
+   the only badge with an icon (stars). A plain .badge is a neutral grey pill. They hug their text. No dashed or outlined chips (rejected). */
+.badge { display: inline-flex; align-items: center; gap: 5px; width: max-content; max-width: 100%; font-size: var(--fs-badge); font-weight: 600; line-height: 1.45; padding: 2px 8px; border-radius: 10px; white-space: nowrap; color: var(--text2); background: var(--mute-bg); }
+.badge svg { width: 12px; height: 12px; flex: none; }
+.badge.ok { color: var(--ok-ink); background: var(--ok-chip); } .badge.warn { color: var(--warn-ink); background: var(--warn-chip); }
+.badge.bad { color: var(--bad-ink); background: var(--bad-chip); } .badge.mute { color: var(--mute-ink); background: var(--mute-chip); }
+.badge.accent { color: var(--accent-ink); background: var(--accent-chip); }
+.badge.solid { color: var(--btn-fg); background: var(--btn); }
+.chip { display: inline-flex; align-items: center; gap: 4px; padding: 1px 7px; border: 1px solid var(--border); border-radius: var(--r-xs); background: var(--well); font-size: var(--fs-badge); }   /* a small code or ID */
+.dot { display: inline-block; width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--mute-bar); }
+.dot.ok { background: var(--ok-bar); } .dot.warn { background: var(--warn-bar); } .dot.bad { background: var(--bad-bar); } .dot.accent { background: var(--btn); }
+/* progress: <div class="bar"><i class="ok" style="width:40%"></i>…</div> */
+.bar { display: flex; height: 8px; border-radius: 6px; background: var(--mute-bg); overflow: hidden; } .bar > i { display: block; height: 100%; }
+.bar > .ok { background: var(--ok-bar); } .bar > .warn { background: var(--warn-bar); } .bar > .bad { background: var(--bad-bar); } .bar > .accent { background: var(--accent-bar); } .bar > .mute { background: var(--mute-bar); }
+/* status edge on a card (overview of several entities): .card.edge.ok etc. */
+.card.edge { border-top: 3px solid var(--mute-bar); } .card.edge.ok { border-top-color: var(--ok-bar); } .card.edge.warn { border-top-color: var(--warn-bar); } .card.edge.bad { border-top-color: var(--bad-bar); } .card.edge.accent { border-top-color: var(--accent-bar); }
+
+/* ---------- 10. surfaces ---------- */
+.card { min-width: 0; padding: var(--s-4); background: var(--glass); border: 1px solid var(--border); border-radius: var(--r); box-shadow: var(--shadow-1); overflow: clip; }
+.card.flush { padding: 0; }   /* a table or list that runs to the card's edges */
+.card.lift { transition: background-color .15s, box-shadow .15s; } .card.lift:hover { background: var(--glass2); }   /* a whole card that is a link */
+.card h3, .sect-title { margin: 0 0 var(--s-3); font-size: var(--fs-ui); font-weight: 600; color: var(--text2); }   /* Title Case; all-caps is only for .nav .group */
+.card-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: var(--s-2) var(--s-3); margin-bottom: var(--s-3); }
+.card-head h3 { margin: 0; }
+.card.flush > .card-head { margin: 0; padding: var(--s-3) var(--s-4); border-bottom: 1px solid var(--border); }
+.sec-sub { font-size: var(--fs-sm); font-weight: 400; color: var(--text3); }   /* the quieter line under or beside a title: counts, totals */
+.title { font-size: var(--fs-title); font-weight: 600; line-height: 1.3; }
+.stat { display: flex; flex-direction: column; } .stat b { font-size: var(--fs-stat); font-weight: 600; letter-spacing: -.4px; } .stat > span { font-size: var(--fs-xs); color: var(--text2); }
+.kv { display: grid; grid-template-columns: 1fr auto; gap: 6px 14px; font-size: var(--fs-ui); } .kv .k { color: var(--text2); } .kv .sum { padding-top: 6px; border-top: 1px solid var(--border2); font-weight: 600; }
+.bigamt { font-size: var(--fs-big); font-weight: 600; letter-spacing: -.5px; line-height: var(--lh-tight); }   /* the one amount a panel is about */
+.hero-num { font-size: var(--fs-hero); font-weight: 700; letter-spacing: -.6px; line-height: var(--lh-tight); }
+.sug { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; border-radius: var(--r); background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--acc); }   /* a suggestion waiting for a decision */
+.note { padding: 8px 12px; border-radius: var(--r-md); background: var(--bg-hover); font-size: var(--fs-ui); color: var(--text2); }
+.note.warn { background: var(--warn-bg); color: var(--text); } .note.bad { background: var(--bad-bg); color: var(--text); } .note.ok { background: var(--ok-bg); color: var(--text); }
+.hidden-note { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 8px 12px; border-radius: var(--r-md); background: var(--bg-hover); font-size: var(--fs-ui); }
+.empty { padding: var(--s-16) var(--s-5); text-align: center; color: var(--text2); } .empty h2 { margin: var(--s-2) 0; font-size: var(--fs-h2); color: var(--text); } .empty .ic.lg { color: var(--text3); }
+.drop { padding: 26px; text-align: center; color: var(--text2); background: var(--bg3); border: 2px dashed var(--border2); border-radius: var(--r); }
+.drop.over { background: var(--accent-soft); color: var(--text); }
+.skeleton { display: block; height: 1em; border-radius: var(--r-xs); background: linear-gradient(90deg, var(--mute-bg) 25%, var(--bg-hover) 50%, var(--mute-bg) 75%) 0 0 / 300% 100%; animation: s4-shimmer 1.4s linear infinite; }
+hr.sep { width: 100%; margin: var(--s-1) 0; border: 0; border-top: 1px solid var(--border); }
+/* folding sections and step-by-step accordions: <details class="fold"><summary>…</summary><div class="fold-body">…</div></details> */
+.fold > summary { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; padding: var(--s-3) var(--s-4); list-style: none; cursor: pointer; border-radius: var(--r); }
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary::after { content: ""; flex: none; width: 7px; height: 7px; margin-left: auto; border-right: 1.6px solid var(--text3); border-bottom: 1.6px solid var(--text3); transform: rotate(-45deg); transition: transform var(--dur-2); }
+.fold[open] > summary::after { transform: rotate(45deg); }
+.fold > summary:hover { background: var(--bg-hover); }
+.fold-body { padding: 0 var(--s-4) var(--s-4); }
+.steps { counter-reset: step; } .steps > .fold > summary::before { counter-increment: step; content: counter(step); display: grid; place-items: center; flex: none; width: 26px; height: 26px; border-radius: 50%; font-size: var(--fs-ui); font-weight: 700; background: var(--mute-bg); color: var(--text2); }
+.steps > .fold[open] > summary::before { background: var(--btn); color: var(--btn-fg); } .steps > .fold.done > summary::before { background: var(--ok-bg); color: var(--ok); }
+.steps > .fold + .fold { border-top: 1px solid var(--border); }
+/* lists: rows that stay readable on a phone (title + meta on the left, value on the right) */
+.list { display: flex; flex-direction: column; } .list > * + * { border-top: 1px solid var(--border); }
+.li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--s-3); min-height: 48px; padding: 10px var(--s-4); color: inherit; text-decoration: none; }
+.li > :only-child, .li > .li-main:first-child { grid-column: 1 / 3; }
+a.li, button.li { width: 100%; border: 0; background: transparent; font: inherit; text-align: left; cursor: pointer; } a.li:hover, button.li:hover { background: var(--bg-hover); color: inherit; }
+.li-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; } .li-main b { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .li-main small { color: var(--text3); font-size: var(--fs-xs); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.li-end { text-align: right; white-space: nowrap; } .li-end small { display: block; color: var(--text3); font-size: var(--fs-xs); }   /* block, not flex: a flex box would split an amount from its bracket spans */
+
+/* ---------- 11. tables: always inside .table-wrap ----------
+   One text size: values 14px, sub-lines and headers 12px, badges 11.5px. Sticky headers stick only when the wrapper scrolls (.scroll).
+   On a phone, table.t.cards turns each row into a small card: give each <td> a data-label (section 19). */
+.table-wrap { overflow-x: auto; max-width: 100%; }
+.table-wrap.scroll { max-height: min(70vh, 640px); overflow: auto; }
+table.t { width: 100%; border-collapse: collapse; }
+table.t th { position: sticky; top: 0; z-index: var(--z-sticky); padding: 8px 10px; text-align: left; font-size: var(--fs-xs); font-weight: 600; color: var(--text2); white-space: nowrap; background: var(--th-bg); border-bottom: 1px solid var(--border); -webkit-backdrop-filter: blur(var(--blur)); backdrop-filter: blur(var(--blur)); }
+table.t td { padding: 7px 10px; border-bottom: 1px solid var(--border); font-size: var(--fs-base); vertical-align: middle; white-space: nowrap; }   /* short columns never wrap; the description column (.dcol) and .wrap cells do */
+table.t td.dcol, table.t td.wrap { white-space: normal; }
+table.t td .mono, table.t td .chip, table.t td.mono { font-size: inherit; }
+table.t td .sub { display: block; font-size: var(--fs-xs); color: var(--text3); }
+table.t tr.r { cursor: pointer; } table.t tbody tr:hover td { background: var(--bg-hover); } table.t tr.sel td { background: var(--bg-sel); }
+table.t td.num, table.t th.num { text-align: right; }
+table.t tfoot td { border-top: 2px solid var(--border2); background: var(--bg3); font-weight: 600; }
+table.t.compact td { padding: 6px 8px; font-size: var(--fs-ui); } table.t.compact th { padding: 6px 8px; }
+/* the description column takes the width that is left; text still cut off gets an ellipsis and a tooltip (only when cut off: s4Tips) */
+table.t th.dcol, table.t td.dcol { width: 100%; } table.t td.dcol { max-width: 0; min-width: 160px; }
+.trunc { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* sortable header: <th class="sortable"><button class="th-sort">Date <svg class="sort-ic">…</svg></button></th> (asc → desc → default) */
+table.t th.sortable { padding: 0; }
+.th-sort { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 4px; width: 100%; padding: 8px 10px; cursor: pointer; white-space: nowrap; }
+th.num .th-sort { flex-direction: row-reverse; justify-content: flex-start; }   /* the arrow goes left of the label, so the label lines up with the numbers */ .th-sort:hover { color: var(--text); } .th-sort:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; border-radius: 4px; }
+.th-sort .sort-ic { width: 12px; height: 12px; flex: none; opacity: 0; transition: opacity var(--dur-1); } .th-sort:hover .sort-ic { opacity: .45; } th.sorted .sort-ic { opacity: 1; color: var(--accent-text); }
+/* status: a slim bar at the row's left edge (plus one badge), never a full-row tint; finished rows are quieter */
+table.t tr[class*="st-"] td:first-child { position: relative; padding-left: 16px; }
+table.t tr[class*="st-"] td:first-child::before { content: ""; position: absolute; left: 6px; top: 9px; bottom: 9px; width: 3px; border-radius: 3px; background: var(--st); }
+tr.st-ok { --st: var(--ok-bar); } tr.st-warn { --st: var(--warn-bar); } tr.st-bad { --st: var(--bad-bar); } tr.st-accent { --st: var(--btn); } tr.st-mute { --st: var(--mute-bar); }
+table.t tr.done td { color: var(--text2); }
+td.row-acts { text-align: right; white-space: nowrap; }
+
+/* ---------- 12. click-to-copy chips + keycaps ----------
+   Outside tables: a soft box with a copy icon. Inside tables: plain text that shows its box on hover/focus.
+   Copied: a green flash for ~0.6s (s4Copy adds .done and removes it). The copied look wins over hover; it never stays.
+   Wrap the value in its own <span>: the chip is a flex box, so loose bracket spans would get the gap. */
+.copy { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; padding: 3px 8px; border: 1px solid var(--border2); border-radius: var(--r-sm); background: var(--well); color: var(--text); font: inherit; line-height: 1.4; white-space: nowrap; vertical-align: middle; cursor: pointer; transition: background-color .15s, color .15s, border-color .15s; }
+.copy > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.copy > svg { width: 13px; height: 13px; flex: none; color: var(--text3); opacity: .6; transition: opacity var(--dur-1), color var(--dur-1); }
+.copy:hover, .copy:focus-visible { border-color: var(--soft-ring); background: var(--fill); } .copy:hover svg, .copy:focus-visible svg { opacity: 1; color: var(--accent-text); }
+table .copy:not(:hover):not(:focus-visible) { border-color: transparent; background: transparent; } table .copy:not(:hover):not(:focus-visible) svg { opacity: 0; }
+.copy.done, table .copy.done { border-color: transparent; background: color-mix(in srgb, var(--ok) 14%, transparent); } .copy.done svg, table .copy.done svg { opacity: 1; color: var(--ok); }
+.copy.empty { border-style: dashed; color: var(--text3); cursor: default; background: transparent; }   /* "–" placeholder for a value still to come */
+.kbd { display: inline-flex; align-items: center; justify-content: center; gap: 3px; min-width: 20px; height: 20px; padding: 0 6px; font: 600 var(--fs-cap)/1 var(--font); letter-spacing: .02em; color: var(--text); border-radius: var(--r-xs); border: 1px solid var(--kbd-line); background: var(--kbd-bg); box-shadow: var(--kbd-shadow); vertical-align: middle; }
+.btn .kbd { height: 18px; min-width: 18px; }
+.kbd.on-pri { color: #fff; background: rgba(0,0,0,.14); border-color: rgba(255,255,255,.32); box-shadow: 0 1.5px 0 rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.2); }
+.keys { display: inline-flex; align-items: center; gap: 14px; font-size: var(--fs-xs); color: var(--text3); flex-wrap: wrap; }
+.keys .kh { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+
+/* ---------- 13. overlays: menus (solid), dialogs (glass), toasts (dark), tooltips ---------- */
+.menu { position: fixed; z-index: var(--z-menu); display: flex; flex-direction: column; gap: 2px; min-width: 240px; max-width: calc(100vw - 32px); max-height: calc(100dvh - 80px); overflow-y: auto; padding: 6px; border: 1px solid var(--border2); border-radius: var(--r); background: var(--pop-bg); color: var(--text); box-shadow: var(--shadow-2); animation: s4-pop .14s var(--ease); }
+.menu.static { position: static; }   /* shown in place (docs, mockups) */
+.menu button, .menu a { display: flex; gap: 10px; align-items: flex-start; padding: 9px 10px; border: 0; border-radius: var(--r-sm); background: transparent; color: inherit; font: inherit; text-align: left; text-decoration: none; cursor: pointer; }
+.menu button svg, .menu a svg { flex: none; margin-top: 2px; color: var(--text2); }
+.menu button:hover, .menu button:focus-visible, .menu a:hover, .menu a:focus-visible, .menu .act { background: var(--hov); outline: none; color: inherit; }
+.menu b { display: block; font-weight: 600; } .menu small { display: block; margin-top: 1px; color: var(--text3); font-size: var(--fs-xs); }
+.menu .menu-h { padding: 4px 6px 6px; font-size: var(--fs-xs); font-weight: 600; color: var(--text3); }
+.menu hr { width: 100%; margin: 3px 0; border: 0; border-top: 1px solid var(--border); }
+.scrim { position: fixed; inset: 0; z-index: var(--z-modal); display: grid; place-items: center; padding: var(--s-4); background: var(--scrim); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: s4-fade .15s ease-out; }
+.modal { display: flex; flex-direction: column; width: min(560px, 100%); max-height: 92vh; max-height: 92dvh; overflow: clip; background: var(--modal-bg); border: 1px solid var(--modal-line); border-radius: var(--r-xl); box-shadow: var(--shadow-3); animation: s4-in .2s var(--ease); }
+.modal.wide { width: min(1000px, 100%); } .modal.narrow { width: min(440px, 100%); }
+.modal header { display: flex; align-items: center; gap: 10px; padding: var(--s-4) var(--s-5) 10px; } .modal header h2 { margin: 0; font-size: var(--fs-h2); flex: 1; }
+.modal .body { display: flex; flex-direction: column; gap: 14px; padding: 6px var(--s-5) var(--s-4); overflow: auto; overscroll-behavior: contain; } .modal .body > * { min-width: 0; }
+.modal footer { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; padding: var(--s-3) var(--s-5); border-top: 1px solid var(--border); }
+.modal .grab { display: none; }   /* the handle on a phone bottom sheet */
+.toast { position: fixed; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: var(--z-toast); display: flex; align-items: center; gap: 14px; width: max-content; max-width: min(560px, calc(100vw - 32px)); padding: 10px 16px; border-radius: var(--r-sm); background: var(--toast-bg); color: var(--on-dark); border: 1px solid rgba(255,255,255,.12); box-shadow: var(--shadow-1); font-size: var(--fs-ui); animation: s4-in .2s var(--ease); }
+.toast button { flex: none; min-height: 30px; padding: 0 12px; border: 1px solid rgba(255,255,255,.28); border-radius: 7px; background: rgba(255,255,255,.12); color: var(--on-dark); font: inherit; font-weight: 600; cursor: pointer; } .toast button:hover { background: rgba(255,255,255,.22); }   /* "Undone: … [Redo]" */
+.tip { position: fixed; z-index: var(--z-tip); max-width: min(480px, calc(100vw - 24px)); padding: 8px 11px; border: 1px solid var(--tip-line); border-radius: var(--r-md); background: var(--tip-bg); color: var(--on-dark); font-size: var(--fs-ui); line-height: 1.4; box-shadow: var(--shadow-2); pointer-events: none; overflow-wrap: anywhere; animation: s4-fade .12s ease-out; }   /* the full text of something cut off */
+.tip small { display: block; margin-top: 2px; color: var(--on-dark2); font-size: var(--fs-xs); }
+
+/* ---------- 14. web pages: a scrolling document in the same look ----------
+   <body class="site"> · <header class="site-head"> · <main> with <section class="section"> blocks · <footer class="site-foot">.
+   Spend boldness in one place (usually the hero); everything else stays quiet. No all-caps eyebrows, no numbered markers unless it is a real sequence. */
+.site { display: flex; flex-direction: column; min-height: 100dvh; }
+.site main { flex: 1; }
+.site-head { position: sticky; top: 0; z-index: var(--z-bar); border-bottom: 1px solid var(--border); background: var(--bar-bg); padding-top: env(safe-area-inset-top); }
+.site-head .container { display: flex; align-items: center; gap: var(--s-4); min-height: 60px; }
+.site-head .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: var(--fs-title); text-decoration: none; color: var(--text); }
+.site-head .brand img, .site-head .brand svg { width: 28px; height: 28px; }
+.site-nav { display: flex; align-items: center; gap: 2px; margin-left: auto; }
+.site-nav a { padding: 8px 12px; border-radius: var(--r-md); color: var(--text2); text-decoration: none; font-weight: 500; }
+.site-nav a:hover { background: var(--hov); color: var(--text); } .site-nav a[aria-current="page"] { color: var(--text); background: var(--bg-sel); }
+.site-head .brand { min-height: var(--tap); }
+.site-acts { display: flex; align-items: center; gap: var(--s-1); }
+.site-head .menu-btn { display: none; }
+.hero { padding: var(--s-24) 0 var(--s-16); }
+.hero h1, .display { margin: 0; font-size: var(--fs-display); font-weight: 700; letter-spacing: -.035em; line-height: 1.04; max-width: 16ch; }
+.lead { font-size: var(--fs-lead); line-height: 1.55; color: var(--text2); max-width: 56ch; }
+.hero .lead { margin: var(--s-5) 0 var(--s-8); }
+.section { padding: var(--s-16) 0; } .section + .section { border-top: 1px solid var(--border); }
+.section h2, .page-h2 { margin: 0 0 var(--s-3); font-size: var(--fs-page-h2); font-weight: 700; letter-spacing: -.02em; line-height: 1.15; }
+.section h3, .page-h3 { margin: 0 0 var(--s-2); font-size: var(--fs-page-h3); font-weight: 600; letter-spacing: -.01em; line-height: 1.3; }
+.section-head { display: flex; flex-direction: column; gap: var(--s-2); max-width: 60ch; margin-bottom: var(--s-8); }
+.section-head p { margin: 0; color: var(--text2); font-size: var(--fs-lead); }
+.prose { max-width: var(--prose-max); line-height: var(--lh-prose); font-size: var(--fs-lead); }
+.prose > * + * { margin-top: 1em; } .prose h2 { margin-top: 1.8em; } .prose ul, .prose ol { padding-left: 1.3em; } .prose li + li { margin-top: .35em; }
+.prose code { padding: 1px 5px; border-radius: var(--r-xs); background: var(--well); border: 1px solid var(--border); font-size: .9em; }
+.feature { display: flex; flex-direction: column; gap: var(--s-2); }
+.feature .ic.lg { color: var(--accent-text); margin-bottom: var(--s-1); }
+.feature p { margin: 0; color: var(--text2); }
+.cta-band { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-5); padding: var(--s-10); border-radius: var(--r-2xl); background: var(--glass); border: 1px solid var(--border); box-shadow: var(--shadow-1); }
+.cta-band h2 { margin: 0; }
+.site-foot { padding: var(--s-10) 0 calc(var(--s-10) + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); color: var(--text3); font-size: var(--fs-ui); }
+.site-foot .container { display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-6); justify-content: space-between; }
+.site-foot a { color: var(--text2); text-decoration: none; } .site-foot a:hover { color: var(--text); }
+
+/* ---------- 15. utilities: on the scales only (add more the same way, never inline style= except run-time values) ---------- */
+.gap-1 { gap: var(--s-1); } .gap-2 { gap: var(--s-2); } .gap-3 { gap: var(--s-3); } .gap-4 { gap: var(--s-4); } .gap-6 { gap: var(--s-6); }
+.mt-0 { margin-top: 0; } .mt-1 { margin-top: var(--s-1); } .mt-2 { margin-top: var(--s-2); } .mt-3 { margin-top: var(--s-3); } .mt-4 { margin-top: var(--s-4); } .mt-6 { margin-top: var(--s-6); } .mt-8 { margin-top: var(--s-8); }
+.mb-0 { margin-bottom: 0; } .mb-2 { margin-bottom: var(--s-2); } .mb-3 { margin-bottom: var(--s-3); } .mb-4 { margin-bottom: var(--s-4); }
+.ml-auto { margin-left: auto; } .m-0 { margin: 0; }
+.p-0 { padding: 0; } .p-3 { padding: var(--s-3); } .p-4 { padding: var(--s-4); }
+.fs-xs { font-size: var(--fs-xs); } .fs-sm { font-size: var(--fs-sm); } .fs-ui { font-size: var(--fs-ui); } .fs-base { font-size: var(--fs-base); } .fs-title { font-size: var(--fs-title); }
+.fw-500 { font-weight: 500; } .fw-600 { font-weight: 600; } .fw-700 { font-weight: 700; }
+.ta-r { text-align: right; } .ta-c { text-align: center; } .nowrap { white-space: nowrap; } .minw-0 { min-width: 0; }
+.c-ok { color: var(--ok); } .c-warn { color: var(--warn); } .c-bad { color: var(--bad); } .c-text2 { color: var(--text2); } .c-accent { color: var(--accent-text); }
+.phone-only { display: none; }
+
+/* ---------- 16. focus and motion ---------- */
+:where(a, button, summary, [tabindex]):focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+@keyframes s4-in { from { opacity: 0; translate: 0 6px; } }
+@keyframes s4-pop { from { opacity: 0; scale: .97; translate: 0 -4px; } }
+@keyframes s4-fade { from { opacity: 0; } }
+@keyframes s4-up { from { translate: 0 100%; } }
+@keyframes s4-shimmer { to { background-position: -150% 0; } }
+.content { animation: s4-in .22s var(--ease); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; transition-delay: 0s !important; scroll-behavior: auto !important; }
+}
+
+/* ---------- 17. touch screens: 40px targets ---------- */
+@media (pointer: coarse) {
+  .btn, .btn.sm, .input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=date], select, .nav .item, .th-sort, .copy, .menu button, .menu a, .toast button, .fchip, .site-nav a { min-height: var(--tap); }
+  .site-foot a { display: inline-flex; align-items: center; min-height: var(--tap); }
+  .btn.icon, .btn.sm.icon { width: var(--tap); }
+  .seg button { min-height: 36px; } .switch { min-height: var(--tap); }
+  button.lnk { padding: 11px 0; margin: -11px 0; }   /* a bigger hit area without moving the text */
+}
+
+/* ---------- 18. narrower screens: max-width rules only, so 1920 and 2560 never change ---------- */
+@media (max-width: 1300px) {   /* a 1920x1200 laptop at 150% scaling = a 1280x800 window */
+  .app { --nav-w: 200px; } .nav { padding-left: var(--s-2); padding-right: var(--s-2); } .nav .item { gap: var(--s-2); padding-left: 10px; padding-right: 10px; }
+  .topbar { gap: var(--s-2); padding-left: var(--s-3); padding-right: var(--s-3); } .topbar .ttl { min-width: 160px; } .topbar .sub { display: none; }
+  .split { grid-template-columns: minmax(0, 1fr) 360px; }
+}
+@media (max-width: 1200px) { .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 980px) {   /* tablet / small window: the nav becomes an icon rail, the detail panel covers the list */
+  .app { --nav-w: var(--rail-w); }
+  .app .nav { align-items: center; padding-left: var(--s-2); padding-right: var(--s-2); }
+  .app .nav :is(.group, .brand small, .brand span, .foot, .item .lbl) { display: none; }
+  .app .nav .item { justify-content: center; width: 48px; padding: 0; }
+  .app .nav .count { position: absolute; top: 2px; right: 0; height: 16px; min-width: 16px; padding: 1px 4px 0; font-size: var(--fs-cap); }
+  .split { grid-template-columns: minmax(0, 1fr); }
+  .split > .detail { position: fixed; inset: 0; z-index: var(--z-panel); background: var(--bg); animation: s4-in .2s var(--ease); }
+  .split > .detail:not(.open) { display: none; }
+  .only-wide { display: none; }
+  .hero { padding: var(--s-16) 0 var(--s-12); }
+}
+
+/* ---------- 19. phone (≤760px) ---------- */
+@media (max-width: 760px) {
+  :root { --tap: 44px; }
+  .container { padding-inline: var(--s-4); }
+  /* no tab bar: the nav becomes a scrolling row under the top bar */
+  .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .app:not(.has-tabbar) .nav { flex-direction: row; align-items: center; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--border); padding: 6px 8px; scrollbar-width: none; }
+  .app:not(.has-tabbar) .nav :is(.group, .brand, .foot) { display: none; }
+  .app:not(.has-tabbar) .nav .item { flex: none; width: auto; padding: 7px 12px; white-space: nowrap; }
+  .app:not(.has-tabbar) .nav .item .lbl { display: inline; }
+  .app:not(.has-tabbar) .nav .count { position: static; height: 20px; min-width: 22px; font-size: var(--fs-badge); padding: 2px 6px 0; }
+  .app.has-tabbar { grid-template-rows: minmax(0, 1fr); } .app.has-tabbar > .nav { display: none; }
+  .app.has-tabbar .content { padding-bottom: calc(var(--tabbar-h) + var(--s-6) + env(safe-area-inset-bottom)); }
+  /* top bar: one short row; the title shrinks, actions stay on the first line */
+  .topbar { flex-wrap: nowrap; gap: var(--s-2); padding: 10px 14px; padding-top: max(10px, env(safe-area-inset-top)); }
+  .topbar .ttl { min-width: 0; flex: 1 1 auto; margin-right: 0; }
+  .topbar h1 { font-size: var(--fs-h2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .topbar .actions { margin-left: 0; gap: 6px; }
+  .content { padding: 14px; padding-left: max(14px, env(safe-area-inset-left)); padding-right: max(14px, env(safe-area-inset-right)); }
+  /* iOS zooms into any field under 16px: fields are 16px on phones */
+  .input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=date], select, textarea, label.f :is(.input, input, select, textarea) { font-size: 16px; }
+  .search { width: 100%; }
+  .form-grid, .grid-4 { grid-template-columns: minmax(0, 1fr); }
+  .ptabs { grid-template-columns: repeat(2, 1fr); } .keys { display: none; }
+  .phone-only { display: revert; } .desk-only { display: none; }
+  /* dialogs become bottom sheets */
+  .scrim { place-items: end stretch; padding: 0; }
+  .modal, .modal.wide, .modal.narrow { width: 100%; max-height: 92dvh; border-radius: var(--r-2xl) var(--r-2xl) 0 0; border-bottom: 0; animation: s4-up .26s var(--ease); }
+  .modal .grab { display: block; width: 36px; height: 5px; margin: 8px auto 0; border-radius: 3px; background: var(--border2); }
+  .modal footer { padding-bottom: calc(var(--s-3) + env(safe-area-inset-bottom)); }
+  .modal footer .btn { flex: 1 1 auto; }
+  .menu { max-width: calc(100vw - 16px); }
+  /* tables: wide ones scroll inside their wrapper; .stack ones become one small card per row */
+  table.t.cards thead { display: none; }
+  table.t.cards, table.t.cards tbody, table.t.cards tr, table.t.cards td { display: block; width: auto; }
+  table.t.cards tr { position: relative; padding: 10px 14px 10px 18px; border-bottom: 1px solid var(--border); }
+  /* label on the left (margin-right:auto), the value's pieces stay together on the right */
+  table.t.cards td { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 0 var(--s-1); padding: 3px 0; border: 0; max-width: none; min-width: 0; text-align: right; white-space: normal; }
+  table.t.cards td::before { content: attr(data-label); margin-right: auto; padding-right: var(--s-3); color: var(--text3); font-size: var(--fs-xs); text-align: left; }
+  /* amounts: a block with the label floated left, so (, the digits, ) and the hidden ) stay together whatever the markup */
+  table.t.cards td.num { display: block; } table.t.cards td.num::before { float: left; margin-right: 0; padding-top: 1px; }
+  table.t.cards td.lead { display: block; padding-bottom: 4px; color: var(--text); font-weight: 500; text-align: left; } table.t.cards td.lead::before { content: none; }
+  table.t.cards td:not([data-label]):not(.lead)::before { content: none; }
+  table.t.cards tbody tr:hover td { background: transparent; }
+  table.t.cards tr { display: flex; flex-direction: column; } table.t.cards td.lead { order: -1; }   /* the description leads each card */
+  table.t.cards tr[class*="st-"] td:first-child { position: static; padding-left: 0; }
+  table.t.cards tr[class*="st-"] td:first-child::before { content: attr(data-label); position: static; width: auto; border-radius: 0; background: none; }
+  table.t.cards tr[class*="st-"] td:first-child:not([data-label])::before { content: none; }
+  table.t.cards tr[class*="st-"]::before { content: ""; position: absolute; left: 6px; top: 12px; bottom: 12px; width: 3px; border-radius: 3px; background: var(--st); }
+  table.t.cards .trunc { white-space: normal; }
+  table.t.cards td .copy { margin: -3px -8px -3px 0; }   /* the chip's text lines up with the other values */
+  /* web pages */
+  .site-nav { display: none; } .site-acts { margin-left: auto; } .site-head .menu-btn { display: inline-flex; }
+  .site-nav.open { position: fixed; top: calc(60px + env(safe-area-inset-top)); left: var(--s-2); right: var(--s-2); z-index: var(--z-menu); display: flex; flex-direction: column; align-items: stretch; padding: 6px; border: 1px solid var(--border2); border-radius: var(--r); background: var(--pop-bg); box-shadow: var(--shadow-2); }
+  .site-nav.open a { min-height: var(--tap); display: flex; align-items: center; }
+  .hero { padding: var(--s-12) 0 var(--s-10); } .section { padding: var(--s-12) 0; }
+  .cta-band { padding: var(--s-6); border-radius: var(--r-xl); } .cta-band .btn { width: 100%; }
+}
+/* bottom tab bar for phone-first apps: <nav class="tabbar"><a class="tab on" href="#"><svg/>Home</a>…</nav> (3–5 tabs). Hidden above 760px, where the side nav shows. */
+.tabbar { display: none; }
+@media (max-width: 760px) {
+  .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: var(--z-bar); display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); min-height: var(--tabbar-h); padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); background: var(--tabbar-bg); }
+  .tabbar .tab { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 0; padding: 4px 2px; border: 0; background: none; color: var(--text2); font: inherit; font-size: var(--fs-xs); font-weight: 500; text-decoration: none; cursor: pointer; }
+  .tabbar .tab svg { width: 24px; height: 24px; padding: 2px 14px; box-sizing: content-box; border-radius: var(--r-pill); transition: background-color var(--dur-2); }
+  .tabbar .tab.on { color: var(--text); font-weight: 600; } .tabbar .tab.on svg { background: var(--nav-grad); color: #fff; box-shadow: var(--nav-shadow); } .tabbar .tab.on svg [opacity] { opacity: .62; }
+  .tabbar .tab .count { position: absolute; top: 0; left: calc(50% + 10px); height: 16px; min-width: 16px; padding: 1px 4px 0; border-radius: 8px; background: var(--btn); color: var(--btn-fg); font-size: var(--fs-cap); font-weight: 700; line-height: 1.4; text-align: center; }
+  .fab { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: calc(var(--tabbar-h) + 16px + env(safe-area-inset-bottom)); z-index: var(--z-bar); border-radius: var(--r-xl); min-height: 52px; padding: 0 18px; }
+}

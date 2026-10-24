@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: restyle-plain-table
+expected_outcome: |
+  orders.html restyled in S4 Glass: tokens from an accent trio, one primary button, status as badge + slim row edge instead of tinted rows, Title Case headers instead of all caps, negative money in centred brackets, tabular figures, and a layout that works at tablet width.
+context:
+  scaffold_script: place-files.sh

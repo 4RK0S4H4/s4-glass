@@ -1,0 +1,24 @@
+name: checks
+on: [push, pull_request]
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: House rules (stylesheet)
+        run: python3 tools/check_css.py toolkit/s4.css
+      - name: Site is up to date with DESIGN.md / COMPONENTS.md
+        run: |
+          pip install markdown -q
+          python3 tools/build_site.py
+          git diff --exit-code -- index.html guide/ || (echo 'Run python3 tools/build_site.py and commit the result' && exit 1)
+      - name: Pages at phone, laptop and desktop in both themes
+        run: |
+          npm i --no-save playwright@1
+          npx playwright install --with-deps chromium
+          node tools/check_pages.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: screenshots, path: out/ }
