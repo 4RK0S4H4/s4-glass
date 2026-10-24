@@ -61,6 +61,8 @@ A brand only ever arrives through these three values, never as a hex value writt
 
 ## Colour sampler: let the user switch, don't send stills
 
+**Where previews go:** colour samples, direction previews, hand-built mockups and demos are published on the S4 Glass GitHub Pages site, not as Claude artifacts: add the page to the public repo `4RK0S4H4/s4-glass` under `demo/samples/` (a card in `tools/build_site.py`), merge, and send the link (https://4rk0s4h4.github.io/s4-glass/demo/samples/…). The site is public, so previews use fictional data (no real company, account, people or vendor names); the user's apps themselves stay in their own private repos.
+
 When the user wants to see or compare colours ("show me options", "what would it look like in…", or can't decide), publish one interactive page: `toolkit/sampler.html` (swatches, custom colour with derived values, contrast warning, theme and neutrals switches, copy button) above a mock of the app's **real main screen** built from the stylesheet's classes with real labels and rows. Keep every element the accent touches: primary button, active nav item, a `.seg` filter, a `.switch`, a checkbox, a chosen tile, ok/warn/bad badges, a `.badge.solid` suggestion and a `.btn.attn`. Set `SWATCHES` to 6–8 options that fit (all one hue if the user named one) and `PICK` to your recommendation. Title it "<App Name> Colors"; it must pass the 390px check. Say in one line which you'd pick and why, then wait. For other small visual choices, the same idea: one page with lettered options (A, B, C…) on real content; record the pick where the app keeps its styling decisions.
 
 ## Type, numbers and writing

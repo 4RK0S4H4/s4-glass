@@ -8,6 +8,7 @@ The S4 Glass design language: spec (`DESIGN.md`), component markup (`COMPONENTS.
   - Guide: https://4rk0s4h4.github.io/s4-glass/guide/design.html · Components: https://4rk0s4h4.github.io/s4-glass/guide/components.html
   - Gallery: https://4rk0s4h4.github.io/s4-glass/demo/components.html · App template: …/templates/app.html · Web page template: …/templates/page.html · Examples: …/demo/examples/
 - After a change is merged to `main`, give the owner the Pages link(s) of what changed (the site updates a minute or two after the merge). Don't publish Claude artifacts and don't send HTML files: the owner reviews on a phone, where a downloaded HTML file shows a blank page. Screenshots are still welcome alongside the link.
+- Previews for the owner's other apps (colour samplers, mockups, direction previews – what used to be Claude artifacts) go in `demo/samples/` with fictional data, and the link is what gets sent. The apps themselves (e.g. Bank Reconciliation) stay private and are never published here.
 - New demos go in `demo/` (or `demo/examples/` for things built with the skill), get a card in `DEMOS` in `tools/build_site.py`, and must pass the checks below. Everything here is public: no company data, credentials or internal URLs in demos.
 
 ## Commands
