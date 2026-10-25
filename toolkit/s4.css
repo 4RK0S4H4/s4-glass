@@ -61,7 +61,7 @@
   /* scales */
   --r-xs: 6px; --r-sm: 8px; --r-md: 10px; --r: 12px; --r-xl: 16px; --r-2xl: 24px; --r-pill: 999px;
   --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 20px; --s-6: 24px; --s-8: 32px; --s-10: 40px; --s-12: 48px; --s-16: 64px; --s-24: 96px;
-  --ease: cubic-bezier(.2, .8, .2, 1); --dur-1: .12s; --dur-2: .18s; --dur-3: .24s;
+  --ease: cubic-bezier(.25, 1, .5, 1); --dur-1: .12s; --dur-2: .18s; --dur-3: .24s; --press: .97;   /* a spring with no bounce: quick, then settles */
   --z-sticky: 2; --z-bar: 20; --z-panel: 40; --z-modal: 50; --z-toast: 80; --z-menu: 130; --z-tip: 200;
   --nav-w: 220px; --rail-w: 68px; --tabbar-h: 64px; --page-max: 1200px; --form-max: 760px; --prose-max: 68ch;
   --tap: 40px;   /* smallest touch target on touch screens */
@@ -305,8 +305,8 @@ table, input, select, textarea, .num, .mono, .chip, .kbd, .badge, .count, .pill,
 .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--border); background: var(--bar-bg); }
 
 /* ---------- 6. buttons ---------- */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 34px; padding: 0 14px; border: 1px solid var(--border2); border-radius: var(--r-md); background: var(--bg2); color: var(--text); font: inherit; line-height: 1.2; white-space: nowrap; text-decoration: none; cursor: pointer; transition: background-color .15s, color .15s, border-color .15s, box-shadow .15s; }
-.btn:hover:not(:disabled) { background: var(--hov); color: var(--text); } .btn:active:not(:disabled) { transform: translateY(1px); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 34px; padding: 0 14px; border: 1px solid var(--border2); border-radius: var(--r-md); background: var(--bg2); color: var(--text); font: inherit; line-height: 1.2; white-space: nowrap; text-decoration: none; cursor: pointer; transition: background-color .15s, color .15s, border-color .15s, box-shadow .15s, transform var(--dur-2) var(--ease); }
+.btn:hover:not(:disabled) { background: var(--hov); color: var(--text); }
 .btn:disabled { opacity: .5; cursor: default; }
 .btn.subtle { background: transparent; border-color: transparent; } .btn.subtle:hover:not(:disabled) { background: var(--hov); } .btn.subtle:active:not(:disabled) { background: var(--press); }
 .btn.icon { width: 34px; padding: 0; }
@@ -351,7 +351,7 @@ label.f .hint { color: var(--text3); font-size: var(--fs-xs); }
 .seg button .n { opacity: .75; margin-left: 4px; } .seg button.on .n { opacity: .92; }
 .seg.scroll { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }   /* one row that scrolls sideways on a phone */
 /* filter chips that toggle on their own (not one-of-many): soft fill when on */
-.fchip { display: inline-flex; align-items: center; gap: 4px; min-height: 28px; padding: 3px 11px; border: 1px solid var(--border2); border-radius: var(--r-xl); background: var(--glass2); color: var(--text); font: inherit; font-size: var(--fs-sm); white-space: nowrap; cursor: pointer; transition: background-color .15s, border-color .15s; }
+.fchip { display: inline-flex; align-items: center; gap: 4px; min-height: 28px; padding: 3px 11px; border: 1px solid var(--border2); border-radius: var(--r-xl); background: var(--glass2); color: var(--text); font: inherit; font-size: var(--fs-sm); white-space: nowrap; cursor: pointer; transition: background-color .15s, color .15s, border-color .15s, box-shadow .15s, transform var(--dur-2) var(--ease); }
 .fchip:hover { background: var(--hov); } .fchip[aria-pressed="true"], .fchip.on { background: var(--fill2); border-color: var(--soft-ring); color: var(--accent-ink); font-weight: 600; }
 .fchip .n { opacity: .75; }
 /* big icon tabs (choose a mode): icon over label, filled when on */
@@ -376,18 +376,20 @@ label.f .hint { color: var(--text3); font-size: var(--fs-xs); }
 /* toggle switch: <label class="switch"><input type="checkbox"><span class="track"></span>Label</label> */
 .switch { position: relative; display: inline-flex; align-items: center; gap: 9px; min-height: 32px; cursor: pointer; color: var(--text2); font-size: var(--fs-ui); }
 .switch input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
-.switch .track { position: relative; flex: none; width: 34px; height: 20px; border-radius: var(--r-pill); background: var(--border2); transition: background .15s; }
-.switch .track::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.3); transition: transform .15s; }
+.switch .track { position: relative; flex: none; width: 34px; height: 20px; border-radius: var(--r-pill); background: var(--border2); transition: background-color var(--dur-2) var(--ease); }
+.switch .track::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.3); transition: transform var(--dur-2) var(--ease), width var(--dur-2) var(--ease); }
 .switch input:checked + .track { background: var(--btn); }
 .switch input:checked + .track::after { transform: translateX(14px); }
+.switch:active .track::after { width: 20px; } .switch:active input:checked + .track::after { transform: translateX(10px); }   /* the thumb stretches while held */
 .switch input:focus-visible + .track { outline: 2px solid var(--focus); outline-offset: 2px; }
 /* checkbox and radio: soft rounded square, solid accent with a rounded tick; no outline after a click */
-input[type=checkbox]:not(.switch input) { appearance: none; -webkit-appearance: none; flex: none; width: 18px; height: 18px; margin: 0; display: inline-grid; place-items: center; vertical-align: middle; cursor: pointer; background: var(--bg2); border: 1.5px solid var(--border2); border-radius: var(--r-xs); transition: background-color .14s ease-out, border-color .14s ease-out; }
-input[type=checkbox]:not(.switch input)::after { content: ""; width: 11px; height: 11px; background: var(--btn-fg); transform: scale(.5); opacity: 0; transition: transform .16s cubic-bezier(.2, .9, .3, 1.15), opacity .1s linear;
+input[type=checkbox]:not(.switch input) { appearance: none; -webkit-appearance: none; flex: none; width: 18px; height: 18px; margin: 0; display: inline-grid; place-items: center; vertical-align: middle; cursor: pointer; background: var(--bg2); border: 1.5px solid var(--border2); border-radius: var(--r-xs); transition: background-color .14s ease-out, border-color .14s ease-out, transform var(--dur-2) var(--ease); }
+input[type=checkbox]:not(.switch input)::after { content: ""; width: 11px; height: 11px; background: var(--btn-fg); clip-path: inset(0 100% 0 0); transition: clip-path var(--dur-2) var(--ease);   /* the tick draws in from the left */
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3 4.7-5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3 4.7-5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat; }
 input[type=checkbox]:not(.switch input):checked { background: var(--btn); border-color: var(--btn); }
-input[type=checkbox]:not(.switch input):checked::after { transform: scale(1); opacity: 1; }
+input[type=checkbox]:not(.switch input):checked::after { clip-path: inset(0); }
+input[type=checkbox]:not(.switch input):active:not(:disabled) { transform: scale(.9); }
 input[type=checkbox]:not(.switch input):not(:checked):not(:disabled):hover { border-color: var(--acc); background: var(--bg-hover); }
 input[type=checkbox]:not(.switch input):focus { outline: none; }
 input[type=checkbox]:not(.switch input):focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--btn) 25%, transparent); }
@@ -489,12 +491,15 @@ td.row-acts { text-align: right; white-space: nowrap; }
    Outside tables: a soft box with a copy icon. Inside tables: plain text that shows its box on hover/focus.
    Copied: a green flash for ~0.6s (s4Copy adds .done and removes it). The copied look wins over hover; it never stays.
    Wrap the value in its own <span>: the chip is a flex box, so loose bracket spans would get the gap. */
-.copy { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; padding: 3px 8px; border: 1px solid var(--border2); border-radius: var(--r-sm); background: var(--well); color: var(--text); font: inherit; line-height: 1.4; white-space: nowrap; vertical-align: middle; cursor: pointer; transition: background-color .15s, color .15s, border-color .15s; }
+.copy { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; padding: 3px 8px; border: 1px solid var(--border2); border-radius: var(--r-sm); background: var(--well); color: var(--text); font: inherit; line-height: 1.4; white-space: nowrap; vertical-align: middle; cursor: pointer; transition: background-color .15s, color .15s, border-color .15s, box-shadow .15s, transform var(--dur-2) var(--ease); }
 .copy > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .copy > svg { width: 13px; height: 13px; flex: none; color: var(--text3); opacity: .6; transition: opacity var(--dur-1), color var(--dur-1); }
 .copy:hover, .copy:focus-visible { border-color: var(--soft-ring); background: var(--fill); } .copy:hover svg, .copy:focus-visible svg { opacity: 1; color: var(--accent-text); }
 table .copy:not(:hover):not(:focus-visible) { border-color: transparent; background: transparent; } table .copy:not(:hover):not(:focus-visible) svg { opacity: 0; }
-.copy.done, table .copy.done { border-color: transparent; background: color-mix(in srgb, var(--ok) 14%, transparent); } .copy.done svg, table .copy.done svg { opacity: 1; color: var(--ok); }
+.copy.done, table .copy.done { border-color: transparent; background: color-mix(in srgb, var(--ok) 14%, transparent); } .copy.done > svg { display: none; }
+.copy.done::after { content: ""; flex: none; width: 13px; height: 13px; background: var(--ok); animation: s4-tick var(--dur-2) var(--ease);   /* the copy icon becomes a tick */
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3 4.7-5' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3 4.7-5' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat; }
 .copy.empty { border-style: dashed; color: var(--text3); cursor: default; background: transparent; }   /* "–" placeholder for a value still to come */
 .kbd { display: inline-flex; align-items: center; justify-content: center; gap: 3px; min-width: 20px; height: 20px; padding: 0 6px; font: 600 var(--fs-cap)/1 var(--font); letter-spacing: .02em; color: var(--text); border-radius: var(--r-xs); border: 1px solid var(--kbd-line); background: var(--kbd-bg); box-shadow: var(--kbd-shadow); vertical-align: middle; }
 .btn .kbd { height: 18px; min-width: 18px; }
@@ -511,14 +516,16 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
 .menu b { display: block; font-weight: 600; } .menu small { display: block; margin-top: 1px; color: var(--text3); font-size: var(--fs-xs); }
 .menu .menu-h { padding: 4px 6px 6px; font-size: var(--fs-xs); font-weight: 600; color: var(--text3); }
 .menu hr { width: 100%; margin: 3px 0; border: 0; border-top: 1px solid var(--border); }
-.scrim { position: fixed; inset: 0; z-index: var(--z-modal); display: grid; place-items: center; padding: var(--s-4); background: var(--scrim); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: s4-fade .15s ease-out; }
-.modal { display: flex; flex-direction: column; width: min(560px, 100%); max-height: 92vh; max-height: 92dvh; overflow: clip; background: var(--modal-bg); border: 1px solid var(--modal-line); border-radius: var(--r-xl); box-shadow: var(--shadow-3); animation: s4-in .2s var(--ease); }
+.scrim { position: fixed; inset: 0; z-index: var(--z-modal); display: grid; place-items: center; padding: var(--s-4); background: var(--scrim); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: s4-fade var(--dur-2) ease-out; }
+.modal { display: flex; flex-direction: column; width: min(560px, 100%); max-height: 92vh; max-height: 92dvh; overflow: clip; background: var(--modal-bg); border: 1px solid var(--modal-line); border-radius: var(--r-xl); box-shadow: var(--shadow-3); animation: s4-grow var(--dur-3) var(--ease); }
 .modal.wide { width: min(1000px, 100%); } .modal.narrow { width: min(440px, 100%); }
 .modal header { display: flex; align-items: center; gap: 10px; padding: var(--s-4) var(--s-5) 10px; } .modal header h2 { margin: 0; font-size: var(--fs-h2); flex: 1; }
 .modal .body { display: flex; flex-direction: column; gap: 14px; padding: 6px var(--s-5) var(--s-4); overflow: auto; overscroll-behavior: contain; } .modal .body > * { min-width: 0; }
 .modal footer { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; padding: var(--s-3) var(--s-5); border-top: 1px solid var(--border); }
 .modal .grab { display: none; }   /* the handle on a phone bottom sheet */
-.toast { position: fixed; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: var(--z-toast); display: flex; align-items: center; gap: 14px; width: max-content; max-width: min(560px, calc(100vw - 32px)); padding: 10px 16px; border-radius: var(--r-sm); background: var(--toast-bg); color: var(--on-dark); border: 1px solid rgba(255,255,255,.12); box-shadow: var(--shadow-1); font-size: var(--fs-ui); animation: s4-in .2s var(--ease); }
+.scrim.closing { pointer-events: none; animation: s4-fade-out .15s ease-in forwards; } .scrim.closing .modal { animation: s4-shrink .15s ease-in forwards; }   /* s4Close: a short exit; focus is already back */
+.toast { position: fixed; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: var(--z-toast); display: flex; align-items: center; gap: 14px; width: max-content; max-width: min(560px, calc(100vw - 32px)); padding: 10px 16px; border-radius: var(--r-sm); background: var(--toast-bg); color: var(--on-dark); border: 1px solid rgba(255,255,255,.12); box-shadow: var(--shadow-1); font-size: var(--fs-ui); animation: s4-rise var(--dur-3) var(--ease); }
+.toast.leaving { animation: s4-sink .16s ease-in forwards; }   /* s4Toast fades it out rather than cutting it */
 .toast button { flex: none; min-height: 30px; padding: 0 12px; border: 1px solid rgba(255,255,255,.28); border-radius: 7px; background: rgba(255,255,255,.12); color: var(--on-dark); font: inherit; font-weight: 600; cursor: pointer; } .toast button:hover { background: rgba(255,255,255,.22); }   /* "Undone: … [Redo]" */
 .tip { position: fixed; z-index: var(--z-tip); max-width: min(480px, calc(100vw - 24px)); padding: 8px 11px; border: 1px solid var(--tip-line); border-radius: var(--r-md); background: var(--tip-bg); color: var(--on-dark); font-size: var(--fs-ui); line-height: 1.4; box-shadow: var(--shadow-2); pointer-events: none; overflow-wrap: anywhere; animation: s4-fade .12s ease-out; }   /* the full text of something cut off */
 .tip small { display: block; margin-top: 2px; color: var(--on-dark2); font-size: var(--fs-xs); }
@@ -573,12 +580,19 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
 
 /* ---------- 16. focus and motion ---------- */
 :where(a, button, summary, [tabindex]):focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
-@keyframes s4-in { from { opacity: 0; translate: 0 6px; } }
+@keyframes s4-rise { from { opacity: 0; translate: 0 10px; scale: .98; } }   /* toasts */
+@keyframes s4-sink { to { opacity: 0; translate: 0 6px; } }
+@keyframes s4-grow { from { opacity: 0; scale: .96; } }   /* dialogs */
+@keyframes s4-shrink { to { opacity: 0; scale: .98; } }
+@keyframes s4-tick { from { opacity: 0; scale: .6; } }
 @keyframes s4-pop { from { opacity: 0; scale: .97; translate: 0 -4px; } }
 @keyframes s4-fade { from { opacity: 0; } }
+@keyframes s4-fade-out { to { opacity: 0; } }
 @keyframes s4-up { from { translate: 0 100%; } }
+@keyframes s4-down { to { translate: 0 100%; } }
 @keyframes s4-shimmer { to { background-position: -150% 0; } }
-.content { animation: s4-in .22s var(--ease); }
+.content, .swap { animation: s4-fade var(--dur-2) ease-out; }   /* a new screen or tab fades in where it is: no slide (#93); s4Swap() replays it */
+:is(.btn, .fchip, .copy):active:not(:disabled) { transform: scale(var(--press)); transition-duration: .15s, .15s, .15s, .15s, var(--dur-1); }   /* pressed in, then settles back (all three list the same five transitions) */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; transition-delay: 0s !important; scroll-behavior: auto !important; }
 }
@@ -606,7 +620,7 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
   .app .nav .item { justify-content: center; width: 48px; padding: 0; }
   .app .nav .count { position: absolute; top: 2px; right: 0; height: 16px; min-width: 16px; padding: 1px 4px 0; font-size: var(--fs-cap); }
   .split { grid-template-columns: minmax(0, 1fr); }
-  .split > .detail { position: fixed; inset: 0; z-index: var(--z-panel); background: var(--bg); animation: s4-in .2s var(--ease); }
+  .split > .detail { position: fixed; inset: 0; z-index: var(--z-panel); background: var(--bg); animation: s4-fade var(--dur-2) ease-out; }
   .split > .detail:not(.open) { display: none; }
   .only-wide { display: none; }
   .hero { padding: var(--s-16) 0 var(--s-12); }
@@ -639,7 +653,8 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
   .phone-only { display: revert; } .desk-only { display: none; }
   /* dialogs become bottom sheets */
   .scrim { place-items: end stretch; padding: 0; }
-  .modal, .modal.wide, .modal.narrow { width: 100%; max-height: 92dvh; border-radius: var(--r-2xl) var(--r-2xl) 0 0; border-bottom: 0; animation: s4-up .26s var(--ease); }
+  .modal, .modal.wide, .modal.narrow { width: 100%; max-height: 92dvh; border-radius: var(--r-2xl) var(--r-2xl) 0 0; border-bottom: 0; animation: s4-up var(--dur-3) var(--ease); }
+  .scrim.closing .modal { animation: s4-down .2s ease-in forwards; }
   .modal .grab { display: block; width: 36px; height: 5px; margin: 8px auto 0; border-radius: 3px; background: var(--border2); }
   .modal footer { padding-bottom: calc(var(--s-3) + env(safe-area-inset-bottom)); }
   .modal footer .btn { flex: 1 1 auto; }

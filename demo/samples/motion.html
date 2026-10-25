@@ -47,7 +47,7 @@
   [data-m="b"] input[type=checkbox]:not(.switch input):active, [data-m="c"] input[type=checkbox]:not(.switch input):active { transform: scale(.9); }
   [data-m="b"] input[type=checkbox]:not(.switch input), [data-m="c"] input[type=checkbox]:not(.switch input) { transition: background-color .14s ease-out, border-color .14s ease-out, transform var(--m-mid) var(--m-ease); }
 
-  .copy .ok-ic { display: none; }
+  .copy .ok-ic { display: none; } .copy.done::after { display: none; }   /* this page draws its own tick for each option */
   [data-m="b"] .copy.done .cp-ic, [data-m="c"] .copy.done .cp-ic { display: none; }
   [data-m="b"] .copy.done .ok-ic, [data-m="c"] .copy.done .ok-ic { display: block; color: var(--ok); opacity: 1; animation: m-tick var(--m-mid) var(--m-ease); }
   @keyframes m-tick { from { opacity: 0; scale: .6; } }
@@ -77,7 +77,8 @@
   /* ---- 3. switching ---- */
   [data-m] .seg.slide-ready::before { transition: transform var(--m-slow) var(--m-ease), width var(--m-slow) var(--m-ease), height var(--m-slow) var(--m-ease), scale var(--m-mid) var(--m-ease); }
   [data-m="c"] .seg.pressing::before { scale: .95; }   /* the pill gives a little under the finger, like iOS */
-  [data-m="a"] .panel-box > .in { animation: s4-in .22s var(--ease); }
+  [data-m="a"] .panel-box > .in { animation: m-in .22s cubic-bezier(.2, .8, .2, 1); }
+  @keyframes m-in { from { opacity: 0; translate: 0 6px; } }
   [data-m="b"] .panel-box > .in { animation: s4-fade var(--m-mid) ease-out; }
   [data-m="c"] .panel-box > .in { animation: m-blur-in var(--m-slow) var(--m-ease); }
   @keyframes m-blur-in { from { opacity: 0; filter: blur(4px); } }
@@ -96,7 +97,7 @@
 
 <main class="container g-main">
   <section class="g-sec">
-    <p class="lede">Pick A, B or C at the top, then try each part below. All three stay inside the rules already settled: 150–250 ms, easing out, only what you touched moves, nothing blinks, and nothing waits for an animation before it takes the next key. With Reduce Motion on in your phone's settings, everything below is instant.</p>
+    <p class="lede"><b>Picked: B</b>, now built into the toolkit. This page is kept for comparison. Pick A, B or C at the top, then try each part below. All three stay inside the rules already settled: 150–250 ms, easing out, only what you touched moves, nothing blinks, and nothing waits for an animation before it takes the next key. With Reduce Motion on in your phone's settings, everything below is instant.</p>
   </section>
 
   <section class="g-sec">
@@ -132,7 +133,7 @@
     <h2>2. Expand and Collapse</h2>
     <p>Open and close the steps, or press Done to fold a step to its summary and open the next one. Then open the dialog. On a phone it's a bottom sheet.</p>
     <div class="grid-auto" style="--min: 320px">
-      <div class="card flush steps" id="steps">
+      <div class="card flush steps" id="steps" data-manual>
         <details class="fold" open><summary><b>Fill In the Entry</b><span class="sec-sub" data-done="GL 61500000 · Benefits Funding"></span></summary><div class="fold-body stack"><p class="m-0 c-text2">Northwind Benefits funding for October, 536.90 out of the operating account.</p><div><button class="btn primary sm" type="button" data-done>Done</button></div></div></details>
         <details class="fold"><summary><b>Copy Into the Ledger</b><span class="sec-sub" data-done="Copied 3 values"></span></summary><div class="fold-body stack"><button class="copy" type="button" data-copy="10/31/2026"><span>10/31/2026</span><svg class="cp-ic" data-ic="copy"></svg><svg class="ok-ic" data-ic="check"></svg></button><div class="keys"><span class="kh"><span class="kbd">J</span>Journal Entry</span><span class="kh"><span class="kbd">Enter ↵</span>Match</span></div><div><button class="btn primary sm" type="button" data-done>Done</button></div></div></details>
         <details class="fold"><summary><b>Enter the Document Number</b><span class="sec-sub" data-done="Document 4900021877"></span></summary><div class="fold-body stack"><p class="m-0 c-text2">The number the ledger gave the entry.</p><div><button class="btn primary sm" type="button" data-done>Done</button></div></div></details>

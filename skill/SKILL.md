@@ -135,7 +135,7 @@ These came from the user's own issues on the Bank Reconciliation app (full list 
 - **Copy chips**: click to copy, a 0.6s green flash that never stays, plain text in tables until hovered, never on totals; wrap the value in its own `<span>`.
 - **Count pills** are 20px tall with 2px top padding (Inter's digits sit high in a `line-height:1` box).
 - **Pop-overs** are solid; dialogs are glass over a blurred scrim (bottom sheets on phones); toasts are dark with one optional action ("Undone: Match 40 [Redo]").
-- **Motion** is subtle: content fades up 6px, menus pop, the selection slides only after a click (never on arrival, resize or font load). Nothing blinks.
+- **Motion** is quiet, Apple-like, one curve (`--ease`, no bounce), 120–240ms, exits shorter: controls shrink to 97% while pressed, the switch thumb stretches while held, ticks draw in, copy turns green with a tick for 0.6s, toasts rise and fade out, folds and dialogs grow and shrink (`s4Fold`, `s4Close`), the selection pill glides only after a click, new screens and tab content fade in without moving (`.swap` / `s4Swap`). Only what the user changed moves; keys never wait; nothing blinks, pulses or bounces; Reduce Motion makes it instant.
 - **Overview of several entities**: one vertical card each in `.grid-4` (4 → 2 → 1), coloured top edge for status, vital numbers at a glance, "Show Details" for the rest.
 - **Headers stay uncluttered**: the title alone; counts and totals as quieter `.sec-sub` text. Cards fit their content. Say things once (a hint for every row goes above the list).
 - **Web pages**: spend boldness in one place (usually the hero); no all-caps eyebrows, no numbered markers unless the content really is a sequence, no gradient washes as decoration.

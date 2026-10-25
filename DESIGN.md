@@ -4,7 +4,7 @@ S4 Glass is one look for every app, tool and web page: frosted glass surfaces in
 
 The look was settled over many rounds of feedback on a real, heavily used app (Bank Reconciliation, Emovis). Version 2.0 keeps every decision from that work and adds what the app had to invent on its own: a type scale, a status system, phone patterns and a web-page layer. This file is the spec. The code is in `toolkit/`, starters in `templates/`, every component on one page in `demo/components.html`.
 
-Contents: [Principles](#principles) · [Colour](#colour) · [Type and numbers](#type-and-numbers) · [Space, shape, depth, motion](#space-shape-depth-motion) · [Layouts](#layouts) · [Phone to 2560](#phone-to-2560) · [Components](#components) · [Writing](#writing) · [Icons](#icons) · [Accessibility](#accessibility) · [What changed in 2.0](#what-changed-in-20) · [Checklist](#checklist)
+Contents: [Principles](#principles) · [Colour](#colour) · [Type and numbers](#type-and-numbers) · [Space, shape, depth, motion](#space-shape-depth-motion) · [Motion](#motion) · [Layouts](#layouts) · [Phone to 2560](#phone-to-2560) · [Components](#components) · [Writing](#writing) · [Icons](#icons) · [Accessibility](#accessibility) · [What changed in 2.0](#what-changed-in-20) · [Checklist](#checklist)
 
 ## Principles
 
@@ -107,8 +107,36 @@ Weights: 400 text, 500 emphasis and nav, 600 labels/titles/buttons, 700 counts, 
 - **Spacing** `--s-1…--s-24`: 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 96. Apps use 4–24; web pages use the large steps between sections.
 - **Radii** `--r-xs` 6 (chips, checkboxes), `--r-sm` 8 (small buttons, menu items), `--r-md` 10 (buttons, fields), `--r` 12 (cards, nav items, tiles, menus), `--r-xl` 16 (dialogs, filter pills), `--r-2xl` 24 (bottom sheets, web CTA bands), `--r-pill`. Nested corners get smaller as they go in.
 - **Elevation** `--shadow-1` cards and bars, `--shadow-2` menus and pop-overs, `--shadow-3` dialogs. No white inset "shine" on surfaces (removed in the Bank Rec app, #191); only keycaps keep a highlight.
-- **Motion** `--dur-1` .12s, `--dur-2` .18s, `--dur-3` .24s, `--ease`. The content fades up 6px on arrival, menus pop, the selection pill slides, sheets slide up. The slide happens only after a click (never on arrival, resize or font load). Reduced motion turns all of it off. Nothing blinks or pulses: "needs attention" is steady.
+- **Motion** `--dur-1` .12s, `--dur-2` .18s, `--dur-3` .24s, `--ease`, `--press` .97. See [Motion](#motion).
 - **Layers** `--z-sticky` 2, `--z-bar` 20, `--z-panel` 40, `--z-modal` 50, `--z-toast` 80, `--z-menu` 130, `--z-tip` 200.
+
+## Motion
+
+Quiet, in the manner of iOS and macOS: things move only because the user did something, they arrive quickly and settle without bouncing, and you feel the motion more than you see it. Chosen by the owner from three samples (option B, "Apple Quiet"; `demo/samples/motion.html`).
+
+**Timing.** 120–240ms (`--dur-1…3`) on one curve, `--ease` = `cubic-bezier(.25, 1, .5, 1)`: a spring with no overshoot, fast at the start and slow at the end. Exits are shorter than entries (150–200ms, `ease-in`). Nothing bounces, blinks, pulses or loops, except a loading shimmer while data is really loading.
+
+**What moves:**
+
+| Moment | Motion |
+|---|---|
+| Press a button, filter chip or copy chip | shrinks to 97% (`--press`) under the finger in 0.12s, settles back in 0.18s |
+| Switch | the thumb slides; while held it stretches a little toward where it will go, as on iOS |
+| Checkbox | the box fills and the tick draws in from the left; it gives (90%) while pressed |
+| Copy | the chip turns green and its icon becomes a tick for 0.6s, then it goes back (#87) |
+| Toast | rises 10px and fades in; after ~4s it fades out and sinks a little |
+| Fold or accordion step | the height grows or shrinks in 0.24s and the content fades in; Done folds the step to its summary while the next opens (`s4Fold`) |
+| Dialog | the scrim fades and the dialog grows from 96%; closing fades it out in 0.15s. A phone sheet slides up and slides back down |
+| Menu | pops from 97% just under its button |
+| Segmented control, nav, tabs | the selection pill glides to the new choice, only after a click; a sideways-scrolling row brings the choice to the middle |
+| New screen or tab content | fades in where it is, no slide (#93; `.content`, `.swap` / `s4Swap`) |
+
+**Rules:**
+
+- Animate only what the user changed. Nothing moves on arrival, resize or font load except a plain fade of new content.
+- Never make the keyboard wait: the state changes at once (focus returns as a dialog starts to close; a second click on a fold reverses it half-way), and the animation follows.
+- One thing moves at a time per action. No trails, flashes or two-tone sweeps (#74, #78).
+- Reduce Motion in the system settings makes everything instant (the CSS block and `s4Still()` in the scripts).
 
 ## Layouts
 
@@ -212,6 +240,8 @@ Every rule below came from the owner's issues on the Bank Reconciliation app (is
 - Let the user review decisions one at a time ("Review 39 Suggestions", not "Accept All") (#70).
 - Motion only answers the user's action: no slide when a screen opens, no two-tone trail, no flash (#74, #78, #93).
 - On a phone, nothing that looks like a button may be inert: show plain text instead (#183).
+
+**Motion:** quiet and Apple-like (option B of the motion samples): press shrinks to 97%, ticks draw in, folds and dialogs grow and shrink, the pill glides, new content fades in without moving. No bounce.
 
 **Process:** for any visible change that isn't obvious, show a draft or 2–3 lettered samples on real content first, and build the pick (#75, #81, #97, #102, #110, #124). Settle tricky details (brackets, count-pill centring) with measured checks, not by eye (#102, #125, #69).
 

@@ -113,7 +113,7 @@ Use `inputmode` (numeric / decimal / email) so phones show the right keyboard.
 </div>
 <button class="tile on"><b>Nets to $0</b><small>Two rows cancel out</small></button>
 ```
-`s4.js` wires `.seg` and `.ptabs` clicks and the sliding pill automatically; add `data-manual` to a `.seg` you drive yourself.
+`s4.js` wires `.seg` and `.ptabs` clicks and the sliding pill automatically; add `data-manual` to a `.seg` you drive yourself. When a tab swaps the content below it, re-render the panel and call `s4Swap(panel)` so the new content fades in where it is (no slide).
 
 ## Status
 
@@ -201,12 +201,12 @@ Wrap the value in its own `<span>` (the chip is a flex box). Negatives copy as `
   </div>
 </div>
 ```
-On phones every dialog is a bottom sheet with full-width footer buttons.
+On phones every dialog is a bottom sheet with full-width footer buttons. Close with `s4Close(scrim)` (or a `data-close` button) rather than setting `hidden`, so it gets its short exit.
 
 ## Toasts and tooltips
 
 ```js
-s4Toast("Undone: Match 40", { action: "Redo", onAction: redo });
+s4Toast("Undone: Match 40", { action: "Redo", onAction: redo });   // rises in, fades out after ~4s
 ```
 Cut-off text with `.trunc` gets a `.tip` tooltip on hover automatically (`s4Tips`), only when it is actually cut off.
 
@@ -218,6 +218,7 @@ Cut-off text with `.trunc` gets a `.tip` tooltip on hover automatically (`s4Tips
   <details class="fold" open><summary><b>Copy Into SAP</b></summary><div class="fold-body">…</div></details>
 </div>
 ```
+`s4.js` animates every `details.fold` (the height grows and shrinks; a second click reverses it). To finish a step: `s4Fold(step, false); s4Fold(step.nextElementSibling, true);` Add `data-manual` to a container whose folds you drive yourself.
 
 ## Web page
 
