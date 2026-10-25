@@ -7,8 +7,10 @@
    s4Copy(el, text)                      copy + the 0.6s green flash; any [data-copy] element copies on click
    s4Tips(root)                          tooltips (.tip) for .trunc / .dcol text, only when it is actually cut off
    s4Menu(button, menu)                  open a .menu under its button; any [data-menu="id"] button opens #id
-   s4Dialog(scrim) / s4Close(scrim)      open / close a .scrim dialog: focus moves in and back, Escape closes
+   s4Dialog(scrim) / s4Close(scrim)      open / close a .scrim dialog: focus moves in and back, Escape closes, a 0.15s exit
    s4Toast("Saved", {action, onAction})  a dark toast for ~4s, with an optional action button ("Undo")
+   s4Fold(details, open)                 open or close a details.fold with its height animating; summary clicks are wired
+   s4Swap(el)                            replay the fade on new tab content (give it class="swap")
    s4Sort(table)                         header sorting: asc → desc → back to the original order; any table.t with th.sortable is wired
 */
 (function () {
@@ -19,6 +21,8 @@
   window.s4Theme = function (v) { t = v; try { localStorage.setItem(KEY, v); } catch (e) {} set(); };
   window.s4ThemeToggle = function () { s4Theme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark"); };
 })();
+
+function s4Still() { return !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches); }
 
 /* Sliding selection: places without animating on first paint, resize and font load; slides only after a click. Returns place(). */
 function s4Slider(box, sel) {
@@ -34,7 +38,11 @@ function s4Slider(box, sel) {
   place(false);
   if (window.ResizeObserver) new ResizeObserver(function () { place(false); }).observe(box);
   if (document.fonts) document.fonts.ready.then(function () { place(false); });
-  box.addEventListener("click", function () { requestAnimationFrame(function () { place(true); }); });
+  box.addEventListener("click", function () { requestAnimationFrame(function () {
+    place(true);
+    var a = box.querySelector(":scope > " + sel);   /* a row that scrolls sideways brings the choice to the middle */
+    if (a && box.scrollWidth > box.clientWidth + 1) box.scrollTo({ left: a.offsetLeft - (box.clientWidth - a.offsetWidth) / 2, behavior: s4Still() ? "auto" : "smooth" });
+  }); });
   return place;
 }
 
@@ -81,6 +89,7 @@ function s4Menu(btn, menu) {
 
 /* Dialogs: <div class="scrim" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="…">…</div></div> */
 function s4Dialog(scrim) {
+  clearTimeout(scrim._s4t); scrim.classList.remove("closing");
   scrim._s4back = document.activeElement; scrim.hidden = false;
   var f = scrim.querySelector("[autofocus], .modal footer .btn.primary, input, select, textarea, button"); if (f) f.focus();
   if (!scrim._s4wired) {
@@ -95,15 +104,43 @@ function s4Dialog(scrim) {
     });
   }
 }
-function s4Close(scrim) { scrim.hidden = true; if (scrim._s4back && scrim._s4back.focus) scrim._s4back.focus(); }
+/* Closing: focus goes back at once (keys never wait), the dialog fades out (a phone sheet slides down), then it hides. */
+function s4Close(scrim) {
+  if (scrim._s4back && scrim._s4back.focus) scrim._s4back.focus();
+  if (s4Still() || scrim.hidden) { scrim.hidden = true; return; }
+  scrim.classList.add("closing"); clearTimeout(scrim._s4t);
+  scrim._s4t = setTimeout(function () { scrim.hidden = true; scrim.classList.remove("closing"); }, innerWidth <= 760 ? 200 : 150);
+}
 
 function s4Toast(text, opt) {
   opt = opt || {}; var old = document.querySelector(".toast[data-s4]"); if (old) old.remove();
   var t = document.createElement("div"); t.className = "toast"; t.setAttribute("data-s4", ""); t.setAttribute("role", "status");
   var s = document.createElement("span"); s.textContent = text; t.appendChild(s);
   if (opt.action) { var b = document.createElement("button"); b.type = "button"; b.textContent = opt.action; b.onclick = function () { t.remove(); if (opt.onAction) opt.onAction(); }; t.appendChild(b); }
-  document.body.appendChild(t); setTimeout(function () { t.remove(); }, opt.ms || 4000);
+  document.body.appendChild(t);
+  setTimeout(function () { t.classList.add("leaving"); setTimeout(function () { t.remove(); }, s4Still() ? 0 : 160); }, opt.ms || 4000);
 }
+
+/* Folds: <details class="fold"> grows and shrinks instead of jumping. The open state is set at once when opening and at
+   the end when closing; a second click half-way reverses it. Steps: s4Fold(done, false); s4Fold(next, true). */
+function s4Fold(d, open) {
+  var body = d.querySelector(":scope > .fold-body"); d._s4want = open;
+  if (d._s4a) { d._s4a.cancel(); d._s4a = null; }
+  if (body) body.getAnimations().forEach(function (x) { x.cancel(); });
+  if (s4Still() || !d.animate) { d.open = open; return; }
+  var from = d.getBoundingClientRect().height;
+  d.open = false; var shut = d.getBoundingClientRect().height; d.open = true;
+  var to = open ? d.getBoundingClientRect().height : shut;
+  if (Math.abs(from - to) < 1) { d.open = open; return; }
+  var dur = 240, ease = getComputedStyle(d).getPropertyValue("--ease").trim() || "ease-out";
+  d.style.overflow = "clip";
+  d._s4a = d.animate({ height: [from + "px", to + "px"] }, { duration: dur, easing: ease });
+  if (body) body.animate({ opacity: open ? [0, 1] : [1, 0] }, { duration: open ? dur : dur * .6, easing: "ease-out", fill: "forwards" });
+  d._s4a.onfinish = function () { d._s4a = null; d.style.overflow = ""; d.open = open; if (body) body.getAnimations().forEach(function (x) { x.cancel(); }); };
+}
+
+/* Tab content: re-render, then s4Swap(panel) so it fades in where it is (no slide). */
+function s4Swap(el) { el.classList.add("swap"); el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; }
 
 /* Table sorting. A cell sorts by its data-sort value if it has one (give status cells their urgency rank: bad 1, warn 2,
    needs-a-decision 3, accent 4, ok 5, mute 6), else by its text; amounts such as (1,234.56) sort as numbers. */
@@ -143,6 +180,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var cb = e.target.closest("[data-close]"); if (cb) { var s2 = cb.closest(".scrim"); if (s2) s4Close(s2); return; }
     var tb = e.target.closest("[data-theme-toggle]"); if (tb) { s4ThemeToggle(); return; }
     var nb = e.target.closest(".site-head .menu-btn"); if (nb) { var nv = document.querySelector(".site-nav"); var o = nv.classList.toggle("open"); nb.setAttribute("aria-expanded", o); return; }
+    var fs = e.target.closest("details.fold > summary"); if (fs && !fs.closest("[data-manual]")) { e.preventDefault(); var fd = fs.parentElement; s4Fold(fd, !(fd._s4want != null ? fd._s4want : fd.open)); return; }
     var sb = e.target.closest(".seg button"); if (sb && !sb.closest("[data-manual]")) { sb.parentElement.querySelectorAll(":scope > .on").forEach(function (x) { x.classList.remove("on"); x.setAttribute("aria-pressed", "false"); }); sb.classList.add("on"); sb.setAttribute("aria-pressed", "true"); }
   });
   document.querySelectorAll(".seg").forEach(function (s) { s4Slider(s, "button.on"); });

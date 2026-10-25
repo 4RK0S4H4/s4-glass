@@ -33,7 +33,7 @@ for f in list((dst / "references").glob("*.md")) + [dst / "toolkit/check_pages.m
         t = t.replace(a, b)
     f.write_text(t, encoding="utf-8")
 shutil.copytree(root / "templates", dst / "templates")
-shutil.copytree(root / "demo", dst / "demo", ignore=shutil.ignore_patterns("examples"))   # the example builds live on the site, not in the skill
+shutil.copytree(root / "demo", dst / "demo", ignore=shutil.ignore_patterns("examples", "samples"))   # example builds and review samples live on the site, not in the skill
 
 skill = out / "s4-glass.skill"
 with zipfile.ZipFile(skill, "w", zipfile.ZIP_DEFLATED) as z:

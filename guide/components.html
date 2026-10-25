@@ -153,7 +153,7 @@
 &lt;/div&gt;
 &lt;button class=&quot;tile on&quot;&gt;&lt;b&gt;Nets to $0&lt;/b&gt;&lt;small&gt;Two rows cancel out&lt;/small&gt;&lt;/button&gt;
 </code></pre>
-<p><code>s4.js</code> wires <code>.seg</code> and <code>.ptabs</code> clicks and the sliding pill automatically; add <code>data-manual</code> to a <code>.seg</code> you drive yourself.</p>
+<p><code>s4.js</code> wires <code>.seg</code> and <code>.ptabs</code> clicks and the sliding pill automatically; add <code>data-manual</code> to a <code>.seg</code> you drive yourself. When a tab swaps the content below it, re-render the panel and call <code>s4Swap(panel)</code> so the new content fades in where it is (no slide).</p>
 <h2 id="status">Status</h2>
 <pre><code class="language-html">&lt;span class=&quot;badge ok&quot;&gt;Matched&lt;/span&gt; &lt;span class=&quot;badge warn&quot;&gt;To Sort&lt;/span&gt; &lt;span class=&quot;badge bad&quot;&gt;Difference&lt;/span&gt;
 &lt;span class=&quot;badge mute&quot;&gt;Carried&lt;/span&gt; &lt;span class=&quot;badge accent&quot;&gt;Journal Entry&lt;/span&gt; &lt;span class=&quot;badge&quot;&gt;No Data&lt;/span&gt;
@@ -223,9 +223,9 @@
   &lt;/div&gt;
 &lt;/div&gt;
 </code></pre>
-<p>On phones every dialog is a bottom sheet with full-width footer buttons.</p>
+<p>On phones every dialog is a bottom sheet with full-width footer buttons. Close with <code>s4Close(scrim)</code> (or a <code>data-close</code> button) rather than setting <code>hidden</code>, so it gets its short exit.</p>
 <h2 id="toasts-and-tooltips">Toasts and tooltips</h2>
-<pre><code class="language-js">s4Toast(&quot;Undone: Match 40&quot;, { action: &quot;Redo&quot;, onAction: redo });
+<pre><code class="language-js">s4Toast(&quot;Undone: Match 40&quot;, { action: &quot;Redo&quot;, onAction: redo });   // rises in, fades out after ~4s
 </code></pre>
 <p>Cut-off text with <code>.trunc</code> gets a <code>.tip</code> tooltip on hover automatically (<code>s4Tips</code>), only when it is actually cut off.</p>
 <h2 id="folds-and-steps">Folds and steps</h2>
@@ -234,6 +234,7 @@
   &lt;details class=&quot;fold&quot; open&gt;&lt;summary&gt;&lt;b&gt;Copy Into SAP&lt;/b&gt;&lt;/summary&gt;&lt;div class=&quot;fold-body&quot;&gt;…&lt;/div&gt;&lt;/details&gt;
 &lt;/div&gt;
 </code></pre>
+<p><code>s4.js</code> animates every <code>details.fold</code> (the height grows and shrinks; a second click reverses it). To finish a step: <code>s4Fold(step, false); s4Fold(step.nextElementSibling, true);</code> Add <code>data-manual</code> to a container whose folds you drive yourself.</p>
 <h2 id="web-page">Web page</h2>
 <pre><code class="language-html">&lt;body class=&quot;site&quot;&gt;
 &lt;header class=&quot;site-head&quot;&gt;&lt;div class=&quot;container&quot;&gt;

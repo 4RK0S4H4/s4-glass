@@ -61,7 +61,7 @@
   </div>
 </header>
 <main class="container guide">
-  <nav class="toc" aria-label="On this page"><b>On This Page</b><a href="#principles">Principles</a><a href="#colour">Colour</a><a href="#type-and-numbers">Type and numbers</a><a href="#space-shape-depth-motion">Space, shape, depth, motion</a><a href="#layouts">Layouts</a><a href="#phone-to-2560">Phone to 2560</a><a href="#components">Components</a><a href="#writing">Writing</a><a href="#icons">Icons</a><a href="#accessibility">Accessibility</a><a href="#decided-with-the-owner-dont-redo-these">Decided with the owner (don&#x27;t redo these)</a><a href="#what-changed-in-20">What changed in 2.0</a><a href="#checklist">Checklist</a></nav>
+  <nav class="toc" aria-label="On this page"><b>On This Page</b><a href="#principles">Principles</a><a href="#colour">Colour</a><a href="#type-and-numbers">Type and numbers</a><a href="#space-shape-depth-motion">Space, shape, depth, motion</a><a href="#motion">Motion</a><a href="#layouts">Layouts</a><a href="#phone-to-2560">Phone to 2560</a><a href="#components">Components</a><a href="#writing">Writing</a><a href="#icons">Icons</a><a href="#accessibility">Accessibility</a><a href="#decided-with-the-owner-dont-redo-these">Decided with the owner (don&#x27;t redo these)</a><a href="#what-changed-in-20">What changed in 2.0</a><a href="#checklist">Checklist</a></nav>
   <article class="doc"><h1 id="s4-glass-20-the-design-language">S4 Glass 2.0 – the design language</h1>
 <p>S4 Glass is one look for every app, tool and web page: frosted glass surfaces in light and dark, a faint tint of one accent running through the greys, one loud accent used as a fill, Inter with open digits, and Solar icons. It is brand-neutral. Every colour comes from three accent values, so a new app makes exactly one colour decision.</p>
 <p>The look was settled over many rounds of feedback on a real, heavily used app (Bank Reconciliation, Emovis). Version 2.0 keeps every decision from that work and adds what the app had to invent on its own: a type scale, a status system, phone patterns and a web-page layer. This file is the spec. The code is in <code>toolkit/</code>, starters in <code>templates/</code>, every component on one page in <code>demo/components.html</code>.</p>
@@ -330,8 +330,69 @@
 <li><strong>Spacing</strong> <code>--s-1…--s-24</code>: 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 96. Apps use 4–24; web pages use the large steps between sections.</li>
 <li><strong>Radii</strong> <code>--r-xs</code> 6 (chips, checkboxes), <code>--r-sm</code> 8 (small buttons, menu items), <code>--r-md</code> 10 (buttons, fields), <code>--r</code> 12 (cards, nav items, tiles, menus), <code>--r-xl</code> 16 (dialogs, filter pills), <code>--r-2xl</code> 24 (bottom sheets, web CTA bands), <code>--r-pill</code>. Nested corners get smaller as they go in.</li>
 <li><strong>Elevation</strong> <code>--shadow-1</code> cards and bars, <code>--shadow-2</code> menus and pop-overs, <code>--shadow-3</code> dialogs. No white inset "shine" on surfaces (removed in the Bank Rec app, #191); only keycaps keep a highlight.</li>
-<li><strong>Motion</strong> <code>--dur-1</code> .12s, <code>--dur-2</code> .18s, <code>--dur-3</code> .24s, <code>--ease</code>. The content fades up 6px on arrival, menus pop, the selection pill slides, sheets slide up. The slide happens only after a click (never on arrival, resize or font load). Reduced motion turns all of it off. Nothing blinks or pulses: "needs attention" is steady.</li>
+<li><strong>Motion</strong> <code>--dur-1</code> .12s, <code>--dur-2</code> .18s, <code>--dur-3</code> .24s, <code>--ease</code>, <code>--press</code> .97. See <a href="#motion">Motion</a>.</li>
 <li><strong>Layers</strong> <code>--z-sticky</code> 2, <code>--z-bar</code> 20, <code>--z-panel</code> 40, <code>--z-modal</code> 50, <code>--z-toast</code> 80, <code>--z-menu</code> 130, <code>--z-tip</code> 200.</li>
+</ul>
+<h2 id="motion">Motion</h2>
+<p>Quiet, in the manner of iOS and macOS: things move only because the user did something, they arrive quickly and settle without bouncing, and you feel the motion more than you see it. Chosen by the owner from three samples (option B, "Apple Quiet"; <code>demo/samples/motion.html</code>).</p>
+<p><strong>Timing.</strong> 120–240ms (<code>--dur-1…3</code>) on one curve, <code>--ease</code> = <code>cubic-bezier(.25, 1, .5, 1)</code>: a spring with no overshoot, fast at the start and slow at the end. Exits are shorter than entries (150–200ms, <code>ease-in</code>). Nothing bounces, blinks, pulses or loops, except a loading shimmer while data is really loading.</p>
+<p><strong>What moves:</strong></p>
+<div class="table-wrap"><table class="t compact">
+<thead>
+<tr>
+<th>Moment</th>
+<th>Motion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Press a button, filter chip or copy chip</td>
+<td>shrinks to 97% (<code>--press</code>) under the finger in 0.12s, settles back in 0.18s</td>
+</tr>
+<tr>
+<td>Switch</td>
+<td>the thumb slides; while held it stretches a little toward where it will go, as on iOS</td>
+</tr>
+<tr>
+<td>Checkbox</td>
+<td>the box fills and the tick draws in from the left; it gives (90%) while pressed</td>
+</tr>
+<tr>
+<td>Copy</td>
+<td>the chip turns green and its icon becomes a tick for 0.6s, then it goes back (#87)</td>
+</tr>
+<tr>
+<td>Toast</td>
+<td>rises 10px and fades in; after ~4s it fades out and sinks a little</td>
+</tr>
+<tr>
+<td>Fold or accordion step</td>
+<td>the height grows or shrinks in 0.24s and the content fades in; Done folds the step to its summary while the next opens (<code>s4Fold</code>)</td>
+</tr>
+<tr>
+<td>Dialog</td>
+<td>the scrim fades and the dialog grows from 96%; closing fades it out in 0.15s. A phone sheet slides up and slides back down</td>
+</tr>
+<tr>
+<td>Menu</td>
+<td>pops from 97% just under its button</td>
+</tr>
+<tr>
+<td>Segmented control, nav, tabs</td>
+<td>the selection pill glides to the new choice, only after a click; a sideways-scrolling row brings the choice to the middle</td>
+</tr>
+<tr>
+<td>New screen or tab content</td>
+<td>fades in where it is, no slide (#93; <code>.content</code>, <code>.swap</code> / <code>s4Swap</code>)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>Animate only what the user changed. Nothing moves on arrival, resize or font load except a plain fade of new content.</li>
+<li>Never make the keyboard wait: the state changes at once (focus returns as a dialog starts to close; a second click on a fold reverses it half-way), and the animation follows.</li>
+<li>One thing moves at a time per action. No trails, flashes or two-tone sweeps (#74, #78).</li>
+<li>Reduce Motion in the system settings makes everything instant (the CSS block and <code>s4Still()</code> in the scripts).</li>
 </ul>
 <h2 id="layouts">Layouts</h2>
 <p>Pick one per app; never mix two systems in one app.</p>
@@ -442,6 +503,7 @@
 - Let the user review decisions one at a time ("Review 39 Suggestions", not "Accept All") (#70).
 - Motion only answers the user's action: no slide when a screen opens, no two-tone trail, no flash (#74, #78, #93).
 - On a phone, nothing that looks like a button may be inert: show plain text instead (#183).</p>
+<p><strong>Motion:</strong> quiet and Apple-like (option B of the motion samples): press shrinks to 97%, ticks draw in, folds and dialogs grow and shrink, the pill glides, new content fades in without moving. No bounce.</p>
 <p><strong>Process:</strong> for any visible change that isn't obvious, show a draft or 2–3 lettered samples on real content first, and build the pick (#75, #81, #97, #102, #110, #124). Settle tricky details (brackets, count-pill centring) with measured checks, not by eye (#102, #125, #69).</p>
 <h2 id="what-changed-in-20">What changed in 2.0</h2>
 <p>From the review of the Bank Reconciliation app against 1.x:</p>
