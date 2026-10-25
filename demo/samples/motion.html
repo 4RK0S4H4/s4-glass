@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en" data-m="b">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Motion Samples · S4 Glass</title>
+<script data-s4 src="../../toolkit/s4.js"></script>
+<link data-s4 rel="stylesheet" href="../../toolkit/fonts.css">
+<link data-s4 rel="stylesheet" href="../../toolkit/s4.css">
+<style>
+  :root { --accent: #ce0057; --accent-2: #8a0069; --accent-light: #ff5c9d; }
+
+  /* ---- the three options: same moments, different timing ---- */
+  [data-m="a"] { --m-ease: var(--ease); --m-fast: .12s; --m-mid: .18s; --m-slow: .24s; --m-press: 1; }
+  [data-m="b"] { --m-ease: cubic-bezier(.25, 1, .5, 1); --m-fast: .1s; --m-mid: .2s; --m-slow: .24s; --m-press: .97; }   /* a spring with no bounce */
+  [data-m="c"] { --m-ease: cubic-bezier(.16, 1, .3, 1); --m-fast: .1s; --m-mid: .22s; --m-slow: .25s; --m-press: .96; }   /* softer, longer settle */
+
+  .g-bar { position: sticky; top: 0; z-index: var(--z-bar); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); padding: 10px var(--s-6); padding-top: max(10px, env(safe-area-inset-top)); border-bottom: 1px solid var(--border); background: var(--bar-bg); -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--sat)); backdrop-filter: blur(var(--blur)) saturate(var(--sat)); }
+  .g-bar .title { margin-right: auto; }
+  .g-main { display: flex; flex-direction: column; gap: var(--s-10); padding-top: var(--s-8); padding-bottom: var(--s-16); }
+  .g-sec > h2 { margin: 0 0 var(--s-1); font-size: var(--fs-h2); }
+  .g-sec > p { margin: 0 0 var(--s-4); color: var(--text2); max-width: 70ch; }
+  .lede { margin: 0; color: var(--text2); max-width: 70ch; }
+  .demo-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
+  .opt-note { margin: var(--s-3) 0 0; padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--well); color: var(--text2); font-size: var(--fs-sm); max-width: 70ch; }
+  .opt-note b { color: var(--text); }
+  [data-m="a"] .opt-note:not([data-for="a"]), [data-m="b"] .opt-note:not([data-for="b"]), [data-m="c"] .opt-note:not([data-for="c"]) { display: none; }
+  .panel-box { min-height: 132px; }
+  .kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); }
+  .kpis div { display: flex; flex-direction: column; gap: 2px; } .kpis small { color: var(--text3); font-size: var(--fs-xs); } .kpis b { font-size: var(--fs-title); }
+  .rule-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--s-2); }
+  .rule-list li { display: flex; justify-content: space-between; gap: var(--s-3); } .rule-list span:last-child { color: var(--text3); }
+
+  /* ---- 1. press and feedback ---- */
+  [data-m] .btn, [data-m] .fchip { transition: background-color .15s, color .15s, border-color .15s, box-shadow .15s, transform var(--m-mid) var(--m-ease); }
+  [data-m="b"] .btn:active:not(:disabled), [data-m="c"] .btn:active:not(:disabled),
+  [data-m="b"] .fchip:active, [data-m="c"] .fchip:active, [data-m="b"] .copy:active, [data-m="c"] .copy:active { transform: scale(var(--m-press)); transition-duration: .15s, .15s, .15s, .15s, var(--m-fast); }
+  [data-m="b"] .copy, [data-m="c"] .copy { transition: background-color .15s, color .15s, border-color .15s, transform var(--m-mid) var(--m-ease); }
+
+  [data-m] .switch .track { transition: background-color var(--m-mid) var(--m-ease); }
+  [data-m] .switch .track::after { transition: transform var(--m-mid) var(--m-ease), width var(--m-mid) var(--m-ease); }
+  [data-m="b"] .switch:active .track::after, [data-m="c"] .switch:active .track::after { width: 20px; }   /* the thumb stretches while held, like iOS */
+  [data-m="b"] .switch:active input:checked + .track::after, [data-m="c"] .switch:active input:checked + .track::after { transform: translateX(10px); }
+
+  [data-m="b"] input[type=checkbox]:not(.switch input)::after, [data-m="c"] input[type=checkbox]:not(.switch input)::after { transform: none; opacity: 1; clip-path: inset(0 100% 0 0); transition: clip-path var(--m-mid) var(--m-ease); }
+  [data-m="b"] input[type=checkbox]:not(.switch input):checked::after, [data-m="c"] input[type=checkbox]:not(.switch input):checked::after { clip-path: inset(0 0 0 0); }   /* the tick draws in */
+  [data-m="b"] input[type=checkbox]:not(.switch input):active, [data-m="c"] input[type=checkbox]:not(.switch input):active { transform: scale(.9); }
+  [data-m="b"] input[type=checkbox]:not(.switch input), [data-m="c"] input[type=checkbox]:not(.switch input) { transition: background-color .14s ease-out, border-color .14s ease-out, transform var(--m-mid) var(--m-ease); }
+
+  .copy .ok-ic { display: none; }
+  [data-m="b"] .copy.done .cp-ic, [data-m="c"] .copy.done .cp-ic { display: none; }
+  [data-m="b"] .copy.done .ok-ic, [data-m="c"] .copy.done .ok-ic { display: block; color: var(--ok); opacity: 1; animation: m-tick var(--m-mid) var(--m-ease); }
+  @keyframes m-tick { from { opacity: 0; scale: .6; } }
+
+  [data-m="b"] .toast, [data-m="c"] .toast { animation: m-rise var(--m-slow) var(--m-ease); }
+  .toast.leaving { animation: m-sink .16s ease-in forwards !important; }
+  @keyframes m-rise { from { opacity: 0; translate: 0 10px; scale: .98; } }
+  @keyframes m-sink { to { opacity: 0; translate: 0 6px; } }
+
+  /* ---- 2. expand and collapse ---- */
+  .steps > .fold > summary::after { transition: transform var(--m-mid) var(--m-ease); }
+  .steps > .fold > summary::before { transition: background-color var(--m-mid), color var(--m-mid); }
+  .fold.done .sec-sub { color: var(--text3); }
+  [data-m="b"] .modal, [data-m="c"] .modal { animation: m-dlg-in var(--m-slow) var(--m-ease); }
+  [data-m="b"] .scrim, [data-m="c"] .scrim { animation: s4-fade var(--m-mid) ease-out; }
+  .scrim.closing { animation: m-out .15s ease-in forwards !important; pointer-events: none; }
+  .scrim.closing .modal { animation: m-dlg-out .15s ease-in forwards !important; }
+  @keyframes m-dlg-in { from { opacity: 0; scale: .96; } }
+  @keyframes m-dlg-out { to { opacity: 0; scale: .98; } }
+  @keyframes m-out { to { opacity: 0; } }
+  @media (max-width: 760px) {
+    [data-m="b"] .modal, [data-m="c"] .modal { animation: s4-up var(--m-slow) var(--m-ease); }
+    .scrim.closing .modal { animation: m-sheet-out .2s ease-in forwards !important; }
+    @keyframes m-sheet-out { to { translate: 0 100%; } }
+  }
+
+  /* ---- 3. switching ---- */
+  [data-m] .seg.slide-ready::before { transition: transform var(--m-slow) var(--m-ease), width var(--m-slow) var(--m-ease), height var(--m-slow) var(--m-ease), scale var(--m-mid) var(--m-ease); }
+  [data-m="c"] .seg.pressing::before { scale: .95; }   /* the pill gives a little under the finger, like iOS */
+  [data-m="a"] .panel-box > .in { animation: s4-in .22s var(--ease); }
+  [data-m="b"] .panel-box > .in { animation: s4-fade var(--m-mid) ease-out; }
+  [data-m="c"] .panel-box > .in { animation: m-blur-in var(--m-slow) var(--m-ease); }
+  @keyframes m-blur-in { from { opacity: 0; filter: blur(4px); } }
+  .chip-row { max-width: 100%; }
+
+  @media (max-width: 760px) { .g-bar { padding-inline: var(--s-4); } .g-bar .title { flex-basis: 100%; } .kpis { grid-template-columns: 1fr 1fr; } }
+</style>
+<script data-s4 src="../../toolkit/icons.js"></script>
+</head>
+<body>
+<div class="g-bar">
+  <span class="title">Motion Samples</span>
+  <div class="seg" id="opt" data-manual role="group" aria-label="Option"><button type="button" data-v="a">A · Today</button><button type="button" class="on" data-v="b">B · Apple Quiet</button><button type="button" data-v="c">C · Softer</button></div>
+  <div class="seg" id="theme" data-manual role="group" aria-label="Theme"><button type="button" data-v="light">Light</button><button type="button" data-v="dark">Dark</button><button type="button" data-v="auto">Auto</button></div>
+</div>
+
+<main class="container g-main">
+  <section class="g-sec">
+    <p class="lede">Pick A, B or C at the top, then try each part below. All three stay inside the rules already settled: 150–250 ms, easing out, only what you touched moves, nothing blinks, and nothing waits for an animation before it takes the next key. With Reduce Motion on in your phone's settings, everything below is instant.</p>
+  </section>
+
+  <section class="g-sec">
+    <h2>1. Feedback on Actions</h2>
+    <p>Press the buttons and chips, flip the switches, tick the boxes, copy the amount, and archive to see the undo toast.</p>
+    <div class="card stack">
+      <div class="demo-row">
+        <button class="btn primary" type="button">Save Rule</button>
+        <button class="btn" type="button"><svg data-ic="download"></svg>Export Unmatched</button>
+        <button class="btn icon" type="button" aria-label="Refresh"><svg data-ic="refresh"></svg></button>
+        <button class="btn subtle" type="button" id="archive"><svg data-ic="box"></svg>Archive</button>
+      </div>
+      <div class="demo-row">
+        <label class="switch"><input type="checkbox" checked><span class="track"></span>Auto-Suggest</label>
+        <label class="switch"><input type="checkbox"><span class="track"></span>Test Mode</label>
+        <label class="chk"><input type="checkbox" checked>Payroll</label>
+        <label class="chk"><input type="checkbox">Benefits</label>
+        <label class="chk"><input type="checkbox">Transfers</label>
+      </div>
+      <div class="demo-row">
+        <button class="copy" type="button" data-copy="-84105.03"><span><span class="brk">(</span>84,105.03<span class="brk">)</span></span><svg class="cp-ic" data-ic="copy"></svg><svg class="ok-ic" data-ic="check"></svg></button>
+        <button class="fchip" type="button" aria-pressed="true">Dana</button>
+        <button class="fchip" type="button" aria-pressed="false">Lee</button>
+        <button class="fchip" type="button" aria-pressed="false">Unassigned</button>
+      </div>
+    </div>
+    <p class="opt-note" data-for="a"><b>A · Today.</b> Buttons dip 1px. The switch slides in 0.15 s. The tick pops in with a slight overshoot. Copy turns green for 0.6 s. The toast fades up and disappears all at once.</p>
+    <p class="opt-note" data-for="b"><b>B · Apple Quiet.</b> Buttons and chips shrink to 97% under your finger and settle back. The switch thumb stretches while you hold it, as on iOS. The tick draws in from left to right. Copy turns green for 0.6 s and the icon becomes a tick. The toast rises a little, then fades away.</p>
+    <p class="opt-note" data-for="c"><b>C · Softer.</b> The same as B with a deeper press (96%) and a slower settle at the end of each movement. It feels a bit more physical.</p>
+  </section>
+
+  <section class="g-sec">
+    <h2>2. Expand and Collapse</h2>
+    <p>Open and close the steps, or press Done to fold a step to its summary and open the next one. Then open the dialog. On a phone it's a bottom sheet.</p>
+    <div class="grid-auto" style="--min: 320px">
+      <div class="card flush steps" id="steps">
+        <details class="fold" open><summary><b>Fill In the Entry</b><span class="sec-sub" data-done="GL 61500000 · Benefits Funding"></span></summary><div class="fold-body stack"><p class="m-0 c-text2">Northwind Benefits funding for October, 536.90 out of the operating account.</p><div><button class="btn primary sm" type="button" data-done>Done</button></div></div></details>
+        <details class="fold"><summary><b>Copy Into the Ledger</b><span class="sec-sub" data-done="Copied 3 values"></span></summary><div class="fold-body stack"><button class="copy" type="button" data-copy="10/31/2026"><span>10/31/2026</span><svg class="cp-ic" data-ic="copy"></svg><svg class="ok-ic" data-ic="check"></svg></button><div class="keys"><span class="kh"><span class="kbd">J</span>Journal Entry</span><span class="kh"><span class="kbd">Enter ↵</span>Match</span></div><div><button class="btn primary sm" type="button" data-done>Done</button></div></div></details>
+        <details class="fold"><summary><b>Enter the Document Number</b><span class="sec-sub" data-done="Document 4900021877"></span></summary><div class="fold-body stack"><p class="m-0 c-text2">The number the ledger gave the entry.</p><div><button class="btn primary sm" type="button" data-done>Done</button></div></div></details>
+      </div>
+      <div class="card stack">
+        <p class="m-0 c-text2">Dialogs open from the middle of the screen and close quickly. A phone sheet slides up and slides back down.</p>
+        <div class="demo-row"><button class="btn" type="button" data-open="dlg">Open a Dialog</button><button class="btn subtle" type="button" id="reset">Reset the Steps</button></div>
+      </div>
+    </div>
+    <p class="opt-note" data-for="a"><b>A · Today.</b> A step opens and closes at once, and only the arrow turns. A dialog fades up when it opens and vanishes when it closes.</p>
+    <p class="opt-note" data-for="b"><b>B · Apple Quiet.</b> A step grows and shrinks in 0.24 s, and its content fades in as it opens. Done folds the step to its summary while the next one opens. A dialog grows from 96% as it fades in, then fades out in 0.15 s. A sheet slides back down. You can type or click again right away.</p>
+    <p class="opt-note" data-for="c"><b>C · Softer.</b> The same as B with a longer, gentler finish.</p>
+  </section>
+
+  <section class="g-sec">
+    <h2>3. Switching Tabs and Chips</h2>
+    <p>Switch between the tabs, then pick a month from the chip row. On a phone the row scrolls sideways.</p>
+    <div class="card stack">
+      <div class="seg" id="tabs" data-manual role="group" aria-label="View"><button type="button" class="on" data-p="0">Overview</button><button type="button" data-p="1">Transactions</button><button type="button" data-p="2">Rules</button></div>
+      <div class="panel-box" id="panels"></div>
+      <div class="seg scroll chip-row" id="months" data-manual role="group" aria-label="Month"><button type="button">Jan</button><button type="button">Feb</button><button type="button">Mar</button><button type="button">Apr</button><button type="button">May</button><button type="button">Jun</button><button type="button">Jul</button><button type="button">Aug</button><button type="button">Sep</button><button type="button" class="on">Oct</button><button type="button">Nov</button><button type="button">Dec</button></div>
+    </div>
+    <p class="opt-note" data-for="a"><b>A · Today.</b> The pill slides in 0.24 s, and the new content fades up 6px.</p>
+    <p class="opt-note" data-for="b"><b>B · Apple Quiet.</b> The pill glides and slows down as it arrives. The new content fades in without moving. The chosen month scrolls itself to the middle of the row.</p>
+    <p class="opt-note" data-for="c"><b>C · Softer.</b> As B, plus the pill gives a little while you press it, and the new content comes into focus from a light blur, as in iOS.</p>
+  </section>
+</main>
+
+<div class="scrim" id="dlg" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="dlg-h"><div class="grab"></div>
+  <header><h2 id="dlg-h">Unmatch these lines?</h2><button class="btn icon subtle" type="button" data-close aria-label="Close"><svg data-ic="close-circle"></svg></button></header>
+  <div class="body"><p class="m-0">Match 40 goes back to Still to Match: one Bank Transaction and two ledger lines. You can match them again later.</p></div>
+  <footer><button class="btn" type="button" data-close>Cancel</button><button class="btn primary" type="button" data-close>Unmatch</button></footer></div></div>
+
+<script>
+  var root = document.documentElement, still = matchMedia("(prefers-reduced-motion: reduce)");
+  function m() { return root.getAttribute("data-m"); }
+  function moving() { return m() !== "a" && !still.matches; }
+  function css(v) { return getComputedStyle(root).getPropertyValue(v).trim(); }
+  function ms(v) { return parseFloat(css(v)) * 1000; }
+
+  /* top bar: option and theme */
+  function mark(id, v) { document.querySelectorAll("#" + id + " button").forEach(function (b) { b.classList.toggle("on", b.dataset.v === v); }); }
+  var th = "auto"; try { th = localStorage.getItem("s4-theme") || "auto"; } catch (e) {} mark("theme", th);
+  document.getElementById("theme").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; s4Theme(b.dataset.v); mark("theme", b.dataset.v); });
+  var opt = document.getElementById("opt"), optPlace;
+  try { var saved = sessionStorage.getItem("s4-motion"); if (saved) { root.setAttribute("data-m", saved); mark("opt", saved); } } catch (e) {}
+  opt.addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; root.setAttribute("data-m", b.dataset.v); mark("opt", b.dataset.v);
+    try { sessionStorage.setItem("s4-motion", b.dataset.v); } catch (x) {} optPlace(true); });
+
+  /* toast: B and C fade it out instead of removing it at once */
+  document.getElementById("archive").addEventListener("click", function () {
+    s4Toast("Archived October", { action: "Undo", ms: 4000 });
+    var t = document.querySelector(".toast[data-s4]"); if (!t || !moving()) return;
+    setTimeout(function () { t.classList.add("leaving"); }, 3800);
+  });
+
+  document.addEventListener("click", function (e) {
+    var c = e.target.closest(".fchip"); if (c) c.setAttribute("aria-pressed", c.getAttribute("aria-pressed") !== "true");
+  });
+
+  /* folds: height animates in B and C; the open state changes at once so keys never wait */
+  function fold(d, open) {
+    d._want = open; var body = d.querySelector(".fold-body");
+    if (d._a) { d._a.cancel(); d._a = null; }
+    body.getAnimations().forEach(function (x) { x.cancel(); });
+    if (!moving()) { d.open = open; return; }
+    var from = d.getBoundingClientRect().height;
+    d.open = false; var shut = d.getBoundingClientRect().height; d.open = true;
+    var full = d.getBoundingClientRect().height, to = open ? full : shut, dur = ms("--m-slow"), ease = css("--m-ease");
+    if (Math.abs(from - to) < 1) { d.open = open; return; }
+    d.style.overflow = "clip";
+    d._a = d.animate({ height: [from + "px", to + "px"] }, { duration: dur, easing: ease });
+    body.animate({ opacity: open ? [0, 1] : [1, 0] }, { duration: open ? dur : dur * .6, easing: "ease-out", fill: "forwards" });
+    d._a.onfinish = function () { d._a = null; d.style.overflow = ""; d.open = open; body.getAnimations().forEach(function (x) { x.cancel(); }); };
+  }
+  var steps = document.getElementById("steps");
+  steps.querySelectorAll("summary").forEach(function (s) { s.addEventListener("click", function (e) {
+    e.preventDefault(); var d = s.parentElement; fold(d, !(d._want != null ? d._want : d.open)); }); });   /* a second click mid-way reverses it */
+  steps.addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-done]"); if (!b) return;
+    var cur = b.closest(".fold"), sub = cur.querySelector(".sec-sub"); cur.classList.add("done"); sub.textContent = sub.dataset.done;
+    fold(cur, false); if (cur.nextElementSibling) fold(cur.nextElementSibling, true);
+  });
+  document.getElementById("reset").addEventListener("click", function () {
+    steps.querySelectorAll(".fold").forEach(function (d, i) { d.classList.remove("done"); d.querySelector(".sec-sub").textContent = ""; fold(d, i === 0); });
+  });
+
+  /* dialogs: B and C fade out; focus goes back at once */
+  var _close = window.s4Close;
+  window.s4Close = function (scrim) {
+    if (!moving()) { _close(scrim); return; }
+    if (scrim._s4back && scrim._s4back.focus) scrim._s4back.focus();
+    scrim.classList.add("closing");
+    setTimeout(function () { scrim.hidden = true; scrim.classList.remove("closing"); }, innerWidth <= 760 ? 200 : 150);
+  };
+
+  /* tabs and panels */
+  var PANELS = [
+    '<div class="kpis"><div><small>Still to Match</small><b>43</b></div><div><small>Matched</small><b>3</b></div><div><small>Money In</small><b class="c-ok">300,000.00</b></div></div><p class="c-text2 mb-0">October is 7% matched. 4 suggestions are waiting for a review.</p>',
+    '<ul class="rule-list"><li><span>Northwind Payroll Run 2610</span><span class="num">(84,105.03)</span></li><li><span>Transfer From Savings •••• 4821</span><span class="num">300,000.00</span></li><li><span>Northwind Benefits Funding</span><span class="num">(536.90)</span></li></ul>',
+    '<ul class="rule-list"><li><span>"PAYROLL RUN" → Payroll Clearing</span><span>12 matches</span></li><li><span>"BENEFITS" → Benefits Payable</span><span>4 matches</span></li><li><span>"TRANSFER FROM SAVINGS" → Internal Transfer</span><span>2 matches</span></li></ul>'];
+  var panels = document.getElementById("panels");
+  function show(i, animate) { panels.innerHTML = '<div class="' + (animate ? "in" : "") + '">' + PANELS[i] + "</div>"; }
+  show(0, false);
+  function segWire(box, onPick) {
+    var place = s4Slider(box, "button.on");
+    box.addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b || b.classList.contains("on")) return;
+      box.querySelectorAll("button").forEach(function (x) { x.classList.toggle("on", x === b); }); place(true); onPick(b); });
+    box.addEventListener("pointerdown", function (e) { if (e.target.closest("button.on")) box.classList.add("pressing"); });
+    ["pointerup", "pointerleave", "pointercancel"].forEach(function (t) { box.addEventListener(t, function () { box.classList.remove("pressing"); }); });
+    return place;
+  }
+  optPlace = s4Slider(opt, "button.on");
+  segWire(document.getElementById("tabs"), function (b) { show(+b.dataset.p, true); });
+  var months = document.getElementById("months");
+  segWire(months, function (b) { if (moving()) { var r = months.getBoundingClientRect(), x = b.offsetLeft - (r.width - b.offsetWidth) / 2; months.scrollTo({ left: x, behavior: "smooth" }); } });
+  months.scrollLeft = months.querySelector(".on").offsetLeft - (months.clientWidth - months.querySelector(".on").offsetWidth) / 2;
+</script>
+</body>
+</html>
