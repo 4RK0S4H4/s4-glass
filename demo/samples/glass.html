@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en" data-g="b">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Glass Samples · S4 Glass</title>
+<script data-s4 src="../../toolkit/s4.js"></script>
+<link data-s4 rel="stylesheet" href="../../toolkit/fonts.css">
+<link data-s4 rel="stylesheet" href="../../toolkit/s4.css">
+<style>
+  :root { --accent: #ce0057; --accent-2: #8a0069; --accent-light: #ff5c9d; }
+
+  /* ---- the materials of each option: thin (bars), regular (cards, nav), thick (dialogs, sheets, toasts) ---- */
+  [data-g="a"] { --m-thin: var(--bar-bg); --m-reg: var(--glass); --m-thick: var(--modal-bg); --b-thin: var(--blur); --b-reg: var(--blur); --b-thick: var(--blur); --s-all: var(--sat); }
+  [data-g="b"] { --m-thin: rgba(255,255,255,.55); --m-reg: rgba(255,255,255,.66); --m-thick: rgba(255,255,255,.86); --b-thin: 20px; --b-reg: 24px; --b-thick: 32px; --s-all: 180%;
+    --page: radial-gradient(1200px 700px at 100% -10%, color-mix(in srgb, var(--accent) 6%, transparent), transparent 60%), radial-gradient(1000px 700px at -10% 110%, color-mix(in srgb, var(--accent-2) 5%, transparent), transparent 60%), var(--bg) fixed; }
+  [data-g="c"] { --m-thin: rgba(255,255,255,.36); --m-reg: rgba(255,255,255,.48); --m-thick: rgba(255,255,255,.72); --b-thin: 28px; --b-reg: 28px; --b-thick: 36px; --s-all: 200%;
+    --page: radial-gradient(1100px 700px at 100% -10%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 60%), radial-gradient(1000px 700px at -10% 110%, color-mix(in srgb, var(--accent-2) 10%, transparent), transparent 60%), var(--bg) fixed; }
+  [data-theme="dark"][data-g="b"] { --m-thin: color-mix(in srgb, #121212 62%, transparent); --m-reg: rgba(255,255,255,.05); --m-thick: color-mix(in srgb, #181818 84%, transparent); --b-thin: 24px; --b-reg: 30px; --b-thick: 36px; --s-all: 170%; --page: var(--page-dark); }
+  [data-theme="dark"][data-g="c"] { --m-thin: color-mix(in srgb, #121212 42%, transparent); --m-reg: rgba(255,255,255,.07); --m-thick: color-mix(in srgb, #181818 66%, transparent); --b-thin: 30px; --b-reg: 32px; --b-thick: 40px; --s-all: 190%; --page: var(--page-dark-strong); }
+  [data-theme="dark"] { --page-dark: radial-gradient(1400px 900px at 100% -10%, var(--bloom-a), transparent 60%), radial-gradient(1200px 800px at -10% 115%, var(--bloom-b), transparent 60%), linear-gradient(165deg, var(--page-1) 0%, #0b0b0b 55%, var(--page-3) 100%) fixed;
+    --page-dark-strong: radial-gradient(1400px 900px at 100% -10%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 60%), radial-gradient(1200px 800px at -10% 115%, color-mix(in srgb, var(--accent-2) 15%, transparent), transparent 60%), linear-gradient(165deg, var(--page-1) 0%, #0b0b0b 55%, var(--page-3) 100%) fixed; }
+
+  .thin  { background: var(--m-thin);  -webkit-backdrop-filter: blur(var(--b-thin)) saturate(var(--s-all));  backdrop-filter: blur(var(--b-thin)) saturate(var(--s-all)); }
+  .reg   { background: var(--m-reg);   -webkit-backdrop-filter: blur(var(--b-reg)) saturate(var(--s-all));   backdrop-filter: blur(var(--b-reg)) saturate(var(--s-all)); }
+  .thick { background: var(--m-thick); -webkit-backdrop-filter: blur(var(--b-thick)) saturate(var(--s-all)); backdrop-filter: blur(var(--b-thick)) saturate(var(--s-all)); }
+  .g-bar.thin, .f .topbar, .f .tabbar-x { background: var(--m-thin); }
+  .f .card, .f .nav { background: var(--m-reg); }
+  [data-g] .modal { background: var(--m-thick); -webkit-backdrop-filter: blur(var(--b-thick)) saturate(var(--s-all)); backdrop-filter: blur(var(--b-thick)) saturate(var(--s-all)); }
+  [data-g] .toast { background: color-mix(in srgb, #161616 var(--toast-mix, 88%), transparent); }
+  [data-g="c"] { --toast-mix: 74%; }
+
+  .g-bar { position: sticky; top: 0; z-index: var(--z-bar); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); padding: 10px var(--s-6); padding-top: max(10px, env(safe-area-inset-top)); border-bottom: 1px solid var(--border); }
+  .g-bar .title { margin-right: auto; }
+  .g-main { display: flex; flex-direction: column; gap: var(--s-10); padding-top: var(--s-8); padding-bottom: var(--s-16); }
+  .g-sec > h2 { margin: 0 0 var(--s-1); font-size: var(--fs-h2); }
+  .g-sec > p, .lede { margin: 0 0 var(--s-4); color: var(--text2); max-width: 70ch; }
+  .opt-note { margin: var(--s-3) 0 0; padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--well); color: var(--text2); font-size: var(--fs-sm); max-width: 70ch; }
+  .opt-note b { color: var(--text); }
+  [data-g="a"] .opt-note:not([data-for="a"]), [data-g="b"] .opt-note:not([data-for="b"]), [data-g="c"] .opt-note:not([data-for="c"]) { display: none; }
+
+  /* ---- 1. the materials over a busy strip ---- */
+  .strip { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-3); padding: var(--s-6) var(--s-4); border-radius: var(--r-xl); overflow: clip; isolation: isolate; }
+  .strip::before { content: ""; position: absolute; inset: 0; z-index: -1; background:
+      repeating-linear-gradient(115deg, var(--accent) 0 26px, transparent 26px 54px, var(--accent-2) 54px 70px, transparent 70px 110px, var(--ok-bar) 110px 122px, transparent 122px 160px, var(--warn-bar) 160px 170px, transparent 170px 210px); opacity: .85; }
+  .strip .busy { position: absolute; inset: 0; z-index: -1; display: flex; flex-direction: column; justify-content: space-around; padding: 0 var(--s-4); font-size: var(--fs-title); font-weight: 600; color: var(--text); opacity: .7; white-space: nowrap; overflow: clip; }
+  .mat { display: flex; flex-direction: column; gap: 4px; padding: var(--s-3); border-radius: var(--r); border: 1px solid var(--border); box-shadow: var(--shadow-1); }
+  .mat b { font-size: var(--fs-ui); } .mat .t2 { color: var(--text2); font-size: var(--fs-sm); } .mat .t3 { color: var(--text3); font-size: var(--fs-xs); }
+  .mat.solid { background: var(--pop-bg); }
+
+  /* ---- 2. a small app: content scrolls under the bars in B and C ---- */
+  .f { position: relative; display: grid; grid-template-columns: 200px minmax(0, 1fr); height: 560px; border: 1px solid var(--border2); border-radius: var(--r-xl); overflow: clip; background: var(--page); box-shadow: var(--shadow-1); isolation: isolate; }
+  .f .nav { border-right: 1px solid var(--border); }
+  .f-main { position: relative; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
+  .f .topbar { z-index: 2; -webkit-backdrop-filter: blur(var(--b-thin)) saturate(var(--s-all)); backdrop-filter: blur(var(--b-thin)) saturate(var(--s-all)); }
+  .f .topbar h1 { font-size: var(--fs-title); }
+  .f-scroll { flex: 1; min-height: 0; overflow: auto; padding: var(--s-4) var(--s-5) var(--s-6); display: flex; flex-direction: column; gap: var(--s-4); }
+  [data-g="b"] .f .topbar, [data-g="c"] .f .topbar { position: absolute; inset: 0 0 auto 0; }
+  [data-g="b"] .f-scroll, [data-g="c"] .f-scroll { padding-top: calc(var(--bar-h, 64px) + var(--s-4)); }
+  .tabbar-x { display: none; }
+  .chart { display: flex; align-items: flex-end; gap: 6px; height: 120px; padding-top: var(--s-2); }
+  .chart i { flex: 1; border-radius: 4px 4px 0 0; background: var(--accent-bar); }
+  .chart i.on { background: var(--btn); }
+  .rows { margin: 0; padding: 0; list-style: none; }
+  .rows li { display: flex; align-items: center; gap: var(--s-3); padding: 10px 0; border-top: 1px solid var(--border); }
+  .rows li:first-child { border-top: 0; }
+  .rows .grow { flex: 1; min-width: 0; } .rows small { display: block; color: var(--text3); font-size: var(--fs-xs); }
+  .stats3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); }
+
+  @media (max-width: 760px) {
+    .g-bar { padding-inline: var(--s-4); } .g-bar .title { flex-basis: 100%; }
+    .strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .f { grid-template-columns: minmax(0, 1fr); height: 600px; }
+    .f .nav { display: none; }
+    .f .topbar .sub { display: none; }
+    .tabbar-x { display: flex; position: absolute; inset: auto 0 0 0; z-index: 2; justify-content: space-around; padding: 6px 0 8px; border-top: 1px solid var(--border); -webkit-backdrop-filter: blur(var(--b-thin)) saturate(var(--s-all)); backdrop-filter: blur(var(--b-thin)) saturate(var(--s-all)); }
+    .tabbar-x a { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: var(--fs-xs); color: var(--text2); text-decoration: none; }
+    .tabbar-x a.on { color: var(--text); font-weight: 600; }
+    .tabbar-x svg { width: 22px; height: 22px; }
+    [data-g="a"] .f-main { padding-bottom: 58px; } [data-g="a"] .tabbar-x { background: var(--tabbar-bg); }
+    .f-scroll { padding-bottom: 78px; padding-inline: var(--s-4); }
+    .stats3 { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+<script data-s4 src="../../toolkit/icons.js"></script>
+</head>
+<body>
+<div class="g-bar thin">
+  <span class="title">Glass Samples</span>
+  <div class="seg" id="opt" data-manual role="group" aria-label="Option"><button type="button" data-v="a">A · Today</button><button type="button" class="on" data-v="b">B · Apple Ladder</button><button type="button" data-v="c">C · Clearer</button></div>
+  <div class="seg" id="theme" data-manual role="group" aria-label="Theme"><button type="button" data-v="light">Light</button><button type="button" data-v="dark">Dark</button><button type="button" data-v="auto">Auto</button></div>
+</div>
+
+<main class="container g-main">
+  <section class="g-sec">
+    <p class="lede">Pick A, B or C at the top, and look at each one in light and dark. Scroll the small app so its content passes under the top bar (and, on a phone, the tab bar). Menus stay solid in all three (#56), and none has the white shine (#94, #99, #191).</p>
+  </section>
+
+  <section class="g-sec">
+    <h2>1. The Materials</h2>
+    <p>Each panel sits over a busy stripe so you can see how much shows through, and whether all three text greys stay readable.</p>
+    <div class="strip">
+      <div class="busy" aria-hidden="true"><span>Northwind Payroll (84,105.03) · Transfer 300,000.00 · Benefits (536.90)</span><span>Matched 3 · Still to Match 43 · October 2026 · Review 4 Suggestions</span><span>General Ledger 61500000 · Vendor ID 100482 · Export Unmatched</span></div>
+      <div class="mat thin"><b>Thin</b><span class="t2">Top bar, tab bar</span><span class="t3">Third-level text</span></div>
+      <div class="mat reg"><b>Regular</b><span class="t2">Cards, side nav</span><span class="t3">Third-level text</span></div>
+      <div class="mat thick"><b>Thick</b><span class="t2">Dialogs, sheets</span><span class="t3">Third-level text</span></div>
+      <div class="mat solid"><b>Solid</b><span class="t2">Menus, lists</span><span class="t3">Third-level text</span></div>
+    </div>
+    <p class="opt-note" data-for="a"><b>A · Today.</b> There are two glass levels, 62% and 82% white in light and 4.5% white in dark, both with the same blur. The light page is flat grey, so in light mode the glass mostly reads as white.</p>
+    <p class="opt-note" data-for="b"><b>B · Apple Ladder.</b> There are three levels, as on iOS and macOS. Thin (55%) is for bars that content scrolls under. Regular (66%) is for cards and the nav. Thick (86%, more blur) is for dialogs and sheets. The light page gets a faint wash of the accent so the glass has something to frost. In dark, bars become a smoky dark glass rather than white.</p>
+    <p class="opt-note" data-for="c"><b>C · Clearer.</b> The same three levels, more see-through (36 / 48 / 72%), with more blur and a stronger colour wash behind. This is closer to the newest iOS look. It's the most glassy, but the third-level grey gets weaker over busy content.</p>
+  </section>
+
+  <section class="g-sec">
+    <h2>2. In an App</h2>
+    <p>Scroll inside the frame. Open the dialog, the menu and the toast to see the thick material and the solid menu over content.</p>
+    <div class="f" id="frame">
+      <nav class="nav" aria-label="Sample">
+        <a class="item active" href="#" aria-current="page"><svg data-ic-duo="widget-5"></svg><span class="lbl">Dashboard</span></a>
+        <a class="item" href="#"><svg data-ic-duo="checklist-minimalistic"></svg><span class="lbl">Transactions</span><span class="count">43</span></a>
+        <a class="item" href="#"><svg data-ic-duo="document-text"></svg><span class="lbl">Rules</span></a>
+        <a class="item" href="#"><svg data-ic-duo="settings"></svg><span class="lbl">Settings</span></a>
+      </nav>
+      <div class="f-main">
+        <header class="topbar" id="fbar">
+          <div class="ttl"><h1>October 2026</h1><span class="sub">Northwind Operating •••• 2210</span></div>
+          <div class="actions">
+            <button class="btn" type="button" data-menu="m1" aria-haspopup="menu" aria-expanded="false"><svg data-ic="diskette"></svg>Backup</button>
+            <button class="btn primary" type="button" data-open="dlg">Unmatch</button>
+          </div>
+        </header>
+        <div class="f-scroll" id="fscroll">
+          <div class="stats3">
+            <div class="card stat"><span>Still to Match</span><b>43</b></div>
+            <div class="card stat"><span>Matched</span><b>3</b></div>
+            <div class="card stat"><span>Money In</span><b class="c-ok">300,000.00</b></div>
+          </div>
+          <div class="card"><b>Daily Volume</b><div class="chart" aria-hidden="true"><i style="height:40%"></i><i style="height:62%"></i><i style="height:35%"></i><i style="height:80%"></i><i style="height:55%"></i><i class="on" style="height:96%"></i><i style="height:48%"></i><i style="height:70%"></i><i style="height:30%"></i><i style="height:58%"></i><i style="height:76%"></i><i style="height:44%"></i></div></div>
+          <div class="card">
+            <ul class="rows">
+              <li><span class="grow">Northwind Payroll Run 2610<small>Pre-authorized ACH Debit</small></span><span class="badge solid">Suggested</span><span class="num">(84,105.03)</span></li>
+              <li><span class="grow">Transfer From Savings •••• 4821<small>Miscellaneous Credit</small></span><span class="badge warn">To Sort</span><span class="num">300,000.00</span></li>
+              <li><span class="grow">Northwind Benefits Funding<small>Pre-authorized ACH Debit</small></span><span class="badge ok">Matched</span><span class="num">(536.90)</span></li>
+              <li><span class="grow">Contoso Office Supplies<small>Card Purchase</small></span><span class="badge accent">Journal Entry</span><span class="num">(212.40)</span></li>
+              <li><span class="grow">Fabrikam Freight<small>Wire Out</small></span><span class="badge warn">To Sort</span><span class="num">(4,980.00)</span></li>
+              <li><span class="grow">Interest Earned<small>Credit</small></span><span class="badge ok">Matched</span><span class="num">18.22</span></li>
+            </ul>
+          </div>
+          <div class="cluster"><button class="btn" type="button" id="toastBtn">Show a Toast</button></div>
+        </div>
+        <nav class="tabbar-x" aria-label="Sample tabs"><a class="on" href="#"><svg data-ic-duo="widget-5"></svg>Home</a><a href="#"><svg data-ic-duo="checklist-minimalistic"></svg>Match</a><a href="#"><svg data-ic-duo="document-text"></svg>Rules</a><a href="#"><svg data-ic-duo="settings"></svg>Settings</a></nav>
+      </div>
+    </div>
+    <p class="opt-note" data-for="a"><b>A · Today.</b> The content stops at the top bar, so the bar shows nothing behind it. Cards are glass over a flat page.</p>
+    <p class="opt-note" data-for="b"><b>B · Apple Ladder.</b> The content scrolls under the top bar and tab bar, softly frosted, so you can tell there's more. Text on the bars stays at full strength.</p>
+    <p class="opt-note" data-for="c"><b>C · Clearer.</b> As B, with more of the content showing through the bars and cards.</p>
+  </section>
+</main>
+
+<div class="menu" id="m1" role="menu" hidden><button role="menuitem" type="button"><svg data-ic="diskette"></svg><span><b>Save a Backup</b><small>9 changes since the last one</small></span></button><button role="menuitem" type="button"><svg data-ic="history"></svg><span><b>Restore from a Backup…</b></span></button></div>
+<div class="scrim" id="dlg" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="dlg-h"><div class="grab"></div>
+  <header><h2 id="dlg-h">Unmatch these lines?</h2><button class="btn icon subtle" type="button" data-close aria-label="Close"><svg data-ic="close-circle"></svg></button></header>
+  <div class="body"><p class="m-0">Match 40 goes back to Still to Match: one Bank Transaction and two ledger lines. You can match them again later.</p></div>
+  <footer><button class="btn" type="button" data-close>Cancel</button><button class="btn primary" type="button" data-close>Unmatch</button></footer></div></div>
+
+<script>
+  var root = document.documentElement;
+  function mark(id, v) { document.querySelectorAll("#" + id + " button").forEach(function (b) { b.classList.toggle("on", b.dataset.v === v); }); }
+  var th = "auto"; try { th = localStorage.getItem("s4-theme") || "auto"; } catch (e) {} mark("theme", th);
+  document.getElementById("theme").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; s4Theme(b.dataset.v); mark("theme", b.dataset.v); });
+  try { var saved = sessionStorage.getItem("s4-glass-opt"); if (saved) { root.setAttribute("data-g", saved); mark("opt", saved); } } catch (e) {}
+  document.getElementById("opt").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; root.setAttribute("data-g", b.dataset.v); mark("opt", b.dataset.v);
+    try { sessionStorage.setItem("s4-glass-opt", b.dataset.v); } catch (x) {} });
+  document.getElementById("toastBtn").addEventListener("click", function () { s4Toast("Archived October", { action: "Undo" }); });
+  document.querySelectorAll("#frame a").forEach(function (a) { a.addEventListener("click", function (e) { e.preventDefault(); }); });
+  var bar = document.getElementById("fbar"), frame = document.getElementById("frame");
+  function barH() { frame.style.setProperty("--bar-h", bar.offsetHeight + "px"); }
+  barH(); if (window.ResizeObserver) new ResizeObserver(barH).observe(bar);
+</script>
+</body>
+</html>
