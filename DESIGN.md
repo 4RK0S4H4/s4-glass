@@ -8,11 +8,11 @@ Contents: [Principles](#principles) · [Colour](#colour) · [Type and numbers](#
 
 ## Principles
 
-1. **Frosted glass, tinted by the accent.** Cards, the nav, the top bar, fields and dialogs are translucent with a background blur: white at 62% over an off-white page in light mode, white at 4.5% over a near-black gradient in dark mode. Greys, borders and shadows carry a faint tint of the accent, so an emerald app feels green-grey without anything being loudly coloured. `data-neutrals="mono"` turns the tint off.
+1. **Frosted glass, tinted by the accent.** Cards, the nav, the top bar, fields and dialogs are frosted glass, but the material leads: the surface colour (white in light mode, dark grey in dark mode) wins over whatever is underneath, which only shows as a faint tint. Light: bars 90%, cards 82%, nav 80%, dialogs 96%. Dark: bars 90%, cards 80%, nav 80%, dialogs 96%. Blur 28px with no colour boost, so content that slides under a bar is frosted, never a picture. Greys, borders and shadows carry a faint tint of the accent, so an emerald app feels green-grey without anything being loudly coloured. `data-neutrals="mono"` turns the tint off.
 2. **One loud colour.** The accent fills the primary action, the current place (active nav item, selected filter or tile) and things that need a decision. Nowhere else. A mark that repeats (done days in a calendar, ticked cells, chart bars) gets the soft fill (`--tile-on`, `--accent-bar`); solid accent is for the one current or selected thing. If everything is accent, nothing stands out.
 3. **Filled, not outlined.** Hover and selected states are soft fills, never high-contrast accent outlines, double rings or green rings (a soft 35–45% accent line, `--soft-ring`, is fine). Every button-like control hovers with the same faint accent tint; table rows and lists hover and select in neutral grey. Keyboard focus is a thin neutral ring.
-4. **Quiet chrome, readable data.** Inter at 14px, tabular figures on data, one text size inside table cells, sizes from one named scale, corners from one radius scale, spacing from one scale, hairline borders, soft shadows. No emoji as icons.
-5. **Dark mode is glass, not grey.** A near-black gradient with a faint bloom of the two accent colours. In dark mode the accent is for fills only; text and icons use the normal text colours. Only three things glow, faintly: the primary button (a backlight behind it), the active nav item and the selected filter pill.
+4. **Quiet chrome, readable data.** Inter at 14px, tabular figures on data, one text size inside table cells, sizes from one named scale, corners from one radius scale, spacing from one scale, hairline borders, and flat surfaces: no shadow at rest. No emoji as icons.
+5. **Dark mode is dark glass.** A near-black gradient with a faint bloom of the two accent colours, under dark-grey surfaces. In dark mode the accent is for fills only; text and icons use the normal text colours. Only three things glow, faintly: the primary button (a backlight behind it), the active nav item and the selected filter pill.
 6. **Fast and few keystrokes.** One-click chips, segmented filters, keyboard shortcuts shown as keycaps, click-to-copy values, suggestions accepted with Enter.
 7. **Phone to 2560 wide.** Every layout is checked at 390, 1280, 1366, 1920 and 2560. Narrow screens get their own patterns (rail, tab bar, bottom sheets, table rows as cards) through `max-width` rules only, so wide layouts never move.
 8. **Readable for everyone.** WCAG AA contrast against what is actually painted behind the text, in both themes; visible focus; 40px touch targets (44px on phones); reduced motion respected.
@@ -106,7 +106,7 @@ Weights: 400 text, 500 emphasis and nav, 600 labels/titles/buttons, 700 counts, 
 
 - **Spacing** `--s-1…--s-24`: 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 96. Apps use 4–24; web pages use the large steps between sections.
 - **Radii** `--r-xs` 6 (chips, checkboxes), `--r-sm` 8 (small buttons, menu items), `--r-md` 10 (buttons, fields), `--r` 12 (cards, nav items, tiles, menus), `--r-xl` 16 (dialogs, filter pills), `--r-2xl` 24 (bottom sheets, web CTA bands), `--r-pill`. Nested corners get smaller as they go in.
-- **Elevation** `--shadow-1` cards and bars, `--shadow-2` menus and pop-overs, `--shadow-3` dialogs. No white inset "shine" on surfaces (removed in the Bank Rec app, #191); only keycaps keep a highlight.
+- **Elevation** is flat: `--shadow-1` (cards and bars) is `none`; a hairline border and the fill separate them. Shadows are only for what floats over the page: `--shadow-2` menus and pop-overs, `--shadow-3` dialogs (toasts are dark and need none). No white inset "shine" on surfaces (removed in the Bank Rec app, #191); only keycaps keep a highlight.
 - **Motion** `--dur-1` .12s, `--dur-2` .18s, `--dur-3` .24s, `--ease`, `--press` .97. See [Motion](#motion).
 - **Layers** `--z-sticky` 2, `--z-bar` 20, `--z-panel` 40, `--z-modal` 50, `--z-toast` 80, `--z-menu` 130, `--z-tip` 200.
 
@@ -142,7 +142,7 @@ Quiet, in the manner of iOS and macOS: things move only because the user did som
 
 Pick one per app; never mix two systems in one app.
 
-- **App shell** (`.app`): 220px side nav + main column; the top bar and nav stay put and only `.content` scrolls. For many screens.
+- **App shell** (`.app`): 220px side nav + main column; the top bar and nav stay put and only `.content` scrolls, sliding under the top bar (and the tab bar on phones), which hides it behind its material. `s4.js` keeps `--bar-h` in step with the bar. For many screens.
 - **Tabs app**: 2–3 screens as `.seg` tabs in the top bar, no side nav.
 - **Single-page tool**: `.app.solo` (top bar + content, no nav); `.content.center` caps the content at about 1100px.
 - **Phone-first app**: `.app.has-tabbar` with a bottom `.tabbar` on phones and the side nav on desktop.
@@ -240,6 +240,8 @@ Every rule below came from the owner's issues on the Bank Reconciliation app (is
 - Let the user review decisions one at a time ("Review 39 Suggestions", not "Accept All") (#70).
 - Motion only answers the user's action: no slide when a screen opens, no two-tone trail, no flash (#74, #78, #93).
 - On a phone, nothing that looks like a button may be inert: show plain text instead (#183).
+
+**Shadows and glass:** flat, with the material leading (options B and B of the shadow and transparency samples). No shadows at rest; menus, dialogs and toasts keep one because they float. Surfaces are mostly the material colour, 80–96%, with the blur at 28px and no colour boost; content slides under the top and tab bars. Never go more see-through than this: the colour of whatever is underneath must not show through strongly (the earlier, clearer options looked too intense in the top bar).
 
 **Motion:** quiet and Apple-like (option B of the motion samples): press shrinks to 97%, ticks draw in, folds and dialogs grow and shrink, the pill glides, new content fades in without moving. No bounce.
 

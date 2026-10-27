@@ -95,7 +95,7 @@
   &lt;/div&gt;
 &lt;/div&gt;
 </code></pre>
-<p>Wrap nav labels in <code>.lbl</code> so the ≤980px icon rail can hide them. <code>.content.flush</code> removes padding (full-bleed split views); <code>.content.center</code> caps width for single-page tools. A single-page tool with no nav: <code>&lt;div class="app solo"&gt;&lt;div class="main"&gt;…&lt;/div&gt;&lt;/div&gt;</code>.</p>
+<p>The top bar, when it is the first child of <code>.main</code>, floats over the top of <code>.content</code> so content slides under it (frosted); <code>s4.js</code> keeps <code>--bar-h</code> current. With a <code>.banner</code> above it the bar stays in the flow. Wrap nav labels in <code>.lbl</code> so the ≤980px icon rail can hide them. <code>.content.flush</code> removes padding (full-bleed split views); <code>.content.center</code> caps width for single-page tools. A single-page tool with no nav: <code>&lt;div class="app solo"&gt;&lt;div class="main"&gt;…&lt;/div&gt;&lt;/div&gt;</code>.</p>
 <h2 id="phone-tab-bar">Phone tab bar</h2>
 <pre><code class="language-html">&lt;div class=&quot;app has-tabbar&quot;&gt;
   &lt;nav class=&quot;nav&quot;&gt;…&lt;/nav&gt;                 &lt;!-- desktop --&gt;

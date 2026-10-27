@@ -65,15 +65,15 @@
   --z-sticky: 2; --z-bar: 20; --z-panel: 40; --z-modal: 50; --z-toast: 80; --z-menu: 130; --z-tip: 200;
   --nav-w: 220px; --rail-w: 68px; --tabbar-h: 64px; --page-max: 1200px; --form-max: 760px; --prose-max: 68ch;
   --tap: 40px;   /* smallest touch target on touch screens */
-  --blur: 24px; --sat: 150%;
+  --blur: 28px; --sat: 100%;   /* frosting without a colour boost: what is behind a surface is a faint tint, not a picture */
 
   color-scheme: light;
   /* page and glass surfaces */
   --bg: color-mix(in srgb, var(--tint) 1.5%, #f5f5f5); --page: var(--bg);
-  --glass: rgba(255,255,255,.62); --glass2: rgba(255,255,255,.82); --stroke: rgba(255,255,255,.85);
+  --glass: rgba(255,255,255,.82); --glass2: rgba(255,255,255,.92); --stroke: rgba(255,255,255,.85);
   --bg2: var(--glass); --bg3: rgba(255,255,255,.5); --well: var(--bg3);
-  --nav-bg: var(--glass); --tabbar-bg: color-mix(in srgb, var(--bg) 90%, transparent); --bar-bg: var(--glass); --th-bg: var(--glass2); --field-bg: var(--glass2); --panel-bg: var(--bg3);
-  --modal-bg: var(--glass2); --modal-line: var(--stroke); --scrim: rgba(0,0,0,.35);
+  --nav-bg: rgba(255,255,255,.8); --tabbar-bg: var(--bar-bg); --bar-bg: rgba(255,255,255,.9); --th-bg: var(--glass2); --field-bg: var(--glass2); --panel-bg: var(--bg3);
+  --modal-bg: rgba(255,255,255,.96); --modal-line: var(--stroke); --scrim: rgba(0,0,0,.35);
   --pop-bg: #ffffff;   /* menus and drop-down lists: solid */
   --toast-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 7%, #151515) 88%, transparent);
   --tip-bg: color-mix(in srgb, var(--text) 95%, transparent); --tip-line: transparent;
@@ -83,10 +83,11 @@
   --line: color-mix(in srgb, var(--tint2) 43.5%, #656565);
   --border: color-mix(in srgb, var(--line) 13%, transparent); --border2: color-mix(in srgb, var(--line) 22%, transparent);
   --shade: color-mix(in srgb, var(--tint2) 28.5%, #191919); --shade-deep: color-mix(in srgb, var(--tint2) 21%, #0c0c0c);
-  /* elevation: 1 cards and bars · 2 menus and pop-overs · 3 dialogs. No white inset "shine" on surfaces (only keycaps keep one). */
-  --shadow-1: 0 8px 28px color-mix(in srgb, var(--shade) 9%, transparent), 0 1px 2px color-mix(in srgb, var(--shade) 6%, transparent);
+  /* elevation: flat by default. 1 cards and bars: none (a hairline border and the fill separate them) · 2 menus and pop-overs · 3 dialogs.
+     Shadows are for what floats over the page. No white inset "shine" on surfaces (only keycaps keep one). */
+  --shadow-1: none;
   --shadow-2: 0 18px 50px color-mix(in srgb, var(--shade-deep) 22%, transparent);
-  --shadow-3: 0 24px 70px rgba(0,0,0,.35);
+  --shadow-3: 0 20px 56px rgba(0,0,0,.28);
   --mute-bg: color-mix(in srgb, var(--tint) 4%, #f2f2f2);
   /* states: one accent hover tint for every button-like control; rows and selections are neutral */
   --hov: color-mix(in srgb, var(--accent) 7%, transparent); --press: color-mix(in srgb, var(--accent) 13%, transparent);
@@ -127,19 +128,19 @@
 
 /* ---------- 2. dark: two identical blocks (device setting / data-theme="dark") ---------- */
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  color-scheme: dark; --blur: 30px; --sat: 170%;
+  color-scheme: dark; --blur: 28px; --sat: 100%;
   --bg: color-mix(in srgb, var(--tint2) 1.5%, #0a0a0a);
   --page: radial-gradient(1400px 900px at 100% -10%, var(--bloom-a), transparent 60%), radial-gradient(1200px 800px at -10% 115%, var(--bloom-b), transparent 60%), linear-gradient(165deg, var(--page-1) 0%, #0b0b0b 55%, var(--page-3) 100%) fixed;
   --bloom-a: color-mix(in srgb, var(--bloom-1) 11%, transparent); --bloom-b: color-mix(in srgb, var(--bloom-2) 9%, transparent);
   --page-1: color-mix(in srgb, var(--tint2) 2%, #141414); --page-3: color-mix(in srgb, var(--tint2) 1.5%, #0c0c0c);
-  --glass: rgba(255,255,255,.045); --glass2: rgba(255,255,255,.075); --stroke: rgba(255,255,255,.12);
-  --bg2: rgba(255,255,255,.05); --bg3: rgba(255,255,255,.03); --well: rgba(255,255,255,.05);
-  --nav-bg: rgba(255,255,255,.035); --tabbar-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 3%, #141414) 86%, transparent); --bar-bg: rgba(255,255,255,.03); --th-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 2.5%, #191919) 55%, transparent); --field-bg: rgba(255,255,255,.05); --panel-bg: rgba(255,255,255,.025);
-  --modal-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 2.5%, #171717) 78%, transparent); --modal-line: rgba(255,255,255,.10); --scrim: rgba(0,0,0,.45);
+  --glass: rgba(34,34,34,.8); --glass2: rgba(46,46,46,.88); --stroke: rgba(255,255,255,.12);
+  --bg2: var(--glass); --bg3: rgba(255,255,255,.03); --well: rgba(255,255,255,.05);
+  --nav-bg: rgba(28,28,28,.8); --tabbar-bg: var(--bar-bg); --bar-bg: rgba(22,22,22,.9); --th-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 2.5%, #191919) 88%, transparent); --field-bg: rgba(255,255,255,.05); --panel-bg: rgba(255,255,255,.025);
+  --modal-bg: rgba(26,26,26,.96); --modal-line: rgba(255,255,255,.10); --scrim: rgba(0,0,0,.45);
   --pop-bg: color-mix(in srgb, var(--tint2) 3.5%, #191919);
   --toast-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 4%, #191919) 80%, transparent); --tip-bg: rgba(44,44,48,.97); --tip-line: rgba(255,255,255,.14);
   --text: #f2f2f2; --text2: #b9b9b9; --text3: #999999; --border: rgba(255,255,255,.10); --border2: rgba(255,255,255,.17);
-  --shadow-1: 0 6px 28px rgba(0,0,0,.28); --shadow-2: 0 18px 50px rgba(0,0,0,.6); --shadow-3: 0 24px 70px rgba(0,0,0,.5);
+  --shadow-1: none; --shadow-2: 0 18px 50px rgba(0,0,0,.6); --shadow-3: 0 24px 70px rgba(0,0,0,.5);
   --mute-bg: rgba(255,255,255,.07);
   --hov: color-mix(in srgb, var(--accent-light) 11%, transparent); --press: color-mix(in srgb, var(--accent-light) 18%, transparent);
   --bg-hover: rgba(255,255,255,.07);
@@ -165,19 +166,19 @@
   --xl-back: .62;
 } }
 :root[data-theme="dark"] {
-  color-scheme: dark; --blur: 30px; --sat: 170%;
+  color-scheme: dark; --blur: 28px; --sat: 100%;
   --bg: color-mix(in srgb, var(--tint2) 1.5%, #0a0a0a);
   --page: radial-gradient(1400px 900px at 100% -10%, var(--bloom-a), transparent 60%), radial-gradient(1200px 800px at -10% 115%, var(--bloom-b), transparent 60%), linear-gradient(165deg, var(--page-1) 0%, #0b0b0b 55%, var(--page-3) 100%) fixed;
   --bloom-a: color-mix(in srgb, var(--bloom-1) 11%, transparent); --bloom-b: color-mix(in srgb, var(--bloom-2) 9%, transparent);
   --page-1: color-mix(in srgb, var(--tint2) 2%, #141414); --page-3: color-mix(in srgb, var(--tint2) 1.5%, #0c0c0c);
-  --glass: rgba(255,255,255,.045); --glass2: rgba(255,255,255,.075); --stroke: rgba(255,255,255,.12);
-  --bg2: rgba(255,255,255,.05); --bg3: rgba(255,255,255,.03); --well: rgba(255,255,255,.05);
-  --nav-bg: rgba(255,255,255,.035); --tabbar-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 3%, #141414) 86%, transparent); --bar-bg: rgba(255,255,255,.03); --th-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 2.5%, #191919) 55%, transparent); --field-bg: rgba(255,255,255,.05); --panel-bg: rgba(255,255,255,.025);
-  --modal-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 2.5%, #171717) 78%, transparent); --modal-line: rgba(255,255,255,.10); --scrim: rgba(0,0,0,.45);
+  --glass: rgba(34,34,34,.8); --glass2: rgba(46,46,46,.88); --stroke: rgba(255,255,255,.12);
+  --bg2: var(--glass); --bg3: rgba(255,255,255,.03); --well: rgba(255,255,255,.05);
+  --nav-bg: rgba(28,28,28,.8); --tabbar-bg: var(--bar-bg); --bar-bg: rgba(22,22,22,.9); --th-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 2.5%, #191919) 88%, transparent); --field-bg: rgba(255,255,255,.05); --panel-bg: rgba(255,255,255,.025);
+  --modal-bg: rgba(26,26,26,.96); --modal-line: rgba(255,255,255,.10); --scrim: rgba(0,0,0,.45);
   --pop-bg: color-mix(in srgb, var(--tint2) 3.5%, #191919);
   --toast-bg: color-mix(in srgb, color-mix(in srgb, var(--tint2) 4%, #191919) 80%, transparent); --tip-bg: rgba(44,44,48,.97); --tip-line: rgba(255,255,255,.14);
   --text: #f2f2f2; --text2: #b9b9b9; --text3: #999999; --border: rgba(255,255,255,.10); --border2: rgba(255,255,255,.17);
-  --shadow-1: 0 6px 28px rgba(0,0,0,.28); --shadow-2: 0 18px 50px rgba(0,0,0,.6); --shadow-3: 0 24px 70px rgba(0,0,0,.5);
+  --shadow-1: none; --shadow-2: 0 18px 50px rgba(0,0,0,.6); --shadow-3: 0 24px 70px rgba(0,0,0,.5);
   --mute-bg: rgba(255,255,255,.07);
   --hov: color-mix(in srgb, var(--accent-light) 11%, transparent); --press: color-mix(in srgb, var(--accent-light) 18%, transparent);
   --bg-hover: rgba(255,255,255,.07);
@@ -271,7 +272,7 @@ table, input, select, textarea, .num, .mono, .chip, .kbd, .badge, .count, .pill,
    Phone-first app: add .tabbar (section 19) and class "has-tabbar" on .app. */
 .app { display: grid; grid-template-columns: var(--nav-w) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); height: 100vh; height: 100dvh; }
 .app.solo { grid-template-columns: minmax(0, 1fr); }   /* a single-page tool: top bar + content, no nav (add .content.center to cap the width) */
-.main { min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.main { position: relative; min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
 .nav { display: flex; flex-direction: column; gap: 6px; min-width: 0; padding: var(--s-4) var(--s-3); overflow: auto; background: var(--nav-bg); border-right: 1px solid var(--border); }
 .nav .brand { display: flex; align-items: center; gap: 10px; padding: 6px 10px 14px; font-weight: 600; font-size: var(--fs-title); line-height: var(--lh-tight); }
 .nav .brand img, .nav .brand svg { width: 30px; height: 30px; flex: none; }
@@ -288,6 +289,9 @@ table, input, select, textarea, .num, .mono, .chip, .kbd, .badge, .count, .pill,
 .nav .item.active .count { background: rgba(0,0,0,.2); color: #fff; }   /* a darker pill: a white one would drop the label's contrast */
 .nav .foot { margin-top: auto; padding: 8px 10px; border-top: 1px solid var(--border); font-size: var(--fs-xs); color: var(--text2); }
 .topbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: var(--s-3) var(--s-5); padding-top: max(var(--s-3), env(safe-area-inset-top)); border-bottom: 1px solid var(--border); background: var(--bar-bg); overflow-x: clip; }
+.main > .topbar:first-child { position: absolute; inset: 0 0 auto 0; z-index: var(--z-bar); }   /* content slides under the bar, mostly hidden by its material; s4.js sets --bar-h. A banner above the bar keeps it in the flow */
+.main > .topbar:first-child ~ .content:not(.flush) { padding-top: calc(var(--bar-h, 64px) + 18px); }
+.main > .topbar:first-child ~ .content.flush { padding-top: var(--bar-h, 64px); }
 .topbar .ttl { display: flex; flex-direction: column; flex: 1 1 0; min-width: 180px; margin-right: 8px; }   /* the title shrinks (its subtitle wraps) before the buttons drop to a second line */
 .topbar h1 { margin: 0; font-size: var(--fs-h1); font-weight: 600; letter-spacing: -.2px; line-height: 1.25; }
 .topbar .sub { max-width: 60ch; color: var(--text2); font-size: var(--fs-sm); line-height: 1.3; }
