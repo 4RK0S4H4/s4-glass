@@ -21,10 +21,10 @@ The owner reads on a phone: keep messages short and ask one thing at a time.
 
 
 ## Next (not started)
-- PR #16 (SKILL.md sync) is merged. Repackage the skill (`tools/package_skill.py`) and send the owner `build/s4-glass.skill` so the installed copy matches.
+- Repackage the skill (`tools/package_skill.py`) and send the owner `build/s4-glass.skill` so the installed copy matches.
 - Owner picks the next area, or proposes candidates (use the `frontend-design` skill, now available, and say so on the page).
 - Optional: re-check the recommendation boxes on the older samples pages with the skill.
 
-## Open items (the owner said: do these at the very end, once every area is done)
-- `demo/examples/` (Habits, Orders) are single-file builds made with the old toolkit, so they still have the old motion and glass. Owner said yes: rebuild them with the final toolkit at the end.
-- Motion changed `--ease`, and the glass step changed the surface tokens (`--glass`, `--bar-bg`, `--blur`, `--sat`, `--shadow-1`). The Bank Reconciliation app (arko-EMOVIS/bank-reconciliation-app, private) should follow, per CLAUDE.md. Do it in a session with that repo attached?
+## Open items
+- Habits and Orders (`demo/examples/`) are refreshed with the final toolkit (`python3 tools/refresh_examples.py`); Habits also shows the density setting. Re-run the script after any toolkit change.
+- **Still to do: the Bank Reconciliation app** (arko-EMOVIS/bank-reconciliation-app, private). Its tokens must follow, per CLAUDE.md: `--ease` (motion), the surface tokens (`--glass`, `--glass2`, `--bar-bg`, `--nav-bg`, `--modal-bg`, `--blur`, `--sat`, `--shadow-1`), the new chart tokens (`--series-*`, `--seq-*`, `--viz-*`), density (`--row-py`, `--ctl-h`, `--card-pad`, `--nav-h`, `--stack-gap`, `s4Density()`), and the trail and page tabs (`.crumbs`, `.pagetabs`). Do it in a session with that repo attached, and keep that app's own decisions.
