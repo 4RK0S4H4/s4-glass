@@ -16,7 +16,7 @@ The owner reads on a phone: keep messages short and ask one thing at a time.
 | 1 | Motion | **Done.** Picked B "Apple Quiet"; built in PR #3 | [Guide](https://4rk0s4h4.github.io/s4-glass/guide/design.html#motion) · [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/motion.html) |
 | 2 | Glass, shadows and transparency | **Done** (PR #9). Owner picked **B Flat** (shadows) and **B Mostly Material** (transparency): flat, no resting shadows, surfaces 80–96% material colour, 28px blur, no colour boost, content slides under bars | [Shadows](https://4rk0s4h4.github.io/s4-glass/demo/samples/shadows.html) · [Transparency](https://4rk0s4h4.github.io/s4-glass/demo/samples/transparency.html) · earlier: [Glass](https://4rk0s4h4.github.io/s4-glass/demo/samples/glass.html), [Depth](https://4rk0s4h4.github.io/s4-glass/demo/samples/depth.html), [See-through](https://4rk0s4h4.github.io/s4-glass/demo/samples/see-through.html) |
 | 3 | Charts and data visualisation | **Built (PR open).** Owner picked **A Accent First**: accent is series 1, then blue, aqua, yellow, violet; thin marks, tooltips, table view, texture opt-in | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/charts.html) |
-| 4a | Navigation (page headers, breadcrumbs, tabs vs segmented vs nav) | **Waiting on the owner's pick:** A Today · B Tabs + Back · C Tabs + Trail · D Nested Nav | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/navigation.html) |
+| 4a | Navigation (page headers, breadcrumbs, tabs vs segmented vs nav) | **Built (PR open).** Owner picked **C Tabs + Trail** | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/navigation.html) |
 | 4b | Density (compact / comfortable) | Not started; do after 4a | – |
 
 

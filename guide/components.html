@@ -96,6 +96,20 @@
 &lt;/div&gt;
 </code></pre>
 <p>The top bar, when it is the first child of <code>.main</code>, floats over the top of <code>.content</code> so content slides under it (frosted); <code>s4.js</code> keeps <code>--bar-h</code> current. With a <code>.banner</code> above it the bar stays in the flow. Wrap nav labels in <code>.lbl</code> so the ≤980px icon rail can hide them. <code>.content.flush</code> removes padding (full-bleed split views); <code>.content.center</code> caps width for single-page tools. A single-page tool with no nav: <code>&lt;div class="app solo"&gt;&lt;div class="main"&gt;…&lt;/div&gt;&lt;/div&gt;</code>.</p>
+<h3 id="trail-and-page-tabs">Trail and page tabs</h3>
+<p>Inside the <code>.topbar</code>: a trail first, then the title and actions, then page tabs. Use them on a record's page (an account, a project); a flat app with no depth needs neither.</p>
+<pre><code class="language-html">&lt;header class=&quot;topbar&quot;&gt;
+  &lt;nav class=&quot;crumbs&quot; aria-label=&quot;Breadcrumb&quot;&gt;
+    &lt;a class=&quot;back&quot; href=&quot;#&quot;&gt;&lt;svg data-ic=&quot;arrow-left&quot;&gt;&lt;/svg&gt;Accounts&lt;/a&gt;   &lt;!-- the phone shows only this link --&gt;
+    &lt;a href=&quot;#&quot;&gt;Accounts&lt;/a&gt;&lt;span class=&quot;sep&quot; aria-hidden=&quot;true&quot;&gt;/&lt;/span&gt;&lt;a href=&quot;#&quot;&gt;Northwind&lt;/a&gt;&lt;span class=&quot;sep&quot; aria-hidden=&quot;true&quot;&gt;/&lt;/span&gt;
+    &lt;span class=&quot;here&quot; aria-current=&quot;page&quot;&gt;Operating •••• 2210&lt;/span&gt;
+  &lt;/nav&gt;
+  &lt;div class=&quot;ttl&quot;&gt;&lt;h1&gt;Operating •••• 2210&lt;/h1&gt;&lt;span class=&quot;sub&quot;&gt;Northwind · last matched Oct 23, 2026&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;actions&quot;&gt;…&lt;/div&gt;
+  &lt;nav class=&quot;pagetabs&quot; aria-label=&quot;Views&quot;&gt;&lt;a href=&quot;#&quot; aria-current=&quot;page&quot;&gt;Overview&lt;/a&gt;&lt;a href=&quot;#&quot;&gt;Transactions&lt;span class=&quot;n&quot;&gt;43&lt;/span&gt;&lt;/a&gt;&lt;a href=&quot;#&quot;&gt;Rules&lt;/a&gt;&lt;/nav&gt;
+&lt;/header&gt;
+</code></pre>
+<p>The trail's last item is the page and isn't a link; its back link goes one level up. The current tab is a neutral fill (<code>aria-current="page"</code> or <code>.on</code>), never the accent. <strong>Nav</strong> goes to places, <strong>tabs</strong> switch between peer views of one record, a <strong><code>.seg</code></strong> only filters or changes the mode of one list: never two of them for the same job. The bar keeps wrapping on a phone when it holds a trail or tabs, and the tabs scroll sideways.</p>
 <h2 id="phone-tab-bar">Phone tab bar</h2>
 <pre><code class="language-html">&lt;div class=&quot;app has-tabbar&quot;&gt;
   &lt;nav class=&quot;nav&quot;&gt;…&lt;/nav&gt;                 &lt;!-- desktop --&gt;
