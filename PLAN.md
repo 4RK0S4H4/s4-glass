@@ -20,6 +20,11 @@ The owner reads on a phone: keep messages short and ask one thing at a time.
 | 4b | Density (compact / comfortable) | **Built (PR open).** Owner picked **C Two Modes, Auto** | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/density.html) |
 
 
+## Next (not started)
+- Merge the density PR (4b) once CI is green and the owner says so; repackage the skill.
+- Owner picks the next area, or proposes candidates (use the `frontend-design` skill, now available, and say so on the page).
+- Optional: re-check the recommendation boxes on the older samples pages with the skill.
+
 ## Open items (the owner said: do these at the very end, once every area is done)
 - `demo/examples/` (Habits, Orders) are single-file builds made with the old toolkit, so they still have the old motion and glass. Owner said yes: rebuild them with the final toolkit at the end.
 - Motion changed `--ease`, and the glass step changed the surface tokens (`--glass`, `--bar-bg`, `--blur`, `--sat`, `--shadow-1`). The Bank Reconciliation app (arko-EMOVIS/bank-reconciliation-app, private) should follow, per CLAUDE.md. Do it in a session with that repo attached?
