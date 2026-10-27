@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en" data-d="a">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Transparency Samples · S4 Glass</title>
+<script data-s4 src="../../toolkit/s4.js"></script>
+<link data-s4 rel="stylesheet" href="../../toolkit/fonts.css">
+<link data-s4 rel="stylesheet" href="../../toolkit/s4.css">
+<style>
+  :root { --accent: #ce0057; --accent-2: #8a0069; --accent-light: #ff5c9d; }
+
+  /* transparency only. Shadows are the flat style in all four. The material (white in light, dark grey in dark) leads; the colour behind is a faint hint. */
+  [data-d] { --d-card: none; --d-bar: none; --d-modal: 0 20px 56px rgba(0,0,0,.28); --d-scrim: var(--scrim); --m-bar: var(--bar-bg); --m-card: var(--glass); --m-nav: var(--glass); --m-pop: var(--modal-bg); --bl-bar: var(--blur); --bl-card: var(--blur); --sat-x: var(--sat); }
+  [data-d="b"], [data-d="c"], [data-d="d"] { --sat-x: 100%; }
+  [data-d="b"] { --m-bar: rgba(255,255,255,.9); --m-card: rgba(255,255,255,.82); --m-nav: rgba(255,255,255,.8); --m-pop: rgba(255,255,255,.96); --bl-bar: 28px; --bl-card: 28px; }
+  [data-d="c"] { --m-bar: rgba(255,255,255,.95); --m-card: rgba(255,255,255,.9); --m-nav: rgba(255,255,255,.88); --m-pop: rgba(255,255,255,.98); --bl-bar: 32px; --bl-card: 32px; }
+  [data-d="d"] { --m-bar: rgba(255,255,255,.88); --m-card: rgba(255,255,255,.82); --m-nav: rgba(255,255,255,.8); --m-pop: rgba(255,255,255,.96); --bl-bar: 28px; --bl-card: 28px; }
+  [data-theme="dark"][data-d="b"] { --m-bar: rgba(22,22,22,.9); --m-card: rgba(34,34,34,.8); --m-nav: rgba(28,28,28,.8); --m-pop: rgba(26,26,26,.96); }
+  [data-theme="dark"][data-d="c"] { --m-bar: rgba(22,22,22,.95); --m-card: rgba(34,34,34,.9); --m-nav: rgba(28,28,28,.88); --m-pop: rgba(26,26,26,.98); }
+  [data-theme="dark"][data-d="d"] { --m-bar: rgba(22,22,22,.88); --m-card: rgba(34,34,34,.8); --m-nav: rgba(28,28,28,.8); --m-pop: rgba(26,26,26,.96); }
+  [data-d="b"], [data-d="c"], [data-d="d"] { --page: radial-gradient(1000px 640px at 100% -8%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 60%), radial-gradient(900px 640px at -8% 108%, color-mix(in srgb, var(--accent-2) 4%, transparent), transparent 60%), var(--bg) fixed; }
+  [data-theme="dark"][data-d="b"], [data-theme="dark"][data-d="c"], [data-theme="dark"][data-d="d"] { --page: var(--page-dark); }
+  [data-theme="dark"] { --page-dark: radial-gradient(1400px 900px at 100% -10%, var(--bloom-a), transparent 60%), radial-gradient(1200px 800px at -10% 115%, var(--bloom-b), transparent 60%), linear-gradient(165deg, var(--page-1) 0%, #0b0b0b 55%, var(--page-3) 100%) fixed; }
+
+  [data-d] .f .card, [data-d] .tile.card { background: var(--m-card); -webkit-backdrop-filter: blur(var(--bl-card)) saturate(var(--sat-x)); backdrop-filter: blur(var(--bl-card)) saturate(var(--sat-x)); }
+  [data-d] .f .nav { background: var(--m-nav); -webkit-backdrop-filter: blur(var(--bl-card)) saturate(var(--sat-x)); backdrop-filter: blur(var(--bl-card)) saturate(var(--sat-x)); }
+  [data-d] .f .topbar, [data-d] .f .tabbar-x { background: var(--m-bar); -webkit-backdrop-filter: blur(var(--bl-bar)) saturate(var(--sat-x)); backdrop-filter: blur(var(--bl-bar)) saturate(var(--sat-x)); }
+  [data-d="b"] .f .topbar, [data-d="c"] .f .topbar, [data-d="d"] .f .topbar { position: absolute; inset: 0 0 auto 0; }
+  [data-d="b"] .f-scroll, [data-d="c"] .f-scroll, [data-d="d"] .f-scroll { padding-top: calc(var(--bar-h, 64px) + var(--s-4)); }
+  [data-d="d"] .f .topbar::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 14px; pointer-events: none; background: linear-gradient(var(--m-bar), transparent); opacity: .5; }
+  [data-d] .modal { background: var(--m-pop); }
+  [data-d] .toast { background: color-mix(in srgb, #161616 88%, transparent); }
+
+  .f .card, .tile { box-shadow: var(--d-card); }
+  .f .topbar { transition: box-shadow var(--dur-2) var(--ease); }
+  .f.scrolled .topbar { box-shadow: var(--d-bar); }
+  .scrim { background: var(--d-scrim); } .modal { box-shadow: var(--d-modal); }
+  [data-d="d"] .f .topbar::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 16px; pointer-events: none; background: linear-gradient(var(--m-bar), transparent); opacity: .55; }
+
+  .g-bar { position: sticky; top: 0; z-index: var(--z-bar); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); padding: 10px var(--s-6); padding-top: max(10px, env(safe-area-inset-top)); border-bottom: 1px solid var(--border); }
+  .g-bar .title { margin-right: auto; }
+  .g-main { display: flex; flex-direction: column; gap: var(--s-10); padding-top: var(--s-8); padding-bottom: var(--s-16); }
+  .g-sec > h2 { margin: 0 0 var(--s-1); font-size: var(--fs-h2); }
+  .g-sec > p, .lede { margin: 0 0 var(--s-4); color: var(--text2); max-width: 70ch; }
+  .opt-note { margin: var(--s-3) 0 0; padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--well); color: var(--text2); font-size: var(--fs-sm); max-width: 70ch; }
+  .opt-note b { color: var(--text); }
+  [data-d="a"] .opt-note:not([data-for="a"]), [data-d="b"] .opt-note:not([data-for="b"]), [data-d="c"] .opt-note:not([data-for="c"]), [data-d="d"] .opt-note:not([data-for="d"]) { display: none; }
+
+  /* ---- 1. the layers on a bare page ---- */
+  .layers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-4); padding: var(--s-6) var(--s-4); border-radius: var(--r-xl); background: var(--page); border: 1px solid var(--border); }
+  .tile { display: flex; flex-direction: column; gap: 4px; padding: var(--s-3); min-height: 112px; border-radius: var(--r); border: 1px solid var(--border); background: var(--glass); }
+  .tile b { font-size: var(--fs-ui); } .tile .t2 { color: var(--text2); font-size: var(--fs-sm); } .tile .t3 { color: var(--text3); font-size: var(--fs-xs); }
+  .tile.page { background: transparent; border-style: dashed; box-shadow: none; }
+  .tile.over { background: var(--modal-bg); box-shadow: var(--d-modal); }
+
+  /* ---- 2. a small app ---- */
+  .f { position: relative; display: grid; grid-template-columns: 200px minmax(0, 1fr); height: 560px; border: 1px solid var(--border2); border-radius: var(--r-xl); overflow: clip; background: var(--page); box-shadow: var(--shadow-1); isolation: isolate; }
+  .f .nav { border-right: 1px solid var(--border); }
+  .f-main { position: relative; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
+  .f .topbar { z-index: 2; }
+  .f .topbar h1 { font-size: var(--fs-title); }
+  .f-scroll { flex: 1; min-height: 0; overflow: auto; padding: var(--s-4) var(--s-5) var(--s-6); display: flex; flex-direction: column; gap: var(--s-4); }
+  .tabbar-x { display: none; }
+  .chart { display: flex; align-items: flex-end; gap: 6px; height: 120px; padding-top: var(--s-2); }
+  .chart i { flex: 1; border-radius: 4px 4px 0 0; background: var(--accent-bar); }
+  .chart i.on { background: var(--btn); }
+  .rows { margin: 0; padding: 0; list-style: none; }
+  .rows li { display: flex; align-items: center; gap: var(--s-3); padding: 10px 0; border-top: 1px solid var(--border); }
+  .rows li:first-child { border-top: 0; }
+  .rows .grow { flex: 1; min-width: 0; } .rows small { display: block; color: var(--text3); font-size: var(--fs-xs); }
+  .stats3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); }
+
+  @media (max-width: 760px) {
+    .g-bar { padding-inline: var(--s-4); } .g-bar .title { flex-basis: 100%; }
+    .layers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .f { grid-template-columns: minmax(0, 1fr); height: 600px; }
+    .f .nav { display: none; }
+    .f .topbar .sub { display: none; }
+    .tabbar-x { display: flex; position: absolute; inset: auto 0 0 0; z-index: 2; justify-content: space-around; padding: 6px 0 8px; border-top: 1px solid var(--border); background: var(--tabbar-bg); -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--sat)); backdrop-filter: blur(var(--blur)) saturate(var(--sat)); }
+    .tabbar-x a { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: var(--fs-xs); color: var(--text2); text-decoration: none; }
+    .tabbar-x a.on { color: var(--text); font-weight: 600; }
+    .tabbar-x svg { width: 22px; height: 22px; }
+    [data-d="a"] .f-main { padding-bottom: 58px; }
+    [data-d="b"] .f-scroll, [data-d="c"] .f-scroll, [data-d="d"] .f-scroll { padding-bottom: 78px; }
+    .f-scroll { padding-inline: var(--s-4); }
+    .stats3 { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+<script data-s4 src="../../toolkit/icons.js"></script>
+</head>
+<body>
+<div class="g-bar thin">
+  <span class="title">Glass Samples</span>
+  <div class="seg" id="opt" data-manual role="group" aria-label="Option"><button type="button" class="on" data-v="a">A · Today</button><button type="button" data-v="b">B · Mostly Material</button><button type="button" data-v="c">C · Nearly Solid</button><button type="button" data-v="d">D · Material + Fade</button></div>
+  <div class="seg" id="theme" data-manual role="group" aria-label="Theme"><button type="button" data-v="light">Light</button><button type="button" data-v="dark">Dark</button><button type="button" data-v="auto">Auto</button></div>
+</div>
+
+<main class="container g-main">
+  <section class="g-sec">
+    <p class="lede">Four levels of see-through. A is today. B, C and D let the material (white in light, dark grey in dark) win, with only a faint tint from what is underneath. Shadows use the flat style in all four and are tried on the other page. Pick one at the top, check light and dark, scroll the small app so content passes under the bar, and open the dialog.</p>
+  </section>
+
+  <section class="g-sec">
+    <h2>1. The Materials</h2>
+    <p>Each tile sits over a busy stripe. The closer a tile is to solid, the less of the stripe you see through it.</p>
+    <div class="layers" style="background:repeating-linear-gradient(115deg,var(--accent) 0 26px,transparent 26px 54px,var(--accent-2) 54px 70px,transparent 70px 110px,var(--ok-bar) 110px 122px,transparent 122px 160px,var(--warn-bar) 160px 170px,transparent 170px 210px)">
+      <div class="tile card"><b>Card</b><span class="t2">Content sits here</span><span class="t3">Third-level text</span></div>
+      <div class="tile card"><b>Nav</b><span class="t2">Content sits here</span><span class="t3">Third-level text</span></div>
+      <div class="tile card" style="background:var(--m-bar)"><b>Bar</b><span class="t2">Top bar, tab bar</span><span class="t3">Third-level text</span></div>
+      <div class="tile over"><b>Dialog</b><span class="t2">Sits on top</span><span class="t3">Third-level text</span></div>
+    </div>
+    <p class="opt-note" data-for="a"><b>A · Today.</b> Glass at 62% (82% for dialogs). Today. On the light page the colour behind shows quite a lot.</p>
+    <p class="opt-note" data-for="b"><b>B · Mostly Material.</b> The material leads. Bars 90%, cards 82%, nav 80%, dialogs 96%, with the colour boost off. What is underneath is a soft tint, not a picture.</p>
+    <p class="opt-note" data-for="c"><b>C · Nearly Solid.</b> The most solid of the four. Bars 95%, cards 90%. Almost flat white (or dark grey); you only notice a trace, and the blur does the work.</p>
+    <p class="opt-note" data-for="d"><b>D · Material + Fade.</b> As B, with a soft fade under the bar so scrolled content melts away instead of cutting off at the bar.</p>
+  </section>
+
+  <section class="g-sec">
+    <h2>2. In an App</h2>
+    <p>Scroll inside the frame. Open the dialog, the menu and the toast to see the depth over content.</p>
+    <div class="f" id="frame">
+      <nav class="nav" aria-label="Sample">
+        <a class="item active" href="#" aria-current="page"><svg data-ic-duo="widget-5"></svg><span class="lbl">Dashboard</span></a>
+        <a class="item" href="#"><svg data-ic-duo="checklist-minimalistic"></svg><span class="lbl">Transactions</span><span class="count">43</span></a>
+        <a class="item" href="#"><svg data-ic-duo="document-text"></svg><span class="lbl">Rules</span></a>
+        <a class="item" href="#"><svg data-ic-duo="settings"></svg><span class="lbl">Settings</span></a>
+      </nav>
+      <div class="f-main">
+        <header class="topbar" id="fbar">
+          <div class="ttl"><h1>October 2026</h1><span class="sub">Northwind Operating •••• 2210</span></div>
+          <div class="actions">
+            <button class="btn" type="button" data-menu="m1" aria-haspopup="menu" aria-expanded="false"><svg data-ic="diskette"></svg>Backup</button>
+            <button class="btn primary" type="button" data-open="dlg">Unmatch</button>
+          </div>
+        </header>
+        <div class="f-scroll" id="fscroll">
+          <div class="stats3">
+            <div class="card stat"><span>Still to Match</span><b>43</b></div>
+            <div class="card stat"><span>Matched</span><b>3</b></div>
+            <div class="card stat"><span>Money In</span><b class="c-ok">300,000.00</b></div>
+          </div>
+          <div class="card"><b>Daily Volume</b><div class="chart" aria-hidden="true"><i style="height:40%"></i><i style="height:62%"></i><i style="height:35%"></i><i style="height:80%"></i><i style="height:55%"></i><i class="on" style="height:96%"></i><i style="height:48%"></i><i style="height:70%"></i><i style="height:30%"></i><i style="height:58%"></i><i style="height:76%"></i><i style="height:44%"></i></div></div>
+          <div class="card">
+            <ul class="rows">
+              <li><span class="grow">Northwind Payroll Run 2610<small>Pre-authorized ACH Debit</small></span><span class="badge solid">Suggested</span><span class="num">(84,105.03)</span></li>
+              <li><span class="grow">Transfer From Savings •••• 4821<small>Miscellaneous Credit</small></span><span class="badge warn">To Sort</span><span class="num">300,000.00</span></li>
+              <li><span class="grow">Northwind Benefits Funding<small>Pre-authorized ACH Debit</small></span><span class="badge ok">Matched</span><span class="num">(536.90)</span></li>
+              <li><span class="grow">Contoso Office Supplies<small>Card Purchase</small></span><span class="badge accent">Journal Entry</span><span class="num">(212.40)</span></li>
+              <li><span class="grow">Fabrikam Freight<small>Wire Out</small></span><span class="badge warn">To Sort</span><span class="num">(4,980.00)</span></li>
+              <li><span class="grow">Interest Earned<small>Credit</small></span><span class="badge ok">Matched</span><span class="num">18.22</span></li>
+            </ul>
+          </div>
+          <div class="cluster"><button class="btn" type="button" id="toastBtn">Show a Toast</button></div>
+        </div>
+        <nav class="tabbar-x" aria-label="Sample tabs"><a class="on" href="#"><svg data-ic-duo="widget-5"></svg>Home</a><a href="#"><svg data-ic-duo="checklist-minimalistic"></svg>Match</a><a href="#"><svg data-ic-duo="document-text"></svg>Rules</a><a href="#"><svg data-ic-duo="settings"></svg>Settings</a></nav>
+      </div>
+    </div>
+    <p class="opt-note" data-for="a"><b>A · Today.</b> Content stops at the top bar.</p>
+    <p class="opt-note" data-for="b"><b>B · Mostly Material.</b> Content slides under the bar, mostly hidden by the material.</p>
+    <p class="opt-note" data-for="c"><b>C · Nearly Solid.</b> Content slides under the bar and is nearly invisible.</p>
+    <p class="opt-note" data-for="d"><b>D · Material + Fade.</b> Content slides under the bar and fades out softly.</p>
+  </section>
+</main>
+
+<div class="menu" id="m1" role="menu" hidden><button role="menuitem" type="button"><svg data-ic="diskette"></svg><span><b>Save a Backup</b><small>9 changes since the last one</small></span></button><button role="menuitem" type="button"><svg data-ic="history"></svg><span><b>Restore from a Backup…</b></span></button></div>
+<div class="scrim" id="dlg" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="dlg-h"><div class="grab"></div>
+  <header><h2 id="dlg-h">Unmatch these lines?</h2><button class="btn icon subtle" type="button" data-close aria-label="Close"><svg data-ic="close-circle"></svg></button></header>
+  <div class="body"><p class="m-0">Match 40 goes back to Still to Match: one Bank Transaction and two ledger lines. You can match them again later.</p></div>
+  <footer><button class="btn" type="button" data-close>Cancel</button><button class="btn primary" type="button" data-close>Unmatch</button></footer></div></div>
+
+<script>
+  var root = document.documentElement;
+  function mark(id, v) { document.querySelectorAll("#" + id + " button").forEach(function (b) { b.classList.toggle("on", b.dataset.v === v); }); }
+  var th = "auto"; try { th = localStorage.getItem("s4-theme") || "auto"; } catch (e) {} mark("theme", th);
+  document.getElementById("theme").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; s4Theme(b.dataset.v); mark("theme", b.dataset.v); });
+  try { var saved = sessionStorage.getItem("s4-trans-opt"); if (saved) { root.setAttribute("data-d", saved); mark("opt", saved); } } catch (e) {}
+  document.getElementById("opt").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; root.setAttribute("data-d", b.dataset.v); mark("opt", b.dataset.v);
+    try { sessionStorage.setItem("s4-trans-opt", b.dataset.v); } catch (x) {} });
+  document.getElementById("toastBtn").addEventListener("click", function () { s4Toast("Archived October", { action: "Undo" }); });
+  document.querySelectorAll("#frame a").forEach(function (a) { a.addEventListener("click", function (e) { e.preventDefault(); }); });
+  var bar = document.getElementById("fbar"), frame = document.getElementById("frame");
+  function barH() { frame.style.setProperty("--bar-h", bar.offsetHeight + "px"); }
+  document.getElementById("fscroll").addEventListener("scroll",function(){frame.classList.toggle("scrolled",this.scrollTop>4);});
+  barH(); if (window.ResizeObserver) new ResizeObserver(barH).observe(bar);
+</script>
+</body>
+</html>
