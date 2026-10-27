@@ -31,9 +31,13 @@
   function set() { document.documentElement.setAttribute("data-density", d === "compact" || d === "standard" ? d : (q && q.matches ? "compact" : "standard")); mark(); }
   set(); if (q && q.addEventListener) q.addEventListener("change", function () { if (d === "auto") set(); });
   window.s4Density = function (v) { d = v; try { localStorage.setItem(KEY, v); } catch (e) {} set(); };
-  function wire() { document.querySelectorAll("[data-density-seg]").forEach(function (box) { if (box._s4d) return; box._s4d = true;
-    box.addEventListener("click", function (e) { var b = e.target.closest("button"); if (b && b.dataset.v) s4Density(b.dataset.v); }); }); mark(); }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", wire); else wire();
+  /* [data-density-seg] boxes work wherever and whenever they are added (settings screens render later): one delegated click, and a
+     re-mark when new nodes appear. */
+  document.addEventListener("click", function (e) { var b = e.target.closest && e.target.closest("[data-density-seg] button"); if (b && b.dataset.v) s4Density(b.dataset.v); });
+  var queued = false;
+  function later() { if (queued) return; queued = true; requestAnimationFrame(function () { queued = false; mark(); }); }
+  function watch() { if (window.MutationObserver) new MutationObserver(later).observe(document.body, { childList: true, subtree: true }); mark(); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", watch); else watch();
 })();
 
 function s4Still() { return !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches); }
