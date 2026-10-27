@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en" data-d="a">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Depth Samples · S4 Glass</title>
+<script data-s4 src="../../toolkit/s4.js"></script>
+<link data-s4 rel="stylesheet" href="../../toolkit/fonts.css">
+<link data-s4 rel="stylesheet" href="../../toolkit/s4.css">
+<style>
+  :root { --accent: #ce0057; --accent-2: #8a0069; --accent-light: #ff5c9d; }
+
+  /* every option keeps today's glass strengths (A). Depth comes from shadow, tone and a soft edge, never from more see-through. */
+  [data-d] { --d-card: var(--shadow-1); --d-bar: none; --d-modal: var(--shadow-3); --d-scrim: var(--scrim); }
+  /* B · Soft Lift: layered shadows, the bar lifts once content is under it */
+  [data-d="b"] { --d-card: 0 1px 2px color-mix(in srgb, var(--shade) 10%, transparent), 0 6px 14px color-mix(in srgb, var(--shade) 8%, transparent), 0 18px 36px color-mix(in srgb, var(--shade) 7%, transparent);
+    --d-bar: 0 8px 24px -10px color-mix(in srgb, var(--shade) 28%, transparent); --d-modal: 0 2px 6px rgba(0,0,0,.14), 0 30px 80px rgba(0,0,0,.34); --d-scrim: rgba(0,0,0,.42); }
+  /* C · Tonal Layers: page a step darker, cards almost solid, so each level reads as its own surface */
+  [data-d="c"] { --page: color-mix(in srgb, var(--tint) 2%, #e9e9ec); --m-card: rgba(255,255,255,.9); --m-nav: rgba(255,255,255,.55); --m-bar: rgba(255,255,255,.82);
+    --d-card: 0 1px 2px color-mix(in srgb, var(--shade) 9%, transparent), 0 4px 12px color-mix(in srgb, var(--shade) 6%, transparent); --d-bar: 0 1px 0 color-mix(in srgb, var(--shade) 8%, transparent); --d-modal: 0 2px 6px rgba(0,0,0,.14), 0 30px 80px rgba(0,0,0,.34); }
+  [data-theme="dark"][data-d="c"] { --page: #070707; --m-card: rgba(255,255,255,.075); --m-nav: rgba(255,255,255,.04); --m-bar: rgba(22,22,22,.84); --d-card: 0 6px 20px rgba(0,0,0,.4); --d-bar: 0 1px 0 rgba(0,0,0,.6); }
+  /* D · Soft Edge: B's shadows, and content slides under a mostly solid bar that fades out softly beneath it */
+  [data-d="d"] { --m-bar: rgba(255,255,255,.88); --d-card: 0 1px 2px color-mix(in srgb, var(--shade) 10%, transparent), 0 6px 14px color-mix(in srgb, var(--shade) 8%, transparent), 0 18px 36px color-mix(in srgb, var(--shade) 7%, transparent);
+    --d-modal: 0 2px 6px rgba(0,0,0,.14), 0 30px 80px rgba(0,0,0,.34); --d-scrim: rgba(0,0,0,.42); }
+  [data-theme="dark"][data-d="d"] { --m-bar: rgba(18,18,18,.86); --d-card: 0 8px 24px rgba(0,0,0,.45); }
+  [data-theme="dark"][data-d="b"] { --d-card: 0 1px 2px rgba(0,0,0,.5), 0 10px 26px rgba(0,0,0,.4); --d-bar: 0 8px 24px -10px rgba(0,0,0,.8); }
+
+  [data-d="c"] .f .card, [data-d="c"] .tile.card { background: var(--m-card); }
+  [data-d="c"] .f .nav { background: var(--m-nav); }
+  [data-d="c"] .f .topbar, [data-d="c"] .f .tabbar-x { background: var(--m-bar); }
+  [data-d="d"] .f .topbar, [data-d="d"] .f .tabbar-x { background: var(--m-bar); }
+  .f .card, .tile { box-shadow: var(--d-card); }
+  .f .topbar { transition: box-shadow var(--dur-2) var(--ease); }
+  .f.scrolled .topbar { box-shadow: var(--d-bar); }
+  .scrim { background: var(--d-scrim); } .modal { box-shadow: var(--d-modal); }
+  [data-d="d"] .f .topbar { position: absolute; inset: 0 0 auto 0; }
+  [data-d="d"] .f-scroll { padding-top: calc(var(--bar-h, 64px) + var(--s-4)); }
+  [data-d="d"] .f .topbar::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 16px; pointer-events: none; background: linear-gradient(var(--m-bar), transparent); opacity: .55; }
+  [data-d] .toast { background: color-mix(in srgb, #161616 88%, transparent); }
+
+  .g-bar { position: sticky; top: 0; z-index: var(--z-bar); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); padding: 10px var(--s-6); padding-top: max(10px, env(safe-area-inset-top)); border-bottom: 1px solid var(--border); }
+  .g-bar .title { margin-right: auto; }
+  .g-main { display: flex; flex-direction: column; gap: var(--s-10); padding-top: var(--s-8); padding-bottom: var(--s-16); }
+  .g-sec > h2 { margin: 0 0 var(--s-1); font-size: var(--fs-h2); }
+  .g-sec > p, .lede { margin: 0 0 var(--s-4); color: var(--text2); max-width: 70ch; }
+  .opt-note { margin: var(--s-3) 0 0; padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--well); color: var(--text2); font-size: var(--fs-sm); max-width: 70ch; }
+  .opt-note b { color: var(--text); }
+  [data-d="a"] .opt-note:not([data-for="a"]), [data-d="b"] .opt-note:not([data-for="b"]), [data-d="c"] .opt-note:not([data-for="c"]), [data-d="d"] .opt-note:not([data-for="d"]) { display: none; }
+
+  /* ---- 1. the layers on a bare page ---- */
+  .layers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-4); padding: var(--s-6) var(--s-4); border-radius: var(--r-xl); background: var(--page); border: 1px solid var(--border); }
+  .tile { display: flex; flex-direction: column; gap: 4px; padding: var(--s-3); min-height: 112px; border-radius: var(--r); border: 1px solid var(--border); background: var(--glass); }
+  .tile b { font-size: var(--fs-ui); } .tile .t2 { color: var(--text2); font-size: var(--fs-sm); } .tile .t3 { color: var(--text3); font-size: var(--fs-xs); }
+  .tile.page { background: transparent; border-style: dashed; box-shadow: none; }
+  .tile.over { background: var(--modal-bg); box-shadow: var(--d-modal); }
+
+  /* ---- 2. a small app ---- */
+  .f { position: relative; display: grid; grid-template-columns: 200px minmax(0, 1fr); height: 560px; border: 1px solid var(--border2); border-radius: var(--r-xl); overflow: clip; background: var(--page); box-shadow: var(--shadow-1); isolation: isolate; }
+  .f .nav { border-right: 1px solid var(--border); }
+  .f-main { position: relative; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
+  .f .topbar { z-index: 2; }
+  .f .topbar h1 { font-size: var(--fs-title); }
+  .f-scroll { flex: 1; min-height: 0; overflow: auto; padding: var(--s-4) var(--s-5) var(--s-6); display: flex; flex-direction: column; gap: var(--s-4); }
+  .tabbar-x { display: none; }
+  .chart { display: flex; align-items: flex-end; gap: 6px; height: 120px; padding-top: var(--s-2); }
+  .chart i { flex: 1; border-radius: 4px 4px 0 0; background: var(--accent-bar); }
+  .chart i.on { background: var(--btn); }
+  .rows { margin: 0; padding: 0; list-style: none; }
+  .rows li { display: flex; align-items: center; gap: var(--s-3); padding: 10px 0; border-top: 1px solid var(--border); }
+  .rows li:first-child { border-top: 0; }
+  .rows .grow { flex: 1; min-width: 0; } .rows small { display: block; color: var(--text3); font-size: var(--fs-xs); }
+  .stats3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); }
+
+  @media (max-width: 760px) {
+    .g-bar { padding-inline: var(--s-4); } .g-bar .title { flex-basis: 100%; }
+    .layers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .f { grid-template-columns: minmax(0, 1fr); height: 600px; }
+    .f .nav { display: none; }
+    .f .topbar .sub { display: none; }
+    .tabbar-x { display: flex; position: absolute; inset: auto 0 0 0; z-index: 2; justify-content: space-around; padding: 6px 0 8px; border-top: 1px solid var(--border); background: var(--tabbar-bg); -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--sat)); backdrop-filter: blur(var(--blur)) saturate(var(--sat)); }
+    .tabbar-x a { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: var(--fs-xs); color: var(--text2); text-decoration: none; }
+    .tabbar-x a.on { color: var(--text); font-weight: 600; }
+    .tabbar-x svg { width: 22px; height: 22px; }
+    [data-d="a"] .f-main, [data-d="b"] .f-main, [data-d="c"] .f-main { padding-bottom: 58px; }
+    [data-d="d"] .f-scroll { padding-bottom: 78px; }
+    .f-scroll { padding-inline: var(--s-4); }
+    .stats3 { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+<script data-s4 src="../../toolkit/icons.js"></script>
+</head>
+<body>
+<div class="g-bar thin">
+  <span class="title">Glass Samples</span>
+  <div class="seg" id="opt" data-manual role="group" aria-label="Option"><button type="button" class="on" data-v="a">A · Today</button><button type="button" data-v="b">B · Soft Lift</button><button type="button" data-v="c">C · Tonal</button><button type="button" data-v="d">D · Soft Edge</button></div>
+  <div class="seg" id="theme" data-manual role="group" aria-label="Theme"><button type="button" data-v="light">Light</button><button type="button" data-v="dark">Dark</button><button type="button" data-v="auto">Auto</button></div>
+</div>
+
+<main class="container g-main">
+  <section class="g-sec">
+    <p class="lede">All four keep today's glass exactly (same see-through, same colours), so text is as readable as it is now. Only depth changes: shadow, tone and the edge of the bars. Pick A, B, C or D at the top and look at each in light and dark. Scroll the small app, open the dialog, the menu and the toast.</p>
+  </section>
+
+  <section class="g-sec">
+    <h2>1. The Layers</h2>
+    <p>From the back to the front: the page, a card, the bar that content slides under, and a dialog.</p>
+    <div class="layers">
+      <div class="tile page"><b>Page</b><span class="t2">The back</span><span class="t3">Third-level text</span></div>
+      <div class="tile card"><b>Card</b><span class="t2">Content sits here</span><span class="t3">Third-level text</span></div>
+      <div class="tile card" style="box-shadow:var(--d-bar,none), var(--d-card)"><b>Bar</b><span class="t2">Top bar, tab bar</span><span class="t3">Third-level text</span></div>
+      <div class="tile over"><b>Dialog</b><span class="t2">Sits on top</span><span class="t3">Third-level text</span></div>
+    </div>
+    <p class="opt-note" data-for="a"><b>A · Today.</b> A single soft shadow on cards, and a big one on dialogs. The control to compare against.</p>
+    <p class="opt-note" data-for="b"><b>B · Soft Lift.</b> Cards get a three-part shadow (a tight edge, a mid and a wide soft one), so they float a little. The top bar throws a soft shadow once content has scrolled under it. Dialogs get a deeper shadow and a slightly darker scrim.</p>
+    <p class="opt-note" data-for="c"><b>C · Tonal Layers.</b> Depth by tone, as on a paper stack. The page is a step darker, cards are almost solid white, the nav is in between. Very light shadows. This is the most readable of the four. In dark, the page goes near black and each level is a little lighter.</p>
+    <p class="opt-note" data-for="d"><b>D · Soft Edge.</b> B's shadows, and content scrolls under a mostly solid bar that fades out softly below it, so you see the content slide away without any colour showing through the bar.</p>
+  </section>
+
+  <section class="g-sec">
+    <h2>2. In an App</h2>
+    <p>Scroll inside the frame. Open the dialog, the menu and the toast to see the depth over content.</p>
+    <div class="f" id="frame">
+      <nav class="nav" aria-label="Sample">
+        <a class="item active" href="#" aria-current="page"><svg data-ic-duo="widget-5"></svg><span class="lbl">Dashboard</span></a>
+        <a class="item" href="#"><svg data-ic-duo="checklist-minimalistic"></svg><span class="lbl">Transactions</span><span class="count">43</span></a>
+        <a class="item" href="#"><svg data-ic-duo="document-text"></svg><span class="lbl">Rules</span></a>
+        <a class="item" href="#"><svg data-ic-duo="settings"></svg><span class="lbl">Settings</span></a>
+      </nav>
+      <div class="f-main">
+        <header class="topbar" id="fbar">
+          <div class="ttl"><h1>October 2026</h1><span class="sub">Northwind Operating •••• 2210</span></div>
+          <div class="actions">
+            <button class="btn" type="button" data-menu="m1" aria-haspopup="menu" aria-expanded="false"><svg data-ic="diskette"></svg>Backup</button>
+            <button class="btn primary" type="button" data-open="dlg">Unmatch</button>
+          </div>
+        </header>
+        <div class="f-scroll" id="fscroll">
+          <div class="stats3">
+            <div class="card stat"><span>Still to Match</span><b>43</b></div>
+            <div class="card stat"><span>Matched</span><b>3</b></div>
+            <div class="card stat"><span>Money In</span><b class="c-ok">300,000.00</b></div>
+          </div>
+          <div class="card"><b>Daily Volume</b><div class="chart" aria-hidden="true"><i style="height:40%"></i><i style="height:62%"></i><i style="height:35%"></i><i style="height:80%"></i><i style="height:55%"></i><i class="on" style="height:96%"></i><i style="height:48%"></i><i style="height:70%"></i><i style="height:30%"></i><i style="height:58%"></i><i style="height:76%"></i><i style="height:44%"></i></div></div>
+          <div class="card">
+            <ul class="rows">
+              <li><span class="grow">Northwind Payroll Run 2610<small>Pre-authorized ACH Debit</small></span><span class="badge solid">Suggested</span><span class="num">(84,105.03)</span></li>
+              <li><span class="grow">Transfer From Savings •••• 4821<small>Miscellaneous Credit</small></span><span class="badge warn">To Sort</span><span class="num">300,000.00</span></li>
+              <li><span class="grow">Northwind Benefits Funding<small>Pre-authorized ACH Debit</small></span><span class="badge ok">Matched</span><span class="num">(536.90)</span></li>
+              <li><span class="grow">Contoso Office Supplies<small>Card Purchase</small></span><span class="badge accent">Journal Entry</span><span class="num">(212.40)</span></li>
+              <li><span class="grow">Fabrikam Freight<small>Wire Out</small></span><span class="badge warn">To Sort</span><span class="num">(4,980.00)</span></li>
+              <li><span class="grow">Interest Earned<small>Credit</small></span><span class="badge ok">Matched</span><span class="num">18.22</span></li>
+            </ul>
+          </div>
+          <div class="cluster"><button class="btn" type="button" id="toastBtn">Show a Toast</button></div>
+        </div>
+        <nav class="tabbar-x" aria-label="Sample tabs"><a class="on" href="#"><svg data-ic-duo="widget-5"></svg>Home</a><a href="#"><svg data-ic-duo="checklist-minimalistic"></svg>Match</a><a href="#"><svg data-ic-duo="document-text"></svg>Rules</a><a href="#"><svg data-ic-duo="settings"></svg>Settings</a></nav>
+      </div>
+    </div>
+    <p class="opt-note" data-for="a"><b>A · Today.</b> The content stops at the top bar. Flat, with one soft shadow.</p>
+    <p class="opt-note" data-for="b"><b>B · Soft Lift.</b> The bar lifts with a soft shadow as soon as you scroll.</p>
+    <p class="opt-note" data-for="c"><b>C · Tonal Layers.</b> Solid-feeling layers; the bar gets a hairline.</p>
+    <p class="opt-note" data-for="d"><b>D · Soft Edge.</b> Content slides under the bar and fades.</p>
+  </section>
+</main>
+
+<div class="menu" id="m1" role="menu" hidden><button role="menuitem" type="button"><svg data-ic="diskette"></svg><span><b>Save a Backup</b><small>9 changes since the last one</small></span></button><button role="menuitem" type="button"><svg data-ic="history"></svg><span><b>Restore from a Backup…</b></span></button></div>
+<div class="scrim" id="dlg" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="dlg-h"><div class="grab"></div>
+  <header><h2 id="dlg-h">Unmatch these lines?</h2><button class="btn icon subtle" type="button" data-close aria-label="Close"><svg data-ic="close-circle"></svg></button></header>
+  <div class="body"><p class="m-0">Match 40 goes back to Still to Match: one Bank Transaction and two ledger lines. You can match them again later.</p></div>
+  <footer><button class="btn" type="button" data-close>Cancel</button><button class="btn primary" type="button" data-close>Unmatch</button></footer></div></div>
+
+<script>
+  var root = document.documentElement;
+  function mark(id, v) { document.querySelectorAll("#" + id + " button").forEach(function (b) { b.classList.toggle("on", b.dataset.v === v); }); }
+  var th = "auto"; try { th = localStorage.getItem("s4-theme") || "auto"; } catch (e) {} mark("theme", th);
+  document.getElementById("theme").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; s4Theme(b.dataset.v); mark("theme", b.dataset.v); });
+  try { var saved = sessionStorage.getItem("s4-depth-opt"); if (saved) { root.setAttribute("data-d", saved); mark("opt", saved); } } catch (e) {}
+  document.getElementById("opt").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; root.setAttribute("data-d", b.dataset.v); mark("opt", b.dataset.v);
+    try { sessionStorage.setItem("s4-depth-opt", b.dataset.v); } catch (x) {} });
+  document.getElementById("toastBtn").addEventListener("click", function () { s4Toast("Archived October", { action: "Undo" }); });
+  document.querySelectorAll("#frame a").forEach(function (a) { a.addEventListener("click", function (e) { e.preventDefault(); }); });
+  var bar = document.getElementById("fbar"), frame = document.getElementById("frame");
+  function barH() { frame.style.setProperty("--bar-h", bar.offsetHeight + "px"); }
+  document.getElementById("fscroll").addEventListener("scroll",function(){frame.classList.toggle("scrolled",this.scrollTop>4);});
+  barH(); if (window.ResizeObserver) new ResizeObserver(barH).observe(bar);
+</script>
+</body>
+</html>
