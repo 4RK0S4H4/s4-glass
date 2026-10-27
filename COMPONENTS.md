@@ -203,7 +203,7 @@ Use `.plot text` for axis labels (they take `--text3`); `text.ink` for the curre
   <button type="button" data-v="auto">Auto</button><button type="button" data-v="standard">Standard</button><button type="button" data-v="compact">Compact</button>
 </div>
 ```
-`s4.js` sets `html[data-density]` to `standard` or `compact` before the first paint, remembers the choice, and keeps the `.on` button in step; `s4Density("compact")` does the same from code. **Auto** (the default) is compact on a wide screen with a mouse and standard on touch and small screens. In your own CSS use `--row-py`, `--ctl-h`, `--ctl-h-sm`, `--card-pad`, `--nav-h` and `--stack-gap` (and `--fs-base` for text) so new parts follow.
+`s4.js` sets `html[data-density]` to `standard` or `compact` before the first paint, remembers the choice, and keeps the `.on` button in step (also for a box rendered later, such as a settings screen); `s4Density("compact")` does the same from code. **Auto** (the default) is compact on a wide screen with a mouse and standard on touch and small screens. In your own CSS use `--row-py`, `--ctl-h`, `--ctl-h-sm`, `--card-pad`, `--nav-h` and `--stack-gap` (and `--fs-base` for text) so new parts follow.
 
 ## Copy chips and keys
 

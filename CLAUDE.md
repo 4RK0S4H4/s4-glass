@@ -17,6 +17,7 @@ The S4 Glass design language: spec (`DESIGN.md`), component markup (`COMPONENTS.
 - `python3 tools/check_css.py toolkit/s4.css` – house rules (0 problems required)
 - `node tools/check_pages.mjs [pages…]` – no sideways scroll, Inter + digit features, theme, no page errors at 390/1280/1920 × light/dark (no args = demo + templates + site)
 - `pip install markdown --break-system-packages -q && python3 tools/build_site.py` – rebuild `index.html` and `guide/*.html` after editing `DESIGN.md` or `COMPONENTS.md` (CI fails if they are stale)
+- `python3 tools/refresh_examples.py` – swap the toolkit inside the single-file builds in `demo/examples/` for the current one (run after any toolkit change, then `check_pages` and look at them)
 - `python3 tools/package_skill.py` – build `build/s4-glass.skill` (send it to the owner with the file tool; "Save skill" installs it)
 - `node tools/build_icons.mjs <@iconify-json/solar>/icons.json` – rebuild `toolkit/icons.js` after adding names
 
