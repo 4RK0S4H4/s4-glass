@@ -3,6 +3,7 @@
    In React/Vue: keep the theme part in index.html; call s4Slider / s4Copy / s4Tips from effects, or re-create them in the framework.
 
    s4Theme("light" | "dark" | "auto")   theme toggle; data-theme is always "light" or "dark" (auto follows the device)
+   s4Density("auto" | "standard" | "compact")  density setting; data-density is always "standard" or "compact" (auto: compact on a wide screen with a mouse, standard on touch and small screens). A [data-density-seg] box of buttons with data-v is wired and kept in step.
    s4Slider(box, ".on")                  one indicator that slides between options of .seg / .nav / .ptabs (on click only)
    s4Copy(el, text)                      copy + the 0.6s green flash; any [data-copy] element copies on click
    s4Tips(root)                          tooltips (.tip) for .trunc / .dcol text, only when it is actually cut off
@@ -20,6 +21,19 @@
   set(); if (m && m.addEventListener) m.addEventListener("change", function () { if (t === "auto") set(); });
   window.s4Theme = function (v) { t = v; try { localStorage.setItem(KEY, v); } catch (e) {} set(); };
   window.s4ThemeToggle = function () { s4Theme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark"); };
+})();
+
+/* Density: like the theme, set before the first paint. "auto" is compact only on a wide screen with a mouse. */
+(function () {
+  var KEY = "s4-density", d = "auto", q = window.matchMedia && matchMedia("(pointer: fine) and (min-width: 1300px)");
+  try { d = localStorage.getItem(KEY) || "auto"; } catch (e) {}
+  function mark() { document.querySelectorAll("[data-density-seg] button").forEach(function (b) { b.classList.toggle("on", b.dataset.v === d); }); }
+  function set() { document.documentElement.setAttribute("data-density", d === "compact" || d === "standard" ? d : (q && q.matches ? "compact" : "standard")); mark(); }
+  set(); if (q && q.addEventListener) q.addEventListener("change", function () { if (d === "auto") set(); });
+  window.s4Density = function (v) { d = v; try { localStorage.setItem(KEY, v); } catch (e) {} set(); };
+  function wire() { document.querySelectorAll("[data-density-seg]").forEach(function (box) { if (box._s4d) return; box._s4d = true;
+    box.addEventListener("click", function (e) { var b = e.target.closest("button"); if (b && b.dataset.v) s4Density(b.dataset.v); }); }); mark(); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", wire); else wire();
 })();
 
 function s4Still() { return !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches); }

@@ -107,6 +107,7 @@ Weights: 400 text, 500 emphasis and nav, 600 labels/titles/buttons, 700 counts, 
 - **Spacing** `--s-1…--s-24`: 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 96. Apps use 4–24; web pages use the large steps between sections.
 - **Radii** `--r-xs` 6 (chips, checkboxes), `--r-sm` 8 (small buttons, menu items), `--r-md` 10 (buttons, fields), `--r` 12 (cards, nav items, tiles, menus), `--r-xl` 16 (dialogs, filter pills), `--r-2xl` 24 (bottom sheets, web CTA bands), `--r-pill`. Nested corners get smaller as they go in.
 - **Elevation** is flat: `--shadow-1` (cards and bars) is `none`; a hairline border and the fill separate them. Shadows are only for what floats over the page: `--shadow-2` menus and pop-overs, `--shadow-3` dialogs (toasts are dark and need none). No white inset "shine" on surfaces (removed in the Bank Rec app, #191); only keycaps keep a highlight.
+- **Density** (option C, "Two Modes, Auto"): `html[data-density]` is `standard` (the look as drawn) or `compact`. Compact sets `--row-py` 4px (table rows), `--ctl-h` 28px / `--ctl-h-sm` 24px (buttons), `--card-pad` 12px, `--nav-h` 34px, `--stack-gap` 10px and `--fs-base` 13px; standard is 7px, 34px / 28px, 16px, 40px, 16px, 14px. The user setting is **Auto** (default), **Standard** or **Compact**, remembered by `s4Density()`: Auto is compact on a wide screen (1300px+) with a mouse and standard on touch and small screens. Touch targets stay at `--tap` in both. Offer the setting where the user keeps their preferences (a `.seg` with `data-density-seg`).
 - **Motion** `--dur-1` .12s, `--dur-2` .18s, `--dur-3` .24s, `--ease`, `--press` .97. See [Motion](#motion).
 - **Layers** `--z-sticky` 2, `--z-bar` 20, `--z-panel` 40, `--z-modal` 50, `--z-toast` 80, `--z-menu` 130, `--z-tip` 200.
 
@@ -257,6 +258,8 @@ Every rule below came from the owner's issues on the Bank Reconciliation app (is
 - On a phone, nothing that looks like a button may be inert: show plain text instead (#183).
 
 **Shadows and glass:** flat, with the material leading (options B and B of the shadow and transparency samples). No shadows at rest; menus, dialogs and toasts keep one because they float. Surfaces are mostly the material colour, 80–96%, with the blur at 28px and no colour boost; content slides under the top and tab bars. Never go more see-through than this: the colour of whatever is underneath must not show through strongly (the earlier, clearer options looked too intense in the top bar).
+
+**Density:** option C, "Two Modes, Auto": Standard and Compact, the default follows the device (compact on a wide screen with a mouse), the user can override it. See [Space, shape, depth, motion](#space-shape-depth-motion).
 
 **Navigation:** option C, "Tabs + Trail": a trail above the title, page tabs under it, a neutral-fill current tab. Nav = places, tabs = views of one record, segmented = filters. See [Layouts](#layouts).
 

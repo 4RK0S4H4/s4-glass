@@ -106,8 +106,8 @@ Draw charts as SVG with the toolkit's tokens (reference: `demo/samples/charts.ht
 
 ## Density
 
-- **Compact / data-dense**: `table.t.compact`, 13px values, card padding 12px, 30px buttons (touch screens keep 40px).
-- **Calm and spacious** (default): the stylesheet as written.
+- **Two modes, Auto** (decided, option C): `html[data-density]` is `standard` (the stylesheet as written) or `compact` (rows 4px, buttons 28px, cards 12px, nav items 34px, base text 13px; touch targets stay 40px+). Set with `s4Density("auto" | "standard" | "compact")` or a `.seg` with `data-density-seg` and buttons `data-v`; the default, Auto, is compact on a wide screen with a mouse and standard on touch and small screens. Give users the setting where they keep preferences. Use the `--row-py`, `--ctl-h`, `--card-pad`, `--nav-h`, `--stack-gap` tokens in app code so it follows.
+- **Calm and spacious** (standard, today's look): the stylesheet as written.
 - **Playful and bold**: 15px body, 14–16px radii, card padding 20px, the accent more generous on headers and empty states, still one primary button per area.
 
 ## Icons: Solar
@@ -140,6 +140,7 @@ These came from the user's own issues on the Bank Reconciliation app (full list 
 - **Copy chips**: click to copy, a 0.6s green flash that never stays, plain text in tables until hovered, never on totals; wrap the value in its own `<span>`.
 - **Count pills** are 20px tall with 2px top padding (Inter's digits sit high in a `line-height:1` box).
 - **Pop-overs** are solid; dialogs are glass over a blurred scrim (bottom sheets on phones); toasts are dark with one optional action ("Undone: Match 40 [Redo]").
+- **Density** (option C, "Two Modes, Auto"): standard and compact, `s4Density()`, default follows the device; see Density.
 - **Navigation** (option C, "Tabs + Trail"): trail above the title, page tabs under it, neutral-fill current tab; nav = places, tabs = views of one record, segmented = filters.
 - **Charts** (option A, "Accent First"): accent is series 1, then blue, aqua, yellow, violet; thin marks, 2px gaps, tooltips and a table view by default. See Charts.
 - **Flat and material-first** (shadows B, transparency B): no shadow at rest (`--shadow-1: none`), shadows only on menus, dialogs; surfaces are 80–96% material colour, 28px blur, no colour boost, content slides under the top and tab bars. Don't go clearer or add resting shadows unless asked.
