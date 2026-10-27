@@ -21,7 +21,7 @@ The owner reads on a phone: keep messages short and ask one thing at a time.
 
 
 ## Next (not started)
-- Merge PR #16 (SKILL.md sync) when the owner says so; repackage the skill afterwards.
+- PR #16 (SKILL.md sync) is merged. Repackage the skill (`tools/package_skill.py`) and send the owner `build/s4-glass.skill` so the installed copy matches.
 - Owner picks the next area, or proposes candidates (use the `frontend-design` skill, now available, and say so on the page).
 - Optional: re-check the recommendation boxes on the older samples pages with the skill.
 
