@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en" data-o="a">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Density Samples · S4 Glass</title>
+<script data-s4 src="../../toolkit/s4.js"></script>
+<link data-s4 rel="stylesheet" href="../../toolkit/fonts.css">
+<link data-s4 rel="stylesheet" href="../../toolkit/s4.css">
+<style>
+  :root { --accent: #ce0057; --accent-2: #8a0069; --accent-light: #ff5c9d; }
+  .g-bar { position: sticky; top: 0; z-index: var(--z-bar); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); padding: 10px var(--s-6); padding-top: max(10px, env(safe-area-inset-top)); border-bottom: 1px solid var(--border); background: var(--bar-bg); -webkit-backdrop-filter: blur(var(--blur)); backdrop-filter: blur(var(--blur)); }
+  .g-bar .title { margin-right: auto; }
+  .g-main { display: flex; flex-direction: column; gap: var(--s-6); padding-top: var(--s-8); padding-bottom: var(--s-16); }
+  .lede { margin: 0; color: var(--text2); max-width: 70ch; }
+  .opt-note { margin: 0; padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--well); color: var(--text2); font-size: var(--fs-sm); max-width: 78ch; }
+  .opt-note b { color: var(--text); }
+  [data-o="a"] .opt-note:not([data-for="a"]), [data-o="b"] .opt-note:not([data-for="b"]), [data-o="c"] .opt-note:not([data-for="c"]), [data-o="d"] .opt-note:not([data-for="d"]) { display: none; }
+  .readout { margin: 0; font-size: var(--fs-ui); color: var(--text2); } .readout b { color: var(--text); }
+  .tbl-spec { width: 100%; max-width: 560px; border-collapse: collapse; font-size: var(--fs-sm); } .tbl-spec th, .tbl-spec td { padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border); } .tbl-spec th { color: var(--text2); font-weight: 600; font-size: var(--fs-xs); }
+
+  /* the three densities: compact · standard (today) · roomy */
+  .f { --d-py: 7px; --d-btn: 34px; --d-card: 16px; --d-nav: 40px; --d-gap: 16px; --d-fs: 14px; }
+  .f[data-dens="compact"] { --d-py: 4px; --d-btn: 28px; --d-card: 12px; --d-nav: 34px; --d-gap: 10px; --d-fs: 13px; }
+  .f[data-dens="roomy"] { --d-py: 11px; --d-btn: 40px; --d-card: 20px; --d-nav: 44px; --d-gap: 20px; --d-fs: 15px; }
+  .f table.t td { padding-block: var(--d-py); font-size: var(--d-fs); } .f table.t th { padding-block: calc(var(--d-py) + 1px); }
+  .f .btn { min-height: var(--d-btn); font-size: var(--d-fs); } .f .btn.sm { min-height: calc(var(--d-btn) - 6px); }
+  .f .card { padding: var(--d-card); } .f .card.flush { padding: 0; }
+  .f .nav .item { min-height: var(--d-nav); } .f .f-scroll { gap: var(--d-gap); }
+  .f .stat b { font-size: calc(var(--d-fs) + 8px); }
+
+  .f { position: relative; display: grid; grid-template-columns: 200px minmax(0, 1fr); height: 600px; border: 1px solid var(--border2); border-radius: var(--r-xl); overflow: clip; background: var(--page); isolation: isolate; }
+  .f .nav { border-right: 1px solid var(--border); }
+  .f-main { position: relative; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
+  .f .topbar { flex: none; } .f .topbar h1 { font-size: var(--fs-h1); }
+  .f-scroll { flex: 1; min-height: 0; overflow: auto; padding: var(--s-4) var(--s-5) var(--s-6); display: flex; flex-direction: column; }
+  .stats3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); }
+  .dens { display: none; } [data-o="b"] .dens-b, [data-o="c"] .dens-c, [data-o="d"] .dens-d { display: inline-flex; }
+  .tabbar-x { display: none; }
+  @media (max-width: 760px) {
+    .g-bar { padding-inline: var(--s-4); } .g-bar .title { flex-basis: 100%; }
+    .f { grid-template-columns: minmax(0, 1fr); height: 640px; } .f .nav { display: none; } .f .topbar .sub { display: none; }
+    .f .topbar { flex-wrap: wrap; } .f .actions .btn:not(.primary) { display: none; }
+    .stats3 { grid-template-columns: 1fr 1fr; } .f-scroll { padding-inline: var(--s-4); padding-bottom: 84px; }
+    .tabbar-x { display: flex; position: absolute; inset: auto 0 0 0; z-index: 2; justify-content: space-around; padding: 6px 0 8px; border-top: 1px solid var(--border); background: var(--tabbar-bg); -webkit-backdrop-filter: blur(var(--blur)); backdrop-filter: blur(var(--blur)); }
+    .tabbar-x a { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: var(--fs-xs); color: var(--text2); text-decoration: none; } .tabbar-x a.on { color: var(--text); font-weight: 600; } .tabbar-x svg { width: 22px; height: 22px; }
+  }
+</style>
+<script data-s4 src="../../toolkit/icons.js"></script>
+</head>
+<body>
+<div class="g-bar">
+  <span class="title">Density Samples</span>
+  <div class="seg" id="opt" data-manual role="group" aria-label="Option"><button type="button" class="on" data-v="a">A · One Density</button><button type="button" data-v="b">B · Two Modes</button><button type="button" data-v="c">C · Two Modes, Auto</button><button type="button" data-v="d">D · Three Steps</button></div>
+  <div class="seg" id="theme" data-manual role="group" aria-label="Theme"><button type="button" data-v="light">Light</button><button type="button" data-v="dark">Dark</button><button type="button" data-v="auto">Auto</button></div>
+</div>
+
+<main class="container g-main">
+  <p class="lede">The same transactions page at different densities. Pick A, B, C or D at the top; where there is a density switch, it sits in the top bar of the small app. Watch how many rows fit without scrolling (the line under this text), and check it on your phone too: touch screens always keep tap targets at 40px or more, whatever the density.</p>
+
+  <div class="stack" style="--gap: var(--s-2)">
+    <p class="opt-note" data-for="a"><b>A · One Density.</b> Today's look only: calm and spacious. No setting. Simple, but data-heavy screens scroll more than they need to, and it can't suit both a first-time user and someone who reconciles all day.</p>
+    <p class="opt-note" data-for="b"><b>B · Two Modes.</b> Standard (today) and Compact, chosen by the user in a setting that is remembered. Compact tightens table rows, buttons, cards and the nav, and drops the base text a notch (14px to 13px). It's the usual answer for data-heavy tools.</p>
+    <p class="opt-note" data-for="c"><b>C · Two Modes, Auto.</b> As B, but the default follows the device: Compact on a wide screen with a mouse, Standard on touch and small screens. The user can still choose either. "Auto" is the setting's default, shown here as the first choice.</p>
+    <p class="opt-note" data-for="d"><b>D · Three Steps.</b> Compact, Standard and Roomy (larger text, 44px rows). The most flexible, and the most to design, test and explain. Roomy helps low-vision users and big touch screens.</p>
+  </div>
+  <p class="readout" id="readout" aria-live="polite"></p>
+
+  <table class="tbl-spec" aria-label="What each density sets"><thead><tr><th>Setting</th><th>Compact</th><th>Standard (today)</th><th>Roomy</th></tr></thead><tbody>
+    <tr><td>Table row padding</td><td>4px</td><td>7px</td><td>11px</td></tr><tr><td>Button height</td><td>28px</td><td>34px</td><td>40px</td></tr><tr><td>Card padding</td><td>12px</td><td>16px</td><td>20px</td></tr><tr><td>Nav item height</td><td>34px</td><td>40px</td><td>44px</td></tr><tr><td>Text in tables and buttons</td><td>13px</td><td>14px</td><td>15px</td></tr></tbody></table>
+
+  <div class="f" id="frame" data-dens="standard">
+    <nav class="nav" aria-label="Sample">
+      <a class="item" href="#"><svg data-ic-duo="widget-5"></svg><span class="lbl">Overview</span></a>
+      <a class="item active" href="#" aria-current="page"><svg data-ic-duo="checklist-minimalistic"></svg><span class="lbl">Transactions</span><span class="count">43</span></a>
+      <a class="item" href="#"><svg data-ic-duo="document-text"></svg><span class="lbl">Rules</span></a>
+      <a class="item" href="#"><svg data-ic-duo="settings"></svg><span class="lbl">Settings</span></a>
+    </nav>
+    <div class="f-main">
+      <header class="topbar">
+        <div class="ttl"><h1>Transactions</h1><span class="sub">Northwind Operating •••• 2210</span></div>
+        <div class="actions">
+          <div class="seg dens dens-b" id="sb" role="group" aria-label="Density"><button type="button" class="on" data-d="standard">Standard</button><button type="button" data-d="compact">Compact</button></div>
+          <div class="seg dens dens-c" id="sc" role="group" aria-label="Density"><button type="button" class="on" data-d="auto">Auto</button><button type="button" data-d="standard">Standard</button><button type="button" data-d="compact">Compact</button></div>
+          <div class="seg dens dens-d" id="sd" role="group" aria-label="Density"><button type="button" data-d="compact">Compact</button><button type="button" class="on" data-d="standard">Standard</button><button type="button" data-d="roomy">Roomy</button></div>
+          <button class="btn primary" type="button">Import</button>
+        </div>
+      </header>
+      <div class="f-scroll" id="fscroll">
+        <div class="stats3">
+          <div class="card stat"><span>Still to Match</span><b>43</b></div>
+          <div class="card stat"><span>Matched</span><b>3</b></div>
+          <div class="card stat"><span>Money In</span><b class="c-ok">300,000.00</b></div>
+        </div>
+        <div class="card flush"><div class="table-wrap"><table class="t" id="tt"><thead><tr><th>Date</th><th class="dcol">Description</th><th>Status</th><th class="num">Amount</th></tr></thead><tbody>
+          <tr><td>Oct 23</td><td class="dcol">Northwind Payroll Run 2610<span class="sub">Pre-authorized ACH Debit</span></td><td><span class="badge solid">Suggested</span></td><td class="num">(84,105.03)</td></tr>
+          <tr><td>Oct 23</td><td class="dcol">Transfer From Savings •••• 4821<span class="sub">Miscellaneous Credit</span></td><td><span class="badge warn">To Sort</span></td><td class="num">300,000.00</td></tr>
+          <tr><td>Oct 22</td><td class="dcol">Northwind Benefits Funding<span class="sub">Pre-authorized ACH Debit</span></td><td><span class="badge ok">Matched</span></td><td class="num">(536.90)</td></tr>
+          <tr><td>Oct 22</td><td class="dcol">Contoso Office Supplies<span class="sub">Card Purchase</span></td><td><span class="badge accent">Journal Entry</span></td><td class="num">(212.40)</td></tr>
+          <tr><td>Oct 21</td><td class="dcol">Fabrikam Freight<span class="sub">Wire Out</span></td><td><span class="badge warn">To Sort</span></td><td class="num">(4,980.00)</td></tr>
+          <tr><td>Oct 21</td><td class="dcol">Interest Earned<span class="sub">Credit</span></td><td><span class="badge ok">Matched</span></td><td class="num">18.22</td></tr>
+          <tr><td>Oct 20</td><td class="dcol">Harbour & Pine Architects<span class="sub">Pre-authorized ACH Debit</span></td><td><span class="badge solid">Suggested</span></td><td class="num">(6,400.00)</td></tr>
+          <tr><td>Oct 20</td><td class="dcol">Kestrel Outdoor Co.<span class="sub">Wire In</span></td><td><span class="badge warn">To Sort</span></td><td class="num">12,750.00</td></tr>
+          <tr><td>Oct 19</td><td class="dcol">Meadow Lane Bakery<span class="sub">Card Purchase</span></td><td><span class="badge ok">Matched</span></td><td class="num">(284.10)</td></tr>
+          <tr><td>Oct 19</td><td class="dcol">Northwind Physio<span class="sub">ACH Credit</span></td><td><span class="badge warn">To Sort</span></td><td class="num">2,975.50</td></tr>
+          <tr><td>Oct 18</td><td class="dcol">Contoso Cloud Hosting<span class="sub">Pre-authorized ACH Debit</span></td><td><span class="badge solid">Suggested</span></td><td class="num">(1,280.00)</td></tr>
+          <tr><td>Oct 18</td><td class="dcol">Fabrikam Insurance<span class="sub">Pre-authorized ACH Debit</span></td><td><span class="badge ok">Matched</span></td><td class="num">(3,140.00)</td></tr>
+          <tr><td>Oct 17</td><td class="dcol">Bank Service Fee<span class="sub">Fee</span></td><td><span class="badge ok">Matched</span></td><td class="num">(45.00)</td></tr>
+          <tr><td>Oct 17</td><td class="dcol">Harbour & Pine Retainer<span class="sub">Wire In</span></td><td><span class="badge warn">To Sort</span></td><td class="num">9,000.00</td></tr>
+          </tbody></table></div></div>
+      </div>
+      <nav class="tabbar-x" aria-label="Sample tabs"><a href="#"><svg data-ic-duo="widget-5"></svg>Home</a><a class="on" href="#"><svg data-ic-duo="checklist-minimalistic"></svg>Match</a><a href="#"><svg data-ic-duo="document-text"></svg>Rules</a><a href="#"><svg data-ic-duo="settings"></svg>Settings</a></nav>
+    </div>
+  </div>
+</main>
+
+<script>
+  var root = document.documentElement, frame = document.getElementById("frame"), scroller = document.getElementById("fscroll");
+  var chosen = { b: "standard", c: "auto", d: "standard" };
+  function mark(id, v) { document.querySelectorAll("#" + id + " button").forEach(function (b) { b.classList.toggle("on", b.dataset.v === v); }); }
+  var th = "auto"; try { th = localStorage.getItem("s4-theme") || "auto"; } catch (e) {} mark("theme", th);
+  document.getElementById("theme").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; s4Theme(b.dataset.v); mark("theme", b.dataset.v); setTimeout(readout, 50); });
+  function wide() { return window.matchMedia("(pointer: fine) and (min-width: 1300px)").matches; }
+  function current() { var o = root.getAttribute("data-o"); if (o === "a") return "standard"; if (o === "c" && chosen.c === "auto") return wide() ? "compact" : "standard"; return chosen[o]; }
+  function readout() {
+    var d = current(), o = root.getAttribute("data-o"); frame.setAttribute("data-dens", d);
+    requestAnimationFrame(function () {
+      var rows = document.querySelectorAll("#tt tbody tr"), top = scroller.getBoundingClientRect().top, lim = scroller.getBoundingClientRect().bottom, n = 0;
+      rows.forEach(function (r) { if (r.getBoundingClientRect().bottom <= lim + 0.5) n++; });
+      var how = o === "c" && chosen.c === "auto" ? " (Auto chose " + d + " for this screen: " + (wide() ? "wide, with a mouse" : "narrow or touch") + ")" : "";
+      document.getElementById("readout").innerHTML = "Density: <b>" + d.charAt(0).toUpperCase() + d.slice(1) + "</b>" + how + ". <b>" + n + " of " + rows.length + "</b> rows fit without scrolling.";
+    });
+  }
+  try { var saved = sessionStorage.getItem("s4-dens-opt"); if (saved) { root.setAttribute("data-o", saved); mark("opt", saved); } } catch (e) {}
+  document.getElementById("opt").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; root.setAttribute("data-o", b.dataset.v); mark("opt", b.dataset.v); try { sessionStorage.setItem("s4-dens-opt", b.dataset.v); } catch (x) {} readout(); });
+  [["sb", "b"], ["sc", "c"], ["sd", "d"]].forEach(function (p) { document.getElementById(p[0]).addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; chosen[p[1]] = b.dataset.d; this.querySelectorAll("button").forEach(function (x) { x.classList.toggle("on", x === b); }); readout(); }); });
+  document.querySelectorAll("#frame a").forEach(function (a) { a.addEventListener("click", function (e) { e.preventDefault(); }); });
+  window.addEventListener("resize", readout); if (document.fonts && document.fonts.ready) document.fonts.ready.then(readout); readout();
+</script>
+</body>
+</html>
