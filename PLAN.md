@@ -15,7 +15,7 @@ The owner reads on a phone: keep messages short and ask one thing at a time.
 |---|---|---|---|
 | 1 | Motion | **Done.** Picked B "Apple Quiet"; built in PR #3 | [Guide](https://4rk0s4h4.github.io/s4-glass/guide/design.html#motion) · [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/motion.html) |
 | 2 | Glass, shadows and transparency | **Done** (PR #9). Owner picked **B Flat** (shadows) and **B Mostly Material** (transparency): flat, no resting shadows, surfaces 80–96% material colour, 28px blur, no colour boost, content slides under bars | [Shadows](https://4rk0s4h4.github.io/s4-glass/demo/samples/shadows.html) · [Transparency](https://4rk0s4h4.github.io/s4-glass/demo/samples/transparency.html) · earlier: [Glass](https://4rk0s4h4.github.io/s4-glass/demo/samples/glass.html), [Depth](https://4rk0s4h4.github.io/s4-glass/demo/samples/depth.html), [See-through](https://4rk0s4h4.github.io/s4-glass/demo/samples/see-through.html) |
-| 3 | Charts and data visualisation | **Waiting on the owner's pick** of a colour scheme: A Accent First · B Reference Set · C One Hue (same five charts, tooltips, table view, texture) | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/charts.html) |
+| 3 | Charts and data visualisation | **Built (PR open).** Owner picked **A Accent First**: accent is series 1, then blue, aqua, yellow, violet; thin marks, tooltips, table view, texture opt-in | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/charts.html) |
 | 4 | Navigation and density (page headers, breadcrumbs, tabs vs segmented vs nav, compact / comfortable) | Not started | – |
 
 

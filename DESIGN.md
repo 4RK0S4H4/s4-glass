@@ -4,7 +4,7 @@ S4 Glass is one look for every app, tool and web page: frosted glass surfaces in
 
 The look was settled over many rounds of feedback on a real, heavily used app (Bank Reconciliation, Emovis). Version 2.0 keeps every decision from that work and adds what the app had to invent on its own: a type scale, a status system, phone patterns and a web-page layer. This file is the spec. The code is in `toolkit/`, starters in `templates/`, every component on one page in `demo/components.html`.
 
-Contents: [Principles](#principles) · [Colour](#colour) · [Type and numbers](#type-and-numbers) · [Space, shape, depth, motion](#space-shape-depth-motion) · [Motion](#motion) · [Layouts](#layouts) · [Phone to 2560](#phone-to-2560) · [Components](#components) · [Writing](#writing) · [Icons](#icons) · [Accessibility](#accessibility) · [What changed in 2.0](#what-changed-in-20) · [Checklist](#checklist)
+Contents: [Principles](#principles) · [Colour](#colour) · [Type and numbers](#type-and-numbers) · [Space, shape, depth, motion](#space-shape-depth-motion) · [Motion](#motion) · [Layouts](#layouts) · [Phone to 2560](#phone-to-2560) · [Components](#components) · [Charts](#charts) · [Writing](#writing) · [Icons](#icons) · [Accessibility](#accessibility) · [What changed in 2.0](#what-changed-in-20) · [Checklist](#checklist)
 
 ## Principles
 
@@ -196,6 +196,20 @@ Component rules that matter most:
 - **Say things once**: a hint that applies to every row goes in the line above the list.
 - **Uncluttered headers**: the title stands alone; counts and totals are quieter text beside or under it. No title · count · dot · chip strings.
 
+## Charts
+
+Option A of the chart samples ("Accent First"); the reference implementation is [demo/samples/charts.html](../demo/samples/charts.html). Charts are plain SVG you draw per app; the tokens, the colours and the pieces around them (`.plot`, `.legend`, `.viz-tip`, `.ramp`, `.chart-table`) are in the toolkit.
+
+- **Colour, by the job it does.** Identity: `--series-1` is the app's accent, then `--series-2…5` (blue, aqua, yellow, violet), always in that order, never cycled; a sixth series folds into "Other" or becomes small multiples. If the accent is close to one of the fixed hues (a green or teal accent beside aqua, a blue accent beside blue), leave that hue out and move on to the next, so two series never look alike. Magnitude: one hue, `--seq-0…4`, light to dark. Status colours are reserved for state and are never a series. Dark mode has its own steps (`--series-*` are redefined, validated against the dark surface), not a flip.
+- **One series** is a soft tint (`--viz-soft`) with the current or selected mark solid `--series-1`. Don't colour nominal bars by value.
+- **Marks are thin.** Columns at most 24px, a 4px rounded end and a square base; bars the same, with the value after the tip; lines 2px with round joins; end dots 8px with a 2px surface ring; area fills about 10%. Separate touching marks (stack segments, adjacent bars) with a 2px gap in the surface colour, never a border.
+- **One axis, always.** No dual-axis charts: two scales are two charts. Gridlines and axes are hairlines (`--viz-grid`, `--viz-axis`); label only the current, the peak, or a line's end, never every point.
+- **Text wears text colours** (`--text`, `--text2`, `--text3`), never the series colour; identity comes from the swatch or line key beside it. Figures are tabular.
+- **A legend** (`.legend`) for two or more series; none for one. Lines also get end labels when they don't collide.
+- **Interaction ships by default**: a tooltip (`.viz-tip`) on hover and focus with every series at that point, value first; a crosshair that snaps to the nearest x on line charts; the mark itself is the hit target on bars and cells; arrow keys step through a line chart. Tooltips never gate anything: every value is also in the **table view** (`.chart-table`, toggled with `.table-view`).
+- **Texture** (45° and 135° lines) is available for colour-blind readers and print, never on by default.
+- **Stat tiles** (`.card.stat`): label, value, an optional delta (green only when up is good) and a 12-point sparkline (`.spark`, soft line, current point solid).
+
 ## Writing
 
 - **Title Case for labels**: field labels, headings of cards, sections, panels and dialogs, column headers, buttons, tabs, menu items, stat labels and badges. Capitalise major words; a, an, the, and, or, to, of, in, on, for, as, by stay lowercase unless first, and a little word that ends the label or belongs to the verb is capitalised ("Fill In the Entry", "The Full Statement Is In"). Acronyms stay (SAP, GL, JE).
@@ -242,6 +256,8 @@ Every rule below came from the owner's issues on the Bank Reconciliation app (is
 - On a phone, nothing that looks like a button may be inert: show plain text instead (#183).
 
 **Shadows and glass:** flat, with the material leading (options B and B of the shadow and transparency samples). No shadows at rest; menus, dialogs and toasts keep one because they float. Surfaces are mostly the material colour, 80–96%, with the blur at 28px and no colour boost; content slides under the top and tab bars. Never go more see-through than this: the colour of whatever is underneath must not show through strongly (the earlier, clearer options looked too intense in the top bar).
+
+**Charts:** option A, "Accent First": the app's accent is series 1, then blue, aqua, yellow, violet in that order; thin marks, 2px gaps, tooltips and a table view by default. See [Charts](#charts).
 
 **Motion:** quiet and Apple-like (option B of the motion samples): press shrinks to 97%, ticks draw in, folds and dialogs grow and shrink, the pill glides, new content fades in without moving. No bounce.
 

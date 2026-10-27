@@ -78,6 +78,10 @@ When the user wants to see or compare colours ("show me options", "what would it
 
 Status colours are fixed (they mean the same in every app). Each role has text, soft-area, chip, ink and bar tokens: **ok**, **warn**, **bad**, **mute** (parked, carried, not this month), **accent** (in progress on our side), plus **needs your decision** = `.badge.solid` (solid accent with the stars icon: the only solid badge and the only badge with an icon; no dashed or outlined chips). Status is one badge plus a slim bar (row edge `tr.st-*`, card top `.card.edge.*`, progress `.bar > i.*`), never a tinted row. An app with its own vocabulary (Matched, To Sort, Journal Entry…) maps each state onto one of these roles and never invents another colour.
 
+## Charts
+
+Draw charts as SVG with the toolkit's tokens (reference: `demo/samples/charts.html`; read the `dataviz` skill too). Series colour 1 is the app's accent (`--series-1`), then `--series-2…5` (blue, aqua, yellow, violet) in that fixed order, never cycled (a sixth series folds into "Other" or small multiples; if the accent is close to one of those hues, such as a green accent beside aqua, skip that hue); magnitude uses one hue, `--seq-0…4`; status colours are never series. One series: soft tint (`--viz-soft`) with the current mark solid. Marks are thin: columns ≤24px with a 4px rounded end and square base, lines 2px, end dots 8px with a 2px surface ring, areas ~10%, a 2px surface gap between touching marks (no borders). One axis, never two; hairline grid; label only the current, peak or line end. Text uses text colours, never the series colour; tabular figures. A legend (`.legend`) for two or more series. Tooltip (`.viz-tip`) on hover and focus, crosshair on lines, arrow keys on line charts, a table view (`.chart-table`, `.table-view`) for every chart; texture (45°/135°) opt-in for colour-blind readers and print. Stat tile: label, value, delta (green only when up is good), 12-point sparkline (`.spark`).
+
 ## Phone to 2560
 
 | Width | Behaviour |
@@ -135,6 +139,7 @@ These came from the user's own issues on the Bank Reconciliation app (full list 
 - **Copy chips**: click to copy, a 0.6s green flash that never stays, plain text in tables until hovered, never on totals; wrap the value in its own `<span>`.
 - **Count pills** are 20px tall with 2px top padding (Inter's digits sit high in a `line-height:1` box).
 - **Pop-overs** are solid; dialogs are glass over a blurred scrim (bottom sheets on phones); toasts are dark with one optional action ("Undone: Match 40 [Redo]").
+- **Charts** (option A, "Accent First"): accent is series 1, then blue, aqua, yellow, violet; thin marks, 2px gaps, tooltips and a table view by default. See Charts.
 - **Flat and material-first** (shadows B, transparency B): no shadow at rest (`--shadow-1: none`), shadows only on menus, dialogs; surfaces are 80–96% material colour, 28px blur, no colour boost, content slides under the top and tab bars. Don't go clearer or add resting shadows unless asked.
 - **Motion** is quiet, Apple-like, one curve (`--ease`, no bounce), 120–240ms, exits shorter: controls shrink to 97% while pressed, the switch thumb stretches while held, ticks draw in, copy turns green with a tick for 0.6s, toasts rise and fade out, folds and dialogs grow and shrink (`s4Fold`, `s4Close`), the selection pill glides only after a click, new screens and tab content fade in without moving (`.swap` / `s4Swap`). Only what the user changed moves; keys never wait; nothing blinks, pulses or bounces; Reduce Motion makes it instant.
 - **Overview of several entities**: one vertical card each in `.grid-4` (4 → 2 → 1), coloured top edge for status, vital numbers at a glance, "Show Details" for the rest.
