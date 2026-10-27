@@ -5,7 +5,7 @@ description: "The S4 Glass 2.0 design language: brand-neutral frosted glass in l
 
 # S4 Glass 2.0
 
-The user's house look for every app and web page: frosted glass surfaces in both themes, a faint tint of the accent in the greys, borders and shadows, one loud accent used as a fill, Inter with open digits, and Solar icons. It is brand-neutral: every colour comes from three accent values, so a new app makes one colour decision.
+The user's house look for every app and web page: frosted, flat glass surfaces in both themes (the material leads over what is underneath), a faint tint of the accent in the greys and borders, one loud accent used as a fill, Inter with open digits, and Solar icons. It is brand-neutral: every colour comes from three accent values, so a new app makes one colour decision.
 
 The look was settled over many rounds of the user's feedback on a real app (Bank Reconciliation, Emovis); 2.0 adds what that app had to invent for itself (a type scale, one status system, phone patterns, web pages) and the tooling that keeps it consistent. Don't re-litigate the rules in a new app unless the user asks.
 
@@ -27,11 +27,11 @@ This skill is the look. The process (intake, brief, mockups, build, delivery) li
 
 ## Principles (the ones that decide most choices)
 
-1. **Frosted glass, tinted by the accent.** Translucent cards, nav, top bar, fields and dialogs with a background blur, over an off-white page (light) or a near-black gradient with a faint accent bloom (dark). `data-neutrals="mono"` on `<html>` removes the tint.
+1. **Frosted glass, tinted by the accent.** Frosted cards, nav, top bar, fields and dialogs where the material leads: white (light) or dark grey (dark) at 80–96% with a 28px blur and no colour boost, so what is underneath is only a faint tint. Bars 90%, cards 82%, nav 80%, dialogs 96%. Over an off-white page (light) or a near-black gradient with a faint accent bloom (dark). Content slides under the top bar and tab bar. `data-neutrals="mono"` on `<html>` removes the tint.
 2. **One loud colour.** The accent fills the primary action, the current place (active nav item, selected filter, chosen tile) and what needs a decision. Nothing else. One accent-filled button per screen area; when nothing is left to do, hide it rather than grey it out. A mark that repeats many times (done days in a calendar, ticked cells, chart bars) uses the soft fill (`--tile-on` / `--fill2`, `--accent-bar` for bars); solid accent is for the one current or selected thing.
 3. **Filled, not outlined.** Hover and selected are soft fills; button-like controls hover with the accent tint (`--hov`); rows and lists hover and select in neutral grey; focus is a thin neutral ring; fields focus with a brighter fill and darker border. Never a high-contrast accent outline or ring (a soft `--soft-ring` line is fine).
-4. **Quiet chrome, readable data.** Inter 14px, tabular figures on data, one text size in table cells, named sizes only, radii 6/8/10/12/16/24, spacing 4–24 (to 96 on web pages), hairline borders, soft shadows without a white inset shine.
-5. **Dark mode is glass, not grey.** No accent-coloured text or icons on dark surfaces (accent is for fills). Only three things glow, faintly: the primary button's backlight, the active nav item, the selected filter pill.
+4. **Quiet chrome, readable data.** Inter 14px, tabular figures on data, one text size in table cells, named sizes only, radii 6/8/10/12/16/24, spacing 4–24 (to 96 on web pages), hairline borders, and flat surfaces: no shadow at rest (`--shadow-1` is `none`); shadows only on what floats (menus, dialogs). No white inset shine.
+5. **Dark mode is dark glass.** No accent-coloured text or icons on dark surfaces (accent is for fills). Only three things glow, faintly: the primary button's backlight, the active nav item, the selected filter pill.
 6. **Phone to 2560.** Narrow screens get their own patterns through `max-width` rules only, so 1920 and 2560 never change.
 7. **Readable for everyone.** WCAG AA against what is really painted behind the text, both themes; visible focus; 40px targets (44px on phones); reduced motion respected.
 8. **Tokens or nothing.** Colours, sizes, radii, spacing, shadows, z-index and durations are tokens; `check_css.py` enforces it.
@@ -135,6 +135,7 @@ These came from the user's own issues on the Bank Reconciliation app (full list 
 - **Copy chips**: click to copy, a 0.6s green flash that never stays, plain text in tables until hovered, never on totals; wrap the value in its own `<span>`.
 - **Count pills** are 20px tall with 2px top padding (Inter's digits sit high in a `line-height:1` box).
 - **Pop-overs** are solid; dialogs are glass over a blurred scrim (bottom sheets on phones); toasts are dark with one optional action ("Undone: Match 40 [Redo]").
+- **Flat and material-first** (shadows B, transparency B): no shadow at rest (`--shadow-1: none`), shadows only on menus, dialogs; surfaces are 80–96% material colour, 28px blur, no colour boost, content slides under the top and tab bars. Don't go clearer or add resting shadows unless asked.
 - **Motion** is quiet, Apple-like, one curve (`--ease`, no bounce), 120–240ms, exits shorter: controls shrink to 97% while pressed, the switch thumb stretches while held, ticks draw in, copy turns green with a tick for 0.6s, toasts rise and fade out, folds and dialogs grow and shrink (`s4Fold`, `s4Close`), the selection pill glides only after a click, new screens and tab content fade in without moving (`.swap` / `s4Swap`). Only what the user changed moves; keys never wait; nothing blinks, pulses or bounces; Reduce Motion makes it instant.
 - **Overview of several entities**: one vertical card each in `.grid-4` (4 → 2 → 1), coloured top edge for status, vital numbers at a glance, "Show Details" for the rest.
 - **Headers stay uncluttered**: the title alone; counts and totals as quieter `.sec-sub` text. Cards fit their content. Say things once (a hint for every row goes above the list).

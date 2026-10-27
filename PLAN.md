@@ -14,17 +14,11 @@ The owner reads on a phone: keep messages short and ask one thing at a time.
 | # | Area | Status | Links |
 |---|---|---|---|
 | 1 | Motion | **Done.** Picked B "Apple Quiet"; built in PR #3 | [Guide](https://4rk0s4h4.github.io/s4-glass/guide/design.html#motion) · [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/motion.html) |
-| 2 | Glass and transparency | **Waiting on the owner's pick** (A Today · B Apple Ladder · C Clearer) | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/glass.html) |
+| 2 | Glass, shadows and transparency | **Built (PR open).** Owner picked **B Flat** (shadows) and **B Mostly Material** (transparency): flat, no resting shadows, surfaces 80–96% material colour, 28px blur, no colour boost, content slides under bars | [Shadows](https://4rk0s4h4.github.io/s4-glass/demo/samples/shadows.html) · [Transparency](https://4rk0s4h4.github.io/s4-glass/demo/samples/transparency.html) · earlier: [Glass](https://4rk0s4h4.github.io/s4-glass/demo/samples/glass.html), [Depth](https://4rk0s4h4.github.io/s4-glass/demo/samples/depth.html), [See-through](https://4rk0s4h4.github.io/s4-glass/demo/samples/see-through.html) |
 | 3 | Charts and data visualisation | Not started (use the dataviz skill) | – |
 | 4 | Navigation and density (page headers, breadcrumbs, tabs vs segmented vs nav, compact / comfortable) | Not started | – |
 
-## Glass options (for step 2)
-- **A · Today:** two glass levels with one blur. The light page is flat grey, and content stops at the top bar.
-- **B · Apple Ladder:** thin glass for bars, regular for cards and the nav, thick for dialogs and sheets. The light page gets a faint accent wash, content scrolls under the bars, and dark bars are a smoky glass.
-- **C · Clearer:** like B but more see-through, with a stronger colour wash. The palest text gets weaker over busy content.
 
-In all three, menus stay solid (#56) and there's no white shine (#94, #99, #191). Building B or C means the app shell's content scrolls under the top bar and tab bar.
-
-## Open items (ask after the current pick)
-- `demo/examples/` (Habits, Orders) are single-file builds made with the old toolkit, so they still have the old motion. Rebuild them?
-- Motion changed `--ease`. The Bank Reconciliation app (arko-EMOVIS/bank-reconciliation-app, private) should follow, per CLAUDE.md. Do it in a session with that repo attached?
+## Open items (ask after the current step)
+- `demo/examples/` (Habits, Orders) are single-file builds made with the old toolkit, so they still have the old motion and glass. Rebuild them?
+- Motion changed `--ease`, and the glass step changed the surface tokens (`--glass`, `--bar-bg`, `--blur`, `--sat`, `--shadow-1`). The Bank Reconciliation app (arko-EMOVIS/bank-reconciliation-app, private) should follow, per CLAUDE.md. Do it in a session with that repo attached?

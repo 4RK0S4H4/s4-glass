@@ -140,6 +140,17 @@ function s4Fold(d, open) {
 }
 
 /* Tab content: re-render, then s4Swap(panel) so it fades in where it is (no slide). */
+/* App-shell top bar: content slides under it, so .main learns the bar's height (--bar-h). Runs by itself; call s4Bars() after adding a bar later. */
+function s4Bars(root) {
+  (root || document).querySelectorAll(".main > .topbar:first-child").forEach(function (bar) {
+    if (bar._s4bar) return; bar._s4bar = true;
+    function set() { bar.parentNode.style.setProperty("--bar-h", bar.offsetHeight + "px"); }
+    set();
+    if (window.ResizeObserver) new ResizeObserver(set).observe(bar);
+  });
+}
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { s4Bars(); }); else s4Bars();
+
 function s4Swap(el) { el.classList.add("swap"); el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; }
 
 /* Table sorting. A cell sorts by its data-sort value if it has one (give status cells their urgency rank: bad 1, warn 2,

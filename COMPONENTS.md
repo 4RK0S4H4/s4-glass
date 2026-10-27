@@ -40,7 +40,7 @@ Contents: [Page setup](#page-setup) · [App shell](#app-shell) · [Phone tab bar
   </div>
 </div>
 ```
-Wrap nav labels in `.lbl` so the ≤980px icon rail can hide them. `.content.flush` removes padding (full-bleed split views); `.content.center` caps width for single-page tools. A single-page tool with no nav: `<div class="app solo"><div class="main">…</div></div>`.
+The top bar, when it is the first child of `.main`, floats over the top of `.content` so content slides under it (frosted); `s4.js` keeps `--bar-h` current. With a `.banner` above it the bar stays in the flow. Wrap nav labels in `.lbl` so the ≤980px icon rail can hide them. `.content.flush` removes padding (full-bleed split views); `.content.center` caps width for single-page tools. A single-page tool with no nav: `<div class="app solo"><div class="main">…</div></div>`.
 
 ## Phone tab bar
 
