@@ -2,6 +2,8 @@
 
 The S4 Glass design language: spec (`DESIGN.md`), component markup (`COMPONENTS.md`), toolkit (`toolkit/`), templates, demos, and the source of the `s4-glass` Claude skill (`skill/`). Plain HTML/CSS/JS, no build step for the toolkit itself.
 
+**Current work and next steps are in `PLAN.md`: read it at the start of every session and keep it up to date.**
+
 ## Delivery: GitHub Pages, not artifacts
 - This repo is **public** and served by GitHub Pages from `main`, root folder (Settings → Pages → Deploy from a branch → `main` / `/ (root)`). `.nojekyll` makes Pages serve the files as they are.
 - Site: **https://4rk0s4h4.github.io/s4-glass/** – the home page and design-language guide, with every demo linked from it:
