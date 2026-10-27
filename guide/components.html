@@ -61,7 +61,7 @@
   </div>
 </header>
 <main class="container guide">
-  <nav class="toc" aria-label="On this page"><b>On This Page</b><a href="#page-setup">Page setup</a><a href="#app-shell">App shell</a><a href="#phone-tab-bar">Phone tab bar</a><a href="#list-and-detail">List and detail</a><a href="#buttons">Buttons</a><a href="#fields">Fields</a><a href="#choosers">Choosers</a><a href="#status">Status</a><a href="#cards">Cards</a><a href="#tables">Tables</a><a href="#copy-chips-and-keys">Copy chips and keys</a><a href="#menus">Menus</a><a href="#dialogs-and-sheets">Dialogs and sheets</a><a href="#toasts-and-tooltips">Toasts and tooltips</a><a href="#folds-and-steps">Folds and steps</a><a href="#web-page">Web page</a><a href="#layout-helpers">Layout helpers</a></nav>
+  <nav class="toc" aria-label="On this page"><b>On This Page</b><a href="#page-setup">Page setup</a><a href="#app-shell">App shell</a><a href="#phone-tab-bar">Phone tab bar</a><a href="#list-and-detail">List and detail</a><a href="#buttons">Buttons</a><a href="#fields">Fields</a><a href="#choosers">Choosers</a><a href="#status">Status</a><a href="#cards">Cards</a><a href="#tables">Tables</a><a href="#charts">Charts</a><a href="#copy-chips-and-keys">Copy chips and keys</a><a href="#menus">Menus</a><a href="#dialogs-and-sheets">Dialogs and sheets</a><a href="#toasts-and-tooltips">Toasts and tooltips</a><a href="#folds-and-steps">Folds and steps</a><a href="#web-page">Web page</a><a href="#layout-helpers">Layout helpers</a></nav>
   <article class="doc"><h1 id="s4-glass-20-component-markup">S4 Glass 2.0 – component markup</h1>
 <p>Copy-paste markup for every component in <code>toolkit/s4.css</code>. Icons are shown as <code>&lt;svg data-ic="name"&gt;</code> (filled in by <code>icons.js</code>); in a built app paste the SVG itself. See <code>DESIGN.md</code> for when to use what. <code>demo/components.html</code> shows them all live.</p>
 <h2 id="page-setup">Page setup</h2>
@@ -195,6 +195,18 @@
 &lt;/div&gt;
 </code></pre>
 <p>Sorting is automatic for <code>th.sortable</code> (<code>s4Sort</code>); give status cells <code>data-sort</code> with their urgency rank (bad 1 … mute 6) and cells whose text doesn't sort well (dates as 9/28) an ISO <code>data-sort</code>. <code>tr.r</code> clickable · <code>tr.sel</code> selected (neutral) · <code>tr.done</code> finished (quieter) · <code>td.row-acts</code> row buttons · <code>table.t.compact</code> dense · <code>td.wrap</code> lets a short column wrap. On phones every <code>td</code> needs <code>data-label</code>; the description cell gets <code>.lead</code> and moves to the top.</p>
+<h2 id="charts">Charts</h2>
+<p>SVG you draw; the toolkit supplies colours (<code>--series-1…5</code>, <code>--seq-0…4</code>, <code>--viz-soft</code>, <code>--viz-grid</code>, <code>--viz-axis</code>) and the pieces around the plot. Full working example: <code>demo/samples/charts.html</code>.</p>
+<pre><code class="language-html">&lt;div class=&quot;card&quot;&gt;
+  &lt;h3&gt;Balances&lt;/h3&gt;
+  &lt;div class=&quot;legend&quot;&gt;&lt;span&gt;&lt;i class=&quot;ln&quot; style=&quot;background:var(--series-1)&quot;&gt;&lt;/i&gt;Operating&lt;/span&gt;&lt;span&gt;&lt;i class=&quot;ln&quot; style=&quot;background:var(--series-2)&quot;&gt;&lt;/i&gt;Payroll&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;plot&quot;&gt;&lt;svg width=&quot;640&quot; height=&quot;250&quot; role=&quot;img&quot; aria-label=&quot;Month-end balances&quot;&gt;…&lt;/svg&gt;&lt;/div&gt;
+  &lt;div class=&quot;chart-table&quot;&gt;&lt;table&gt;…the same numbers…&lt;/table&gt;&lt;/div&gt;   &lt;!-- shown when an ancestor has .table-view --&gt;
+&lt;/div&gt;
+&lt;div class=&quot;viz-tip&quot; hidden&gt;&lt;/div&gt;   &lt;!-- one per page; fill it with textContent on hover and focus --&gt;
+&lt;div class=&quot;card stat&quot;&gt;&lt;span&gt;Matched This Month&lt;/span&gt;&lt;b&gt;1,284&lt;/b&gt;&lt;svg class=&quot;spark&quot; viewBox=&quot;0 0 220 36&quot; preserveAspectRatio=&quot;none&quot;&gt;…&lt;/svg&gt;&lt;/div&gt;
+</code></pre>
+<p>Use <code>.plot text</code> for axis labels (they take <code>--text3</code>); <code>text.ink</code> for the current or peak value, <code>text.ink2</code> for names. Heat cells fill with <code>var(--seq-0…4)</code>; a key is <code>&lt;span class="ramp"&gt;Fewer &lt;i style="background:var(--seq-0)"&gt;&lt;/i&gt;… More&lt;/span&gt;</code>.</p>
 <h2 id="copy-chips-and-keys">Copy chips and keys</h2>
 <pre><code class="language-html">&lt;button class=&quot;copy&quot; data-copy=&quot;-1289.30&quot;&gt;&lt;span&gt;&lt;span class=&quot;brk&quot;&gt;(&lt;/span&gt;1,289.30&lt;span class=&quot;brk&quot;&gt;)&lt;/span&gt;&lt;/span&gt;&lt;svg data-ic=&quot;copy&quot;&gt;&lt;/svg&gt;&lt;/button&gt;
 &lt;button class=&quot;copy&quot; data-copy=&quot;124100.11&quot;&gt;&lt;span&gt;124,100.11&lt;span class=&quot;psp&quot;&gt;)&lt;/span&gt;&lt;/span&gt;&lt;svg data-ic=&quot;copy&quot;&gt;&lt;/svg&gt;&lt;/button&gt;

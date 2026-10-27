@@ -165,6 +165,21 @@ Use `inputmode` (numeric / decimal / email) so phones show the right keyboard.
 ```
 Sorting is automatic for `th.sortable` (`s4Sort`); give status cells `data-sort` with their urgency rank (bad 1 … mute 6) and cells whose text doesn't sort well (dates as 9/28) an ISO `data-sort`. `tr.r` clickable · `tr.sel` selected (neutral) · `tr.done` finished (quieter) · `td.row-acts` row buttons · `table.t.compact` dense · `td.wrap` lets a short column wrap. On phones every `td` needs `data-label`; the description cell gets `.lead` and moves to the top.
 
+## Charts
+
+SVG you draw; the toolkit supplies colours (`--series-1…5`, `--seq-0…4`, `--viz-soft`, `--viz-grid`, `--viz-axis`) and the pieces around the plot. Full working example: `demo/samples/charts.html`.
+```html
+<div class="card">
+  <h3>Balances</h3>
+  <div class="legend"><span><i class="ln" style="background:var(--series-1)"></i>Operating</span><span><i class="ln" style="background:var(--series-2)"></i>Payroll</span></div>
+  <div class="plot"><svg width="640" height="250" role="img" aria-label="Month-end balances">…</svg></div>
+  <div class="chart-table"><table>…the same numbers…</table></div>   <!-- shown when an ancestor has .table-view -->
+</div>
+<div class="viz-tip" hidden></div>   <!-- one per page; fill it with textContent on hover and focus -->
+<div class="card stat"><span>Matched This Month</span><b>1,284</b><svg class="spark" viewBox="0 0 220 36" preserveAspectRatio="none">…</svg></div>
+```
+Use `.plot text` for axis labels (they take `--text3`); `text.ink` for the current or peak value, `text.ink2` for names. Heat cells fill with `var(--seq-0…4)`; a key is `<span class="ramp">Fewer <i style="background:var(--seq-0)"></i>… More</span>`.
+
 ## Copy chips and keys
 
 ```html

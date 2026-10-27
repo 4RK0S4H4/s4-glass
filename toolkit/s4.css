@@ -121,6 +121,12 @@
   --mute-chip: color-mix(in srgb, var(--tint) 6%, #e4e4e4); --mute-ink: color-mix(in srgb, var(--tint) 6%, #4c4c4c); --mute-bar: color-mix(in srgb, var(--tint) 6%, #b5b5b5);
   --accent-chip: color-mix(in srgb, var(--accent) 18%, #fff); --accent-bar: color-mix(in srgb, var(--accent) 85%, #fff);
   --danger-fill: var(--bad);
+  /* charts: series 1 is the app's accent, then four fixed hues in this order (validated for colour-blind readers and contrast; status colours are never series).
+     --viz-soft: a single series' resting marks (the current mark is solid --series-1). --seq-0…4: magnitude, one hue, light to dark. */
+  --viz-surface: var(--pop-bg); --viz-grid: color-mix(in srgb, var(--text) 9%, transparent); --viz-axis: color-mix(in srgb, var(--text) 20%, transparent);
+  --series-1: var(--accent); --series-2: #2a78d6; --series-3: #1baf7a; --series-4: #eda100; --series-5: #6250d6;
+  --viz-soft: color-mix(in srgb, var(--series-1) 46%, var(--viz-surface));
+  --seq-0: color-mix(in srgb, var(--series-1) 10%, var(--viz-surface)); --seq-1: color-mix(in srgb, var(--series-1) 28%, var(--viz-surface)); --seq-2: color-mix(in srgb, var(--series-1) 50%, var(--viz-surface)); --seq-3: color-mix(in srgb, var(--series-1) 74%, var(--viz-surface)); --seq-4: var(--series-1);
   --bloom-a: transparent; --bloom-b: transparent; --page-1: var(--bg); --page-3: var(--bg);   /* page bloom (dark only) */
   --xl-back: .5;
 }
@@ -163,6 +169,7 @@
   --mute-chip: rgba(255,255,255,.11); --mute-ink: #c4c4c4; --mute-bar: #8a8a8a;
   --accent-chip: color-mix(in srgb, var(--accent-light) 22%, transparent); --accent-bar: var(--accent-light);
   --danger-fill: #c62828;
+  --series-1: color-mix(in srgb, var(--accent) 75%, var(--accent-light)); --series-2: #3987e5; --series-3: #199e70; --series-4: #c98500; --series-5: #9085e9;   /* each stepped into the dark band */
   --xl-back: .62;
 } }
 :root[data-theme="dark"] {
@@ -201,6 +208,7 @@
   --mute-chip: rgba(255,255,255,.11); --mute-ink: #c4c4c4; --mute-bar: #8a8a8a;
   --accent-chip: color-mix(in srgb, var(--accent-light) 22%, transparent); --accent-bar: var(--accent-light);
   --danger-fill: #c62828;
+  --series-1: color-mix(in srgb, var(--accent) 75%, var(--accent-light)); --series-2: #3987e5; --series-3: #199e70; --series-4: #c98500; --series-5: #9085e9;   /* each stepped into the dark band */
   --xl-back: .62;
 }
 /* Vivid highlights: the accent a little brighter and more saturated (oklch relative colours). Browsers without them keep the mixes above. */
@@ -210,11 +218,13 @@
     --vivid: oklch(from var(--accent) calc(l + .11) calc(c + .07) h); --nav-1: oklch(from var(--accent) calc(l + .04) calc(c + .02) h);
     --nav-3: oklch(from var(--accent-2) calc(l + .02) calc(c + .01) h); --btn-hover: oklch(from var(--accent) calc(l + .04) calc(c + .02) h);
     --btn-edge: oklch(from var(--accent-light) calc(l - .04) calc(c + .03) h);
+    --series-1: oklch(from var(--accent-light) min(l, .66) c h);
   } }
   :root[data-theme="dark"] {
     --vivid: oklch(from var(--accent) calc(l + .11) calc(c + .07) h); --nav-1: oklch(from var(--accent) calc(l + .04) calc(c + .02) h);
     --nav-3: oklch(from var(--accent-2) calc(l + .02) calc(c + .01) h); --btn-hover: oklch(from var(--accent) calc(l + .04) calc(c + .02) h);
     --btn-edge: oklch(from var(--accent-light) calc(l - .04) calc(c + .03) h);
+    --series-1: oklch(from var(--accent-light) min(l, .66) c h);
   }
 }
 /* browsers without backdrop blur get solid surfaces */
@@ -490,6 +500,23 @@ table.t tr[class*="st-"] td:first-child::before { content: ""; position: absolut
 tr.st-ok { --st: var(--ok-bar); } tr.st-warn { --st: var(--warn-bar); } tr.st-bad { --st: var(--bad-bar); } tr.st-accent { --st: var(--btn); } tr.st-mute { --st: var(--mute-bar); }
 table.t tr.done td { color: var(--text2); }
 td.row-acts { text-align: right; white-space: nowrap; }
+
+/* ---------- 11b. charts: marks are SVG you draw; this styles the pieces around them ---------- */
+.plot { position: relative; width: 100%; } .plot svg { display: block; overflow: visible; }
+.plot text { fill: var(--text3); font-family: inherit; font-size: var(--fs-xs); font-feature-settings: "ss01", "cv09"; font-variant-numeric: tabular-nums; }   /* axis and labels wear text tokens, never the series colour */
+.plot text.ink { fill: var(--text); font-weight: 600; } .plot text.ink2 { fill: var(--text2); }
+.plot .mark { transition: opacity var(--dur-2) var(--ease); } .plot .mark.lift { opacity: .8; }
+.plot .hit { fill: transparent; cursor: default; } .plot .hit:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.legend { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4); color: var(--text2); font-size: var(--fs-sm); }   /* always for 2 or more series; a swatch (i) or line key (i.ln) in the series colour, text in text colours */
+.legend span { display: inline-flex; align-items: center; gap: 6px; } .legend i { width: 10px; height: 10px; border-radius: 3px; } .legend i.ln { width: 14px; height: 3px; border-radius: 2px; }
+.viz-tip { position: fixed; z-index: var(--z-tip); min-width: 130px; padding: 8px 10px; border: 1px solid var(--border2); border-radius: var(--r-sm); background: var(--pop-bg); color: var(--text); box-shadow: var(--shadow-2); font-size: var(--fs-sm); pointer-events: none; }
+.viz-tip .h { margin-bottom: 4px; color: var(--text2); } .viz-tip .r { display: flex; align-items: center; gap: 8px; } .viz-tip .r b { margin-left: auto; padding-left: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.viz-tip .k { width: 12px; height: 3px; flex: none; border-radius: 2px; } .viz-tip .k.sq { width: 10px; height: 10px; border-radius: 3px; }
+.ramp { display: inline-flex; align-items: center; gap: 6px; color: var(--text2); font-size: var(--fs-sm); } .ramp i { width: 18px; height: 10px; border-radius: 3px; }
+.chart-table { display: none; overflow: auto; max-height: 280px; } .chart-table table { width: 100%; border-collapse: collapse; font-size: var(--fs-ui); }
+.chart-table th, .chart-table td { padding: 6px 8px; text-align: right; border-bottom: 1px solid var(--border); } .chart-table th:first-child, .chart-table td:first-child { text-align: left; } .chart-table th { color: var(--text2); font-size: var(--fs-xs); font-weight: 600; }
+.table-view .plot { display: none; } .table-view .chart-table { display: block; }   /* put .table-view on a card or the page to swap every chart for its table */
+.stat .spark { width: 100%; height: 36px; margin-top: var(--s-2); }
 
 /* ---------- 12. click-to-copy chips + keycaps ----------
    Outside tables: a soft box with a copy icon. Inside tables: plain text that shows its box on hover/focus.
