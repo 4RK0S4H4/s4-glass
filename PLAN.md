@@ -20,7 +20,11 @@ The owner reads on a phone: keep messages short and ask one thing at a time.
 | 4b | Density (compact / comfortable) | **Done** (PR #15). Owner picked **C Two Modes, Auto** | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/density.html) |
 
 
+## Next (not started)
+- Repackage the skill (`tools/package_skill.py`) and send the owner `build/s4-glass.skill` so the installed copy matches.
+- Owner picks the next area, or proposes candidates (use the `frontend-design` skill, now available, and say so on the page).
+- Optional: re-check the recommendation boxes on the older samples pages with the skill.
+
 ## Open items
 - Habits and Orders (`demo/examples/`) are refreshed with the final toolkit (`python3 tools/refresh_examples.py`); Habits also shows the density setting. Re-run the script after any toolkit change.
 - **Still to do: the Bank Reconciliation app** (arko-EMOVIS/bank-reconciliation-app, private). Its tokens must follow, per CLAUDE.md: `--ease` (motion), the surface tokens (`--glass`, `--glass2`, `--bar-bg`, `--nav-bg`, `--modal-bg`, `--blur`, `--sat`, `--shadow-1`), the new chart tokens (`--series-*`, `--seq-*`, `--viz-*`), density (`--row-py`, `--ctl-h`, `--card-pad`, `--nav-h`, `--stack-gap`, `s4Density()`), and the trail and page tabs (`.crumbs`, `.pagetabs`). Do it in a session with that repo attached, and keep that app's own decisions.
-- Check `ListSkills` for the front-end design skill (`frontend-design`); it was not in the owner's account on 2026-10-27.
