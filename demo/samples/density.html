@@ -16,6 +16,7 @@
   .opt-note { margin: 0; padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--well); color: var(--text2); font-size: var(--fs-sm); max-width: 78ch; }
   .opt-note b { color: var(--text); }
   [data-o="a"] .opt-note:not([data-for="a"]), [data-o="b"] .opt-note:not([data-for="b"]), [data-o="c"] .opt-note:not([data-for="c"]), [data-o="d"] .opt-note:not([data-for="d"]) { display: none; }
+  .rec { margin: 0; padding: var(--s-3) var(--s-4); border: 1px solid var(--border2); border-radius: var(--r-md); background: var(--accent-soft); color: var(--text); font-size: var(--fs-ui); max-width: 78ch; } .rec b { font-weight: 600; } .rec .tag { display: inline-block; margin-right: 6px; padding: 1px 8px; border-radius: var(--r-pill); background: var(--accent-chip); color: var(--accent-ink); font-size: var(--fs-xs); font-weight: 600; }
   .readout { margin: 0; font-size: var(--fs-ui); color: var(--text2); } .readout b { color: var(--text); }
   .tbl-spec { width: 100%; max-width: 560px; border-collapse: collapse; font-size: var(--fs-sm); } .tbl-spec th, .tbl-spec td { padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border); } .tbl-spec th { color: var(--text2); font-weight: 600; font-size: var(--fs-xs); }
 
@@ -51,7 +52,7 @@
 <body>
 <div class="g-bar">
   <span class="title">Density Samples</span>
-  <div class="seg" id="opt" data-manual role="group" aria-label="Option"><button type="button" class="on" data-v="a">A · One Density</button><button type="button" data-v="b">B · Two Modes</button><button type="button" data-v="c">C · Two Modes, Auto</button><button type="button" data-v="d">D · Three Steps</button></div>
+  <div class="seg" id="opt" data-manual role="group" aria-label="Option"><button type="button" class="on" data-v="a">A · One Density</button><button type="button" data-v="b">B · Two Modes</button><button type="button" data-v="c">C · Two Modes, Auto ★</button><button type="button" data-v="d">D · Three Steps</button></div>
   <div class="seg" id="theme" data-manual role="group" aria-label="Theme"><button type="button" data-v="light">Light</button><button type="button" data-v="dark">Dark</button><button type="button" data-v="auto">Auto</button></div>
 </div>
 
@@ -64,6 +65,7 @@
     <p class="opt-note" data-for="c"><b>C · Two Modes, Auto.</b> As B, but the default follows the device: Compact on a wide screen with a mouse, Standard on touch and small screens. The user can still choose either. "Auto" is the setting's default, shown here as the first choice.</p>
     <p class="opt-note" data-for="d"><b>D · Three Steps.</b> Compact, Standard and Roomy (larger text, 44px rows). The most flexible, and the most to design, test and explain. Roomy helps low-vision users and big touch screens.</p>
   </div>
+  <p class="rec"><span class="tag">Recommended</span><b>C · Two Modes, Auto.</b> Your reconciliation tools are data-heavy and used at a desk, so compact on a wide screen with a mouse saves scrolling, while phones and touch screens stay comfortable; anyone can still override it.<br><b>Recommendation basis:</b> S4 Glass rules and your earlier decisions. The front-end design skill was not available in this session, so it was not used.</p>
   <p class="readout" id="readout" aria-live="polite"></p>
 
   <table class="tbl-spec" aria-label="What each density sets"><thead><tr><th>Setting</th><th>Compact</th><th>Standard (today)</th><th>Roomy</th></tr></thead><tbody>

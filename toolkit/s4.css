@@ -65,6 +65,9 @@
   --z-sticky: 2; --z-bar: 20; --z-panel: 40; --z-modal: 50; --z-toast: 80; --z-menu: 130; --z-tip: 200;
   --nav-w: 220px; --rail-w: 68px; --tabbar-h: 64px; --page-max: 1200px; --form-max: 760px; --prose-max: 68ch;
   --tap: 40px;   /* smallest touch target on touch screens */
+  /* density (option C, "Two Modes, Auto"): standard is the look as drawn; html[data-density="compact"] tightens rows, controls, cards and the nav and drops the base text to 13px.
+     s4.js sets data-density to "standard" or "compact" (the default, "auto", is compact on a wide screen with a mouse and standard on touch and small screens). Touch targets stay at --tap. */
+  --row-py: 7px; --ctl-h: 34px; --ctl-h-sm: 28px; --card-pad: var(--s-4); --nav-h: 40px; --stack-gap: var(--s-4);
   --blur: 28px; --sat: 100%;   /* frosting without a colour boost: what is behind a surface is a faint tint, not a picture */
 
   color-scheme: light;
@@ -233,6 +236,8 @@
   :root[data-theme="dark"] { --bg2: #1e1e1e; --glass: #1c1c1c; --glass2: #242424; --modal-bg: #1d1b1d; }
 }
 
+:root[data-density="compact"] { --fs-base: 13px; --row-py: 4px; --ctl-h: 28px; --ctl-h-sm: 24px; --card-pad: var(--s-3); --nav-h: 34px; --stack-gap: 10px; }
+
 /* ---------- 3. base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 * { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--text3) 55%, transparent) transparent; }
@@ -288,7 +293,7 @@ table, input, select, textarea, .num, .mono, .chip, .kbd, .badge, .count, .pill,
 .nav .brand img, .nav .brand svg { width: 30px; height: 30px; flex: none; }
 .nav .brand small { display: block; font-weight: 500; font-size: var(--fs-xs); color: var(--text3); }
 .nav .group { padding: 18px 12px 6px; margin: -3px 0; font-size: var(--fs-cap); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); }
-.nav .item { position: relative; display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 8px 12px; border: 1px solid transparent; border-radius: var(--r); background: transparent; color: var(--text2); font: inherit; text-align: left; text-decoration: none; cursor: pointer; transition: color .2s, background-color .15s; }
+.nav .item { position: relative; display: flex; align-items: center; gap: 10px; min-height: var(--nav-h); padding: 8px 12px; border: 1px solid transparent; border-radius: var(--r); background: transparent; color: var(--text2); font: inherit; text-align: left; text-decoration: none; cursor: pointer; transition: color .2s, background-color .15s; }
 .nav .item svg { width: 20px; height: 20px; flex: none; opacity: .9; }
 .nav .item .lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .nav .item:not(.active):hover { background: var(--hov); color: var(--text); }
@@ -316,7 +321,7 @@ table, input, select, textarea, .num, .mono, .chip, .kbd, .badge, .count, .pill,
 .pagetabs a { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 4px 12px; border-radius: var(--r-xl); color: var(--text2); font-size: var(--fs-ui); font-weight: 500; text-decoration: none; white-space: nowrap; }
 .pagetabs a:hover { background: var(--bg-hover); color: var(--text); } .pagetabs a.on, .pagetabs a[aria-current="page"] { background: var(--bg-sel); color: var(--text); font-weight: 600; }   /* the current tab is a neutral fill: the accent stays for the one current place in the nav */
 .pagetabs .n { color: var(--text3); font-weight: 500; }
-.content { flex: 1; min-width: 0; min-height: 0; overflow: auto; padding: 18px var(--s-5) 28px; display: flex; flex-direction: column; gap: var(--s-4); }
+.content { flex: 1; min-width: 0; min-height: 0; overflow: auto; padding: 18px var(--s-5) 28px; display: flex; flex-direction: column; gap: var(--stack-gap); }
 .content.flush { padding: 0; gap: 0; }
 .content.center > * { width: 100%; max-width: 1100px; margin-inline: auto; }
 .banner { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 9px var(--s-5); border-bottom: 1px solid var(--border); background: var(--warn-bg); color: var(--warn); font-size: var(--fs-ui); }
@@ -329,12 +334,12 @@ table, input, select, textarea, .num, .mono, .chip, .kbd, .badge, .count, .pill,
 .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--border); background: var(--bar-bg); }
 
 /* ---------- 6. buttons ---------- */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 34px; padding: 0 14px; border: 1px solid var(--border2); border-radius: var(--r-md); background: var(--bg2); color: var(--text); font: inherit; line-height: 1.2; white-space: nowrap; text-decoration: none; cursor: pointer; transition: background-color .15s, color .15s, border-color .15s, box-shadow .15s, transform var(--dur-2) var(--ease); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: var(--ctl-h); padding: 0 14px; border: 1px solid var(--border2); border-radius: var(--r-md); background: var(--bg2); color: var(--text); font: inherit; line-height: 1.2; white-space: nowrap; text-decoration: none; cursor: pointer; transition: background-color .15s, color .15s, border-color .15s, box-shadow .15s, transform var(--dur-2) var(--ease); }
 .btn:hover:not(:disabled) { background: var(--hov); color: var(--text); }
 .btn:disabled { opacity: .5; cursor: default; }
 .btn.subtle { background: transparent; border-color: transparent; } .btn.subtle:hover:not(:disabled) { background: var(--hov); } .btn.subtle:active:not(:disabled) { background: var(--press); }
-.btn.icon { width: 34px; padding: 0; }
-.btn.sm { min-height: 28px; padding: 0 11px; gap: 6px; font-size: var(--fs-sm); border-radius: var(--r-sm); } .btn.sm > svg { width: 15px; height: 15px; } .btn.sm.icon { width: 28px; padding: 0; }
+.btn.icon { width: var(--ctl-h); padding: 0; }
+.btn.sm { min-height: var(--ctl-h-sm); padding: 0 11px; gap: 6px; font-size: var(--fs-sm); border-radius: var(--r-sm); } .btn.sm > svg { width: 15px; height: 15px; } .btn.sm.icon { width: var(--ctl-h-sm); padding: 0; }
 .btn.lg { min-height: 44px; padding: 0 20px; font-size: var(--fs-title); border-radius: var(--r); }   /* web-page calls to action */
 .btn.block { display: flex; width: 100%; }
 .btn.on { background: var(--fill2); border-color: var(--soft-ring); color: var(--accent-ink); font-weight: 600; }   /* a toggle that is switched on (e.g. Lock) */
@@ -441,7 +446,7 @@ input[type=radio] { accent-color: var(--btn); width: 16px; height: 16px; margin:
 .card.edge { border-top: 3px solid var(--mute-bar); } .card.edge.ok { border-top-color: var(--ok-bar); } .card.edge.warn { border-top-color: var(--warn-bar); } .card.edge.bad { border-top-color: var(--bad-bar); } .card.edge.accent { border-top-color: var(--accent-bar); }
 
 /* ---------- 10. surfaces ---------- */
-.card { min-width: 0; padding: var(--s-4); background: var(--glass); border: 1px solid var(--border); border-radius: var(--r); box-shadow: var(--shadow-1); overflow: clip; }
+.card { min-width: 0; padding: var(--card-pad); background: var(--glass); border: 1px solid var(--border); border-radius: var(--r); box-shadow: var(--shadow-1); overflow: clip; }
 .card.flush { padding: 0; }   /* a table or list that runs to the card's edges */
 .card.lift { transition: background-color .15s, box-shadow .15s; } .card.lift:hover { background: var(--glass2); }   /* a whole card that is a link */
 .card h3, .sect-title { margin: 0 0 var(--s-3); font-size: var(--fs-ui); font-weight: 600; color: var(--text2); }   /* Title Case; all-caps is only for .nav .group */
@@ -487,8 +492,8 @@ a.li, button.li { width: 100%; border: 0; background: transparent; font: inherit
 .table-wrap { overflow-x: auto; max-width: 100%; }
 .table-wrap.scroll { max-height: min(70vh, 640px); overflow: auto; }
 table.t { width: 100%; border-collapse: collapse; }
-table.t th { position: sticky; top: 0; z-index: var(--z-sticky); padding: 8px 10px; text-align: left; font-size: var(--fs-xs); font-weight: 600; color: var(--text2); white-space: nowrap; background: var(--th-bg); border-bottom: 1px solid var(--border); -webkit-backdrop-filter: blur(var(--blur)); backdrop-filter: blur(var(--blur)); }
-table.t td { padding: 7px 10px; border-bottom: 1px solid var(--border); font-size: var(--fs-base); vertical-align: middle; white-space: nowrap; }   /* short columns never wrap; the description column (.dcol) and .wrap cells do */
+table.t th { position: sticky; top: 0; z-index: var(--z-sticky); padding: calc(var(--row-py) + 1px) 10px; text-align: left; font-size: var(--fs-xs); font-weight: 600; color: var(--text2); white-space: nowrap; background: var(--th-bg); border-bottom: 1px solid var(--border); -webkit-backdrop-filter: blur(var(--blur)); backdrop-filter: blur(var(--blur)); }
+table.t td { padding: var(--row-py) 10px; border-bottom: 1px solid var(--border); font-size: var(--fs-base); vertical-align: middle; white-space: nowrap; }   /* short columns never wrap; the description column (.dcol) and .wrap cells do */
 table.t td.dcol, table.t td.wrap { white-space: normal; }
 table.t td .mono, table.t td .chip, table.t td.mono { font-size: inherit; }
 table.t td .sub { display: block; font-size: var(--fs-xs); color: var(--text3); }
