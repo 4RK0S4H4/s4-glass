@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en" data-n="a">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Navigation Samples · S4 Glass</title>
+<script data-s4 src="../../toolkit/s4.js"></script>
+<link data-s4 rel="stylesheet" href="../../toolkit/fonts.css">
+<link data-s4 rel="stylesheet" href="../../toolkit/s4.css">
+<style>
+  :root { --accent: #ce0057; --accent-2: #8a0069; --accent-light: #ff5c9d; }
+  .g-bar { position: sticky; top: 0; z-index: var(--z-bar); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); padding: 10px var(--s-6); padding-top: max(10px, env(safe-area-inset-top)); border-bottom: 1px solid var(--border); background: var(--bar-bg); -webkit-backdrop-filter: blur(var(--blur)); backdrop-filter: blur(var(--blur)); }
+  .g-bar .title { margin-right: auto; }
+  .g-main { display: flex; flex-direction: column; gap: var(--s-8); padding-top: var(--s-8); padding-bottom: var(--s-16); }
+  .lede { margin: 0; color: var(--text2); max-width: 70ch; }
+  .opt-note { margin: 0; padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--well); color: var(--text2); font-size: var(--fs-sm); max-width: 78ch; }
+  .opt-note b { color: var(--text); }
+  [data-n="a"] .opt-note:not([data-for="a"]), [data-n="b"] .opt-note:not([data-for="b"]), [data-n="c"] .opt-note:not([data-for="c"]), [data-n="d"] .opt-note:not([data-for="d"]) { display: none; }
+  .rules { margin: 0; padding-left: var(--s-5); color: var(--text2); max-width: 78ch; } .rules b { color: var(--text); }
+
+  /* the small app */
+  .f { position: relative; display: grid; grid-template-columns: 220px minmax(0, 1fr); height: 600px; border: 1px solid var(--border2); border-radius: var(--r-xl); overflow: clip; background: var(--page); isolation: isolate; }
+  .f .nav { border-right: 1px solid var(--border); }
+  .f-main { position: relative; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
+  .f .topbar { flex: none; row-gap: 2px; }
+  .f .topbar h1 { font-size: var(--fs-h1); }
+  .f-scroll { flex: 1; min-height: 0; overflow: auto; padding: var(--s-4) var(--s-5) var(--s-6); display: flex; flex-direction: column; gap: var(--s-4); }
+  .stats3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); }
+  .rows { margin: 0; padding: 0; list-style: none; } .rows li { display: flex; align-items: center; gap: var(--s-3); padding: 10px 0; border-top: 1px solid var(--border); } .rows li:first-child { border-top: 0; }
+  .rows .grow { flex: 1; min-width: 0; } .rows small { display: block; color: var(--text3); font-size: var(--fs-xs); }
+  .tabbar-x { display: none; }
+
+  /* breadcrumbs: quiet text; the last item is the page and is not a link */
+  .crumbs { display: none; flex-basis: 100%; align-items: center; gap: 2px; margin: 0 -6px 2px; font-size: var(--fs-sm); color: var(--text2); min-width: 0; }
+  .crumbs a { padding: 2px 6px; border-radius: var(--r-xs); color: inherit; text-decoration: none; white-space: nowrap; } .crumbs a:hover { background: var(--bg-hover); color: var(--text); }
+  .crumbs .sep { color: var(--text3); } .crumbs .here { padding: 2px 6px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .crumbs .back { display: none; }
+  /* page tabs: peer views of one record. The current tab is a neutral fill, so the accent stays for the one current place in the nav. */
+  .pagetabs { display: none; flex-basis: 100%; gap: 4px; margin: var(--s-2) -6px calc(-1 * var(--s-1)); overflow-x: auto; scrollbar-width: none; }
+  .pagetabs a { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 4px 12px; border-radius: var(--r-xl); color: var(--text2); font-size: var(--fs-ui); font-weight: 500; text-decoration: none; white-space: nowrap; }
+  .pagetabs a:hover { background: var(--bg-hover); color: var(--text); } .pagetabs a.on { background: var(--bg-sel); color: var(--text); font-weight: 600; } .pagetabs .n { color: var(--text3); font-weight: 500; }
+  .subnav { display: none; flex-direction: column; gap: 2px; margin: 2px 0 4px 18px; padding-left: var(--s-2); border-left: 1px solid var(--border2); }
+  .subnav a { display: flex; align-items: center; gap: 8px; min-height: 32px; padding: 4px 10px; border-radius: var(--r-md); color: var(--text2); font-size: var(--fs-ui); text-decoration: none; } .subnav a:hover { background: var(--bg-hover); color: var(--text); } .subnav a.on { background: var(--bg-sel); color: var(--text); font-weight: 600; } .subnav .n { margin-left: auto; color: var(--text3); font-size: var(--fs-xs); }
+  .viewseg { display: none; }
+
+  [data-n="a"] .viewseg, [data-n="b"] .viewseg, [data-n="c"] .viewseg, [data-n="d"] .viewseg { display: block; }
+  [data-n="b"] .crumbs, [data-n="c"] .crumbs, [data-n="d"] .crumbs { display: flex; }
+  [data-n="b"] .crumbs :is(.sep, a:not(.back), .here), [data-n="b"] .crumbs .keep { display: none; }
+  [data-n="b"] .crumbs .back { display: inline-flex; align-items: center; gap: 4px; }
+  [data-n="b"] .pagetabs, [data-n="c"] .pagetabs { display: flex; }
+  [data-n="d"] .subnav { display: flex; }
+  [data-n="a"] .ttl-a { display: block; } .ttl-a { display: none; }
+
+  @media (max-width: 760px) {
+    .g-bar { padding-inline: var(--s-4); } .g-bar .title { flex-basis: 100%; }
+    .f { grid-template-columns: minmax(0, 1fr); height: 640px; } .f .nav { display: none; } .f .topbar .sub { display: none; }
+    .f .topbar { flex-wrap: wrap; } .f .actions .btn:not(.primary) { display: none; }
+    .stats3 { grid-template-columns: 1fr 1fr; } .f-scroll { padding-inline: var(--s-4); padding-bottom: 84px; }
+    .tabbar-x { display: flex; position: absolute; inset: auto 0 0 0; z-index: 2; justify-content: space-around; padding: 6px 0 8px; border-top: 1px solid var(--border); background: var(--tabbar-bg); -webkit-backdrop-filter: blur(var(--blur)); backdrop-filter: blur(var(--blur)); }
+    .tabbar-x a { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: var(--fs-xs); color: var(--text2); text-decoration: none; } .tabbar-x a.on { color: var(--text); font-weight: 600; } .tabbar-x svg { width: 22px; height: 22px; }
+    /* on a phone the trail collapses to one back link, and tabs scroll sideways */
+    [data-n="c"] .crumbs :is(.sep, a:not(.back), .here), [data-n="d"] .crumbs :is(.sep, a:not(.back), .here) { display: none; }
+    [data-n="c"] .crumbs .back, [data-n="d"] .crumbs .back { display: inline-flex; align-items: center; gap: 4px; }
+    [data-n="d"] .subnav { display: none; } [data-n="d"] .pagetabs { display: flex; }
+  }
+</style>
+<script data-s4 src="../../toolkit/icons.js"></script>
+</head>
+<body>
+<div class="g-bar">
+  <span class="title">Navigation Samples</span>
+  <div class="seg" id="opt" data-manual role="group" aria-label="Option"><button type="button" class="on" data-v="a">A · Today</button><button type="button" data-v="b">B · Tabs + Back</button><button type="button" data-v="c">C · Tabs + Trail</button><button type="button" data-v="d">D · Nested Nav</button></div>
+  <div class="seg" id="theme" data-manual role="group" aria-label="Theme"><button type="button" data-v="light">Light</button><button type="button" data-v="dark">Dark</button><button type="button" data-v="auto">Auto</button></div>
+</div>
+
+<main class="container g-main">
+  <p class="lede">One account page, four ways to find your way around it. Pick A, B, C or D at the top, click around in the small app, and check it narrow too (on a phone, the side nav becomes a tab bar). The page header (title, subtitle, actions) is the same in all four; what changes is where you are, and how you switch between the views of one record.</p>
+
+  <div class="stack" style="--gap: var(--s-2)">
+    <p class="opt-note" data-for="a"><b>A · Today.</b> No trail, no tabs. The side nav goes to places; the segmented pill switches the list below. Fine for flat apps; with a detail page you have no way back except the nav.</p>
+    <p class="opt-note" data-for="b"><b>B · Tabs + Back.</b> A small "Accounts" back link above the title (one level up, which is also what a phone needs), and page tabs under the title for the views of this one account. The current tab is a neutral fill; the accent stays on the side nav. The segmented pill is kept for filtering the list.</p>
+    <p class="opt-note" data-for="c"><b>C · Tabs + Trail.</b> As B, but the full trail (Accounts / Northwind / Operating), so you can jump several levels. On a phone it collapses to the back link. Best for apps that go deeper than two levels.</p>
+    <p class="opt-note" data-for="d"><b>D · Nested Nav.</b> No tabs: the current section opens in the side nav and shows its views underneath. The header carries the trail. Keeps every view one click away and the header light, but it makes the side nav longer, and on a phone it falls back to tabs.</p>
+  </div>
+  <ul class="rules"><li><b>Nav</b> goes to places. <b>Tabs</b> switch between peer views of one thing. <b>Segmented</b> filters or changes the mode of one list. Never use two of them for the same job.</li></ul>
+
+  <div class="f" id="frame">
+    <nav class="nav" aria-label="Sample">
+      <a class="item" href="#"><svg data-ic-duo="widget-5"></svg><span class="lbl">Overview</span></a>
+      <a class="item active" href="#" aria-current="page"><svg data-ic-duo="checklist-minimalistic"></svg><span class="lbl">Accounts</span><span class="count">3</span></a>
+      <div class="subnav" aria-label="Views"><a class="on" href="#">Overview</a><a href="#">Transactions<span class="n">43</span></a><a href="#">Rules<span class="n">8</span></a><a href="#">Activity</a></div>
+      <a class="item" href="#"><svg data-ic-duo="document-text"></svg><span class="lbl">Reports</span></a>
+      <a class="item" href="#"><svg data-ic-duo="settings"></svg><span class="lbl">Settings</span></a>
+    </nav>
+    <div class="f-main">
+      <header class="topbar">
+        <nav class="crumbs" aria-label="Breadcrumb"><a class="back" href="#"><svg data-ic="arrow-left" class="ic sm"></svg>Accounts</a><a class="keep" href="#">Accounts</a><span class="sep">/</span><a href="#">Northwind</a><span class="sep">/</span><span class="here" aria-current="page">Operating •••• 2210</span></nav>
+        <div class="ttl"><h1>Operating •••• 2210</h1><span class="sub">Northwind · last matched Oct 23, 2026</span></div>
+        <div class="actions"><button class="btn" type="button"><svg data-ic="diskette"></svg>Backup</button><button class="btn primary" type="button">Import</button></div>
+        <nav class="pagetabs" aria-label="Views"><a class="on" href="#">Overview</a><a href="#">Transactions<span class="n">43</span></a><a href="#">Rules<span class="n">8</span></a><a href="#">Activity</a></nav>
+      </header>
+      <div class="f-scroll">
+        <div class="stats3">
+          <div class="card stat"><span>Still to Match</span><b>43</b></div>
+          <div class="card stat"><span>Matched</span><b>3</b></div>
+          <div class="card stat"><span>Money In</span><b class="c-ok">300,000.00</b></div>
+        </div>
+        <div class="viewseg"><div class="seg" role="group" aria-label="Show"><button type="button" class="on">All 46</button><button type="button">To Match 43</button><button type="button">Matched 3</button></div></div>
+        <div class="card">
+          <ul class="rows">
+            <li><span class="grow">Northwind Payroll Run 2610<small>Pre-authorized ACH Debit</small></span><span class="badge solid">Suggested</span><span class="num">(84,105.03)</span></li>
+            <li><span class="grow">Transfer From Savings •••• 4821<small>Miscellaneous Credit</small></span><span class="badge warn">To Sort</span><span class="num">300,000.00</span></li>
+            <li><span class="grow">Northwind Benefits Funding<small>Pre-authorized ACH Debit</small></span><span class="badge ok">Matched</span><span class="num">(536.90)</span></li>
+            <li><span class="grow">Contoso Office Supplies<small>Card Purchase</small></span><span class="badge accent">Journal Entry</span><span class="num">(212.40)</span></li>
+            <li><span class="grow">Fabrikam Freight<small>Wire Out</small></span><span class="badge warn">To Sort</span><span class="num">(4,980.00)</span></li>
+          </ul>
+        </div>
+      </div>
+      <nav class="tabbar-x" aria-label="Sample tabs"><a href="#"><svg data-ic-duo="widget-5"></svg>Home</a><a class="on" href="#"><svg data-ic-duo="checklist-minimalistic"></svg>Accounts</a><a href="#"><svg data-ic-duo="document-text"></svg>Reports</a><a href="#"><svg data-ic-duo="settings"></svg>Settings</a></nav>
+    </div>
+  </div>
+</main>
+
+<script>
+  var root = document.documentElement;
+  function mark(id, v) { document.querySelectorAll("#" + id + " button").forEach(function (b) { b.classList.toggle("on", b.dataset.v === v); }); }
+  var th = "auto"; try { th = localStorage.getItem("s4-theme") || "auto"; } catch (e) {} mark("theme", th);
+  document.getElementById("theme").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; s4Theme(b.dataset.v); mark("theme", b.dataset.v); });
+  try { var saved = sessionStorage.getItem("s4-nav-opt"); if (saved) { root.setAttribute("data-n", saved); mark("opt", saved); } } catch (e) {}
+  document.getElementById("opt").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; root.setAttribute("data-n", b.dataset.v); mark("opt", b.dataset.v); try { sessionStorage.setItem("s4-nav-opt", b.dataset.v); } catch (x) {} });
+  /* a working demo: tabs, sub-nav and segmented switch their own selection */
+  function pick(sel, cls) { document.querySelectorAll(sel).forEach(function (box) { box.addEventListener("click", function (e) { var a = e.target.closest("a, button"); if (!a || !box.contains(a)) return; e.preventDefault(); box.querySelectorAll("a, button").forEach(function (x) { x.classList.toggle(cls, x === a); }); }); }); }
+  pick(".pagetabs", "on"); pick(".subnav", "on"); pick(".viewseg .seg", "on"); pick(".tabbar-x", "on");
+  document.querySelectorAll("#frame a").forEach(function (a) { a.addEventListener("click", function (e) { e.preventDefault(); }); });
+</script>
+</body>
+</html>
