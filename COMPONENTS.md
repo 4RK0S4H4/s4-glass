@@ -42,6 +42,22 @@ Contents: [Page setup](#page-setup) · [App shell](#app-shell) · [Phone tab bar
 ```
 The top bar, when it is the first child of `.main`, floats over the top of `.content` so content slides under it (frosted); `s4.js` keeps `--bar-h` current. With a `.banner` above it the bar stays in the flow. Wrap nav labels in `.lbl` so the ≤980px icon rail can hide them. `.content.flush` removes padding (full-bleed split views); `.content.center` caps width for single-page tools. A single-page tool with no nav: `<div class="app solo"><div class="main">…</div></div>`.
 
+### Trail and page tabs
+Inside the `.topbar`: a trail first, then the title and actions, then page tabs. Use them on a record's page (an account, a project); a flat app with no depth needs neither.
+```html
+<header class="topbar">
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a class="back" href="#"><svg data-ic="arrow-left"></svg>Accounts</a>   <!-- the phone shows only this link -->
+    <a href="#">Accounts</a><span class="sep" aria-hidden="true">/</span><a href="#">Northwind</a><span class="sep" aria-hidden="true">/</span>
+    <span class="here" aria-current="page">Operating •••• 2210</span>
+  </nav>
+  <div class="ttl"><h1>Operating •••• 2210</h1><span class="sub">Northwind · last matched Oct 23, 2026</span></div>
+  <div class="actions">…</div>
+  <nav class="pagetabs" aria-label="Views"><a href="#" aria-current="page">Overview</a><a href="#">Transactions<span class="n">43</span></a><a href="#">Rules</a></nav>
+</header>
+```
+The trail's last item is the page and isn't a link; its back link goes one level up. The current tab is a neutral fill (`aria-current="page"` or `.on`), never the accent. **Nav** goes to places, **tabs** switch between peer views of one record, a **`.seg`** only filters or changes the mode of one list: never two of them for the same job. The bar keeps wrapping on a phone when it holds a trail or tabs, and the tabs scroll sideways.
+
 ## Phone tab bar
 
 ```html

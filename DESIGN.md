@@ -144,6 +144,7 @@ Pick one per app; never mix two systems in one app.
 
 - **App shell** (`.app`): 220px side nav + main column; the top bar and nav stay put and only `.content` scrolls, sliding under the top bar (and the tab bar on phones), which hides it behind its material. `s4.js` keeps `--bar-h` in step with the bar. For many screens.
 - **Tabs app**: 2–3 screens as `.seg` tabs in the top bar, no side nav.
+- **Where you are** (option C of the navigation samples): a record's page has a trail above the title (`.crumbs`: Accounts / Northwind / Operating, the last item is the page and isn't a link) and page tabs under it (`.pagetabs`) for the views of that one record, in the top bar. The current tab is a neutral fill, so the accent stays on the one current place in the nav. On a phone the trail collapses to a single back link and the tabs scroll sideways. Flat apps with no depth need neither. **Nav goes to places; tabs switch between peer views of one thing; a segmented pill only filters or changes the mode of one list. Never use two of them for the same job.**
 - **Single-page tool**: `.app.solo` (top bar + content, no nav); `.content.center` caps the content at about 1100px.
 - **Phone-first app**: `.app.has-tabbar` with a bottom `.tabbar` on phones and the side nav on desktop.
 - **Web page** (`body.site`): sticky glass header, `.hero`, `.section` blocks inside `.container` (max 1200px), `.site-foot`. Same tokens and components; fluid display type.
@@ -256,6 +257,8 @@ Every rule below came from the owner's issues on the Bank Reconciliation app (is
 - On a phone, nothing that looks like a button may be inert: show plain text instead (#183).
 
 **Shadows and glass:** flat, with the material leading (options B and B of the shadow and transparency samples). No shadows at rest; menus, dialogs and toasts keep one because they float. Surfaces are mostly the material colour, 80–96%, with the blur at 28px and no colour boost; content slides under the top and tab bars. Never go more see-through than this: the colour of whatever is underneath must not show through strongly (the earlier, clearer options looked too intense in the top bar).
+
+**Navigation:** option C, "Tabs + Trail": a trail above the title, page tabs under it, a neutral-fill current tab. Nav = places, tabs = views of one record, segmented = filters. See [Layouts](#layouts).
 
 **Charts:** option A, "Accent First": the app's accent is series 1, then blue, aqua, yellow, violet in that order; thin marks, 2px gaps, tooltips and a table view by default. See [Charts](#charts).
 
