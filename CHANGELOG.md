@@ -1,5 +1,8 @@
 # Changelog
 
+## Icons (2026-10-28)
+- **One icon style: Solar Bold Duotone** for every icon (owner's pick, option A). Linear is gone: `icons.js` is a flat `S4_ICONS` map of 91 names (98 KB, was 149 KB); `data-ic` and `data-ic-duo` both render Bold Duotone, `s4Icon(name)` ignores a second argument. Solar's CC BY 4.0 credit is required. `tools/refresh_examples.py` now refreshes each example's icon subset too.
+
 ## 2.0 (2026-10-24)
 Built from a design review of the Bank Reconciliation app (the app the 1.x rules were settled on).
 - **Type scale**: twelve named sizes (`--fs-cap` … `--fs-hero`) plus fluid web-page sizes; no pixel font sizes in components. Weights 400–700 only.
