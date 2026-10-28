@@ -20,6 +20,7 @@ DEMOS = [  # (title, path, what it shows, duotone icon)
     ("App Template", "templates/app.html", "An app shell: side nav on desktop, icon rail on tablets, tab bar on phones.", "monitor"),
     ("Web Page Template", "templates/page.html", "A web page: sticky header, hero, sections, call to action, footer.", "global"),
     ("Habit Tracker", "demo/examples/habits.html", "A phone-first app built by a fresh Claude session from the skill alone.", "smartphone"),
+    ("Icon Samples (draft)", "demo/samples/icons.html", "Solar Bold Duotone next to Phosphor Duotone in the rail, buttons, chips and table rows.", "stars"),
     ("Orders Restyle", "demo/examples/orders.html", "A plain HTML table restyled by a fresh Claude session using the skill.", "checklist-minimalistic"),
 ]
 
