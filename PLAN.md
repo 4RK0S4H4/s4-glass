@@ -5,7 +5,7 @@ Read this first in every new session (after CLAUDE.md). Update it when a step is
 ## How each area is done
 1. Show 2–3 lettered options on a page in `demo/samples/` (fictional data), merge it, and send the owner the Pages link.
 2. The owner picks one (or a mix).
-3. Build the pick into `DESIGN.md` (record it under "Decided with the owner"), `skill/SKILL.md`, `COMPONENTS.md` and `toolkit/`. Rebuild the site (`tools/build_site.py`), run the checks, take screenshots at 390 and 1280/1920 in light and dark, open a PR, and merge when the owner says so.
+3. Build the pick into `DESIGN.md` (record it under "Decided with the owner"), `skill/SKILL.md`, `COMPONENTS.md` and `toolkit/`. Rebuild the site (`tools/build_site.py`), run the checks, take screenshots at 390 and 1280/1920 in light and dark, open a PR, and merge when CI is green (standing permission, see CLAUDE.md).
 4. Repackage the skill (`tools/package_skill.py`) and send the owner `build/s4-glass.skill`. Then update this file.
 
 The owner reads on a phone: keep messages short and ask one thing at a time.
@@ -18,7 +18,7 @@ The owner reads on a phone: keep messages short and ask one thing at a time.
 | 3 | Charts and data visualisation | **Done** (PR #11). Owner picked **A Accent First**: accent is series 1, then blue, aqua, yellow, violet; thin marks, tooltips, table view, texture opt-in | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/charts.html) |
 | 4a | Navigation (page headers, breadcrumbs, tabs vs segmented vs nav) | **Done** (PR #13). Owner picked **C Tabs + Trail** | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/navigation.html) |
 | 4b | Density (compact / comfortable) | **Done** (PR #15). Owner picked **C Two Modes, Auto** | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/density.html) |
-| 5 | Icons | **Built, PR open (step 3 of 4).** Owner picked **A Solar Bold Duotone** for every icon in every app (no Linear). `icons.js` is one flat style (91 names, 98 KB); DESIGN.md, SKILL.md, COMPONENTS.md, README, CHANGELOG updated; examples refreshed. Solar is **CC BY 4.0: credit it in each app's About/footer**. Remaining: merge when the owner says so, repackage the skill and send `build/s4-glass.skill`. **The private Bank Reconciliation app must follow** (swap its icons to Solar Bold Duotone everywhere, flat icon map, credit line) in a session with that repo | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/icons.html) · [Guide](https://4rk0s4h4.github.io/s4-glass/guide/design.html#icons) |
+| 5 | Icons | **Built and merged (PR #21); skill repackaged, file still to send (step 4).** Owner picked **A Solar Bold Duotone** for every icon in every app (no Linear). `icons.js` is one flat style (91 names, 98 KB); DESIGN.md, SKILL.md, COMPONENTS.md, README, CHANGELOG updated; examples refreshed. Solar is **CC BY 4.0: credit it in each app's About/footer**. Remaining: send `build/s4-glass.skill`. **The private Bank Reconciliation app must follow** (swap its icons to Solar Bold Duotone everywhere, flat icon map, credit line) in a session with that repo | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/icons.html) · [Guide](https://4rk0s4h4.github.io/s4-glass/guide/design.html#icons) |
 
 ## Next (not started)
 - Repackage the skill (`tools/package_skill.py`) and send the owner `build/s4-glass.skill` so the installed copy matches.
