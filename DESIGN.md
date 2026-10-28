@@ -223,7 +223,7 @@ Option A of the chart samples ("Accent First"); the reference implementation is 
 
 ## Icons
 
-**Solar** (CC BY 4.0, 480 Design), two styles: **Bold Duotone** where the icon carries the screen (nav items, big mode tiles, empty states, the suggestion sparkle) at 20–24px; **Linear** everywhere else (top bar, chips, close, arrows, inline) at 14–18px. Never every icon duotone. `toolkit/icons.js` holds a curated set (`tools/build_icons.mjs` adds more). A single-file page inlines only the icons it uses (`build_icons.mjs --only copy,moon,refresh --out icons-page.js`); built apps inline only the SVGs they use. Icons use `currentColor`.
+**Solar Bold Duotone** (CC BY 4.0, 480 Design), for every icon in every app: nav, tabs, buttons, chips, row actions, close, arrows, empty states. One style, no Linear and no second set (the owner picked this, see below). The faded half is the icon's `[opacity]` group, so an icon is one `color`: the text colour, or the accent colour where the accent is allowed (never accent on dark). Where an icon sits on an accent fill (active nav item, tab, primary button) it is white and its faded half is 62%. Sizes: 12px badge, 14–15px small buttons, 18px default, 20px nav, 24px tab bar, 32px feature and empty state. **Credit Solar** (480 Design, CC BY 4.0) in each app's About or footer and keep the credit line in `icons.js`. `toolkit/icons.js` holds a curated set (`tools/build_icons.mjs` adds more). A single-file page inlines only the icons it uses (`build_icons.mjs --only copy,moon,refresh --out icons-page.js`); built apps inline only the SVGs they use. Icons use `currentColor`.
 
 ## Accessibility
 
@@ -239,6 +239,8 @@ Option A of the chart samples ("Accent First"); the reference implementation is 
 Every rule below came from the owner's issues on the Bank Reconciliation app (issue numbers in brackets). New apps start from them; change one only when the user asks.
 
 **Rejected – never bring back:** high-contrast accent outlines, double rings and green "copied" rings (#49, #57) · dashed or dotted outline chips (#189) · icons inside status chips, except the suggestion's stars (#110, #189) · accent-coloured selected rows or list highlights (#90, #103, #109) · accent text in dark mode (#100) · white hover washes and the white top "shine" on surfaces (#94, #99, #191) · a border on the light-mode segmented control (#101) · blinking or pulsing warnings (#86) · see-through menus (#56) · browser-default checkboxes and blue radios (#75, #122) · all-caps titles (#9) · bulk-accept buttons (#70) · internal or system terms in the UI, such as Excel column letters (#44) · filters that switch by themselves (#108) · save-on-blur for important values (#88).
+
+**Icons:** Solar Bold Duotone for every icon in every app, picked over Phosphor Duotone and a Solar-for-apps, Phosphor-for-pages split; no Linear icons any more (option A, see `demo/samples/icons.html`). Solar needs a credit line (CC BY 4.0).
 
 **Colour:** every accent is the same accent: the selected pill, the primary button and a solid badge use one value (#77). Green means money coming in; outgoing totals are never green (#130). One status chip per track; few chips per row (#110).
 

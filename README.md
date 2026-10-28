@@ -30,7 +30,7 @@ A frosted-glass design language for apps, tools and web pages: light and dark, p
 | `toolkit/s4.css` | tokens + all components (light, dark, phone, web page) |
 | `toolkit/s4.js` | `s4Theme`, `s4Slider`, `s4Copy`, `s4Tips`, `s4Menu`, `s4Dialog`, `s4Toast` + plain-HTML wiring (`data-copy`, `data-menu`, `data-open`, `data-close`, `data-theme-toggle`) |
 | `toolkit/fonts.css` | Inter 400/500/600/700 as base64 woff2 with `ss01`, `cv09`, `tnum`, `case` kept (rebuild: `python3 toolkit/build_fonts.py toolkit/fonts.css`) |
-| `toolkit/icons.js` | a curated Solar subset, Linear + Bold Duotone (rebuild: `node tools/build_icons.mjs`) |
+| `toolkit/icons.js` | a curated Solar Bold Duotone subset (rebuild: `node tools/build_icons.mjs`) |
 | `toolkit/sampler.html` | the colour sampler bar for letting someone pick an accent on a real screen |
 | `toolkit/inline.py` | makes a single-file page |
 | `tools/check_css.py` | the house-rule check (dark blocks in sync, no colour or font-size literals, no stray `!important`) |

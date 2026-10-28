@@ -1,6 +1,6 @@
 # S4 Glass 2.0 – component markup
 
-Copy-paste markup for every component in `toolkit/s4.css`. Icons are shown as `<svg data-ic="name">` (filled in by `icons.js`); in a built app paste the SVG itself. See `DESIGN.md` for when to use what. `demo/components.html` shows them all live.
+Copy-paste markup for every component in `toolkit/s4.css`. Icons are Solar Bold Duotone, shown as `<svg data-ic="name">` (filled in by `icons.js`); in a built app paste the SVG itself. See `DESIGN.md` for when to use what. `demo/components.html` shows them all live.
 
 Contents: [Page setup](#page-setup) · [App shell](#app-shell) · [Phone tab bar](#phone-tab-bar) · [List and detail](#list-and-detail) · [Buttons](#buttons) · [Fields](#fields) · [Choosers](#choosers) · [Status](#status) · [Cards](#cards) · [Tables](#tables) · [Copy chips and keys](#copy-chips-and-keys) · [Menus](#menus) · [Dialogs and sheets](#dialogs-and-sheets) · [Toasts and tooltips](#toasts-and-tooltips) · [Folds and steps](#folds-and-steps) · [Web page](#web-page) · [Layout helpers](#layout-helpers)
 
