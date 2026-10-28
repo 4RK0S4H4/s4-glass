@@ -40,7 +40,7 @@ Contents: [Page setup](#page-setup) · [App shell](#app-shell) · [Phone tab bar
   </div>
 </div>
 ```
-The top bar, when it is the first child of `.main`, floats over the top of `.content` so content slides under it (frosted); `s4.js` keeps `--bar-h` current. With a `.banner` above it the bar stays in the flow. Wrap nav labels in `.lbl` so the ≤980px icon rail can hide them. `.content.flush` removes padding (full-bleed split views); `.content.center` caps width for single-page tools. A single-page tool with no nav: `<div class="app solo"><div class="main">…</div></div>`.
+The top bar, when it is the first child of `.main`, floats over the top of `.content` so content slides under it (frosted); `s4.js` keeps `--bar-h` current. With a `.banner` above it the bar stays in the flow. Wrap nav labels in `.lbl` so the ≤980px icon rail can hide them. On wide screens `.content` stops at `--content-max` (1600px) and centres itself; `.content.flush` removes padding (full-bleed split views, not capped); `.content.center` caps width for single-page tools. A single-page tool with no nav: `<div class="app solo"><div class="main">…</div></div>`.
 
 ### Trail and page tabs
 Inside the `.topbar`: a trail first, then the title and actions, then page tabs. Use them on a record's page (an account, a project); a flat app with no depth needs neither.
@@ -79,7 +79,9 @@ The trail's last item is the page and isn't a link; its back link goes one level
 <main class="content flush">
   <div class="split">
     <section class="list-pane"><div class="filters">…</div><div class="table-wrap">…</div></section>
-    <aside class="detail open">…</aside>   <!-- ≤980px: covers the list; toggle .open, add a Back button -->
+    <aside class="detail open">   <!-- ≤980px: covers the list; toggle .open, add a Back button -->
+      <div class="detail-cols"><div>…cards…</div><div>…cards…</div></div>   <!-- two columns once the panel is 760px wide (1440p), one below -->
+    </aside>
   </div>
 </main>
 ```

@@ -32,7 +32,7 @@ This skill is the look. The process (intake, brief, mockups, build, delivery) li
 3. **Filled, not outlined.** Hover and selected are soft fills; button-like controls hover with the accent tint (`--hov`); rows and lists hover and select in neutral grey; focus is a thin neutral ring; fields focus with a brighter fill and darker border. Never a high-contrast accent outline or ring (a soft `--soft-ring` line is fine).
 4. **Quiet chrome, readable data.** Inter 14px, tabular figures on data, one text size in table cells, named sizes only, radii 6/8/10/12/16/24, spacing 4–24 (to 96 on web pages), hairline borders, and flat surfaces: no shadow at rest (`--shadow-1` is `none`); shadows only on what floats (menus, dialogs). No white inset shine.
 5. **Dark mode is dark glass.** No accent-coloured text or icons on dark surfaces (accent is for fills). Only three things glow, faintly: the primary button's backlight, the active nav item, the selected filter pill.
-6. **Phone to 2560.** Narrow screens get their own patterns through `max-width` rules only, so 1920 and 2560 never change.
+6. **Phone to 2560.** Wide screens (decided, option C): `.content` stops at `--content-max` (1600px) and is centred; on `.split` the list fills and the detail panel takes the spare width (34%, 360–880px) and uses `.detail-cols` for two columns from 760px. Narrow screens get their own patterns through `max-width` rules only, so wide layouts never move when a narrow rule is added.
 7. **Readable for everyone.** WCAG AA against what is really painted behind the text, both themes; visible focus; 40px targets (44px on phones); reduced motion respected.
 8. **Tokens or nothing.** Colours, sizes, radii, spacing, shadows, z-index and durations are tokens; `check_css.py` enforces it.
 
@@ -86,7 +86,7 @@ Draw charts as SVG with the toolkit's tokens (reference implementation: `demo/sa
 
 | Width | Behaviour |
 |---|---|
-| ≥1301 | as designed; 1920 and 2560 never change |
+| ≥1301 | as designed; overview/list content capped at 1600px and centred; detail panel 34% (360–880px), two columns from 760px (`.detail-cols`) |
 | ≤1300 (1920×1200 laptop at 150% = 1280×800) | nav 200px, tighter top bar, page subtitle hidden, detail panel 360px |
 | ≤1200 | overview cards two per row |
 | ≤980 | side nav → 68px icon rail (give each item a `title`); `.split` detail panel covers the list (`.detail.open` + a Back button) |
