@@ -25,6 +25,10 @@ The owner reads on a phone: keep messages short and ask one thing at a time.
 - Owner picks the next area, or proposes candidates (use the `frontend-design` skill, now available, and say so on the page).
 - Optional: re-check the recommendation boxes on the older samples pages with the skill.
 
+- Density Auto cutoff changed (owner, 2026-10-28): compact only 1300–2200px wide with a mouse, standard on 1440p and up.
+- Icons: a separate session is making `demo/samples/icons.html` (Solar Bold Duotone vs Phosphor Duotone). The owner wants Solar Bold Duotone across all glass apps going forward, pending the draft.
+- Candidate next areas (from the front-end design skill, used as a lens): wide-screen desktop layouts (recommended), tables at scale, forms and validation, empty/loading/error states, dialogs/toasts/destructive actions, accessibility audit.
+
 ## Open items
 - Habits and Orders (`demo/examples/`) are refreshed with the final toolkit (`python3 tools/refresh_examples.py`); Habits also shows the density setting. Re-run the script after any toolkit change.
 - **Still to do: the Bank Reconciliation app** (arko-EMOVIS/bank-reconciliation-app, private). Its tokens must follow, per CLAUDE.md: `--ease` (motion), the surface tokens (`--glass`, `--glass2`, `--bar-bg`, `--nav-bg`, `--modal-bg`, `--blur`, `--sat`, `--shadow-1`), the new chart tokens (`--series-*`, `--seq-*`, `--viz-*`), density (`--row-py`, `--ctl-h`, `--card-pad`, `--nav-h`, `--stack-gap`, `s4Density()`), and the trail and page tabs (`.crumbs`, `.pagetabs`). Do it in a session with that repo attached, and keep that app's own decisions.

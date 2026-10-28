@@ -23,9 +23,9 @@
   window.s4ThemeToggle = function () { s4Theme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark"); };
 })();
 
-/* Density: like the theme, set before the first paint. "auto" is compact only on a wide screen with a mouse. */
+/* Density: like the theme, set before the first paint. "auto" is compact only on a 1300–2200px screen with a mouse (a 1080p monitor); standard on touch, small and larger (1440p) screens. */
 (function () {
-  var KEY = "s4-density", d = "auto", q = window.matchMedia && matchMedia("(pointer: fine) and (min-width: 1300px)");
+  var KEY = "s4-density", d = "auto", q = window.matchMedia && matchMedia("(pointer: fine) and (min-width: 1300px) and (max-width: 2200px)");
   try { d = localStorage.getItem(KEY) || "auto"; } catch (e) {}
   function mark() { document.querySelectorAll("[data-density-seg] button").forEach(function (b) { b.classList.toggle("on", b.dataset.v === d); }); }
   function set() { document.documentElement.setAttribute("data-density", d === "compact" || d === "standard" ? d : (q && q.matches ? "compact" : "standard")); mark(); }
