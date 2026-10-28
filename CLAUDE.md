@@ -24,7 +24,7 @@ The S4 Glass design language: spec (`DESIGN.md`), component markup (`COMPONENTS.
 ## Rules
 - `DESIGN.md` is the source of truth; `skill/SKILL.md` is the condensed version for Claude. Change both together, and the Bank Reconciliation app (arko-EMOVIS/bank-reconciliation-app) if a token or rule it uses changes.
 - Decisions the owner made (DESIGN.md → "Decided with the owner") are not re-opened unless the owner asks.
-- Work on a `claude/…` branch, open a PR, let CI go green, then merge when the owner says so.
+- Work on a `claude/…` branch, open a PR and let CI go green, then **merge it yourself** (squash) and send the owner the Pages link(s). Standing permission from the owner, so don't wait to be asked. Don't merge while CI is red or a review comment is open, and still ask first when a change is large or goes against "Decided with the owner".
 
 ## Recommendations
 - Every recommendation to the owner (in chat and on a samples page) comes from the front-end design skill (`frontend-design`) when it is available in the session, and it must be obvious which it was. Every `demo/samples/` page that offers options has a "Recommended" tag on the option you suggest and a **Recommendation basis** box saying either "front-end design skill" (used) or "S4 Glass rules and the owner's decisions; the front-end design skill was not available in this session" (see the box in `demo/samples/density.html`). Recommendations stay inside the S4 Glass rules and "Decided with the owner".
