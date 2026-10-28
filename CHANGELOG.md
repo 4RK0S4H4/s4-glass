@@ -1,5 +1,8 @@
 # Changelog
 
+## Wide screens (2026-10-28)
+- **Option C, "Cap, Then Widen the Panel"** (owner's pick): `.content` stops at `--content-max` (1600px) and centres itself (`.content.flush` and `.content.center` unchanged); `.split` detail panel is `clamp(360px, 34vw, 880px)` (was 36vw up to 600px) and a `container-type: inline-size`, with `.detail-cols` laying cards out in two columns from 760px.
+
 ## Icons (2026-10-28)
 - **One icon style: Solar Bold Duotone** for every icon (owner's pick, option A). Linear is gone: `icons.js` is a flat `S4_ICONS` map of 91 names (98 KB, was 149 KB); `data-ic` and `data-ic-duo` both render Bold Duotone, `s4Icon(name)` ignores a second argument. Solar's CC BY 4.0 credit is required. `tools/refresh_examples.py` now refreshes each example's icon subset too.
 

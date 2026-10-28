@@ -14,7 +14,7 @@ Contents: [Principles](#principles) · [Colour](#colour) · [Type and numbers](#
 4. **Quiet chrome, readable data.** Inter at 14px, tabular figures on data, one text size inside table cells, sizes from one named scale, corners from one radius scale, spacing from one scale, hairline borders, and flat surfaces: no shadow at rest. No emoji as icons.
 5. **Dark mode is dark glass.** A near-black gradient with a faint bloom of the two accent colours, under dark-grey surfaces. In dark mode the accent is for fills only; text and icons use the normal text colours. Only three things glow, faintly: the primary button (a backlight behind it), the active nav item and the selected filter pill.
 6. **Fast and few keystrokes.** One-click chips, segmented filters, keyboard shortcuts shown as keycaps, click-to-copy values, suggestions accepted with Enter.
-7. **Phone to 2560 wide.** Every layout is checked at 390, 1280, 1366, 1920 and 2560. Narrow screens get their own patterns (rail, tab bar, bottom sheets, table rows as cards) through `max-width` rules only, so wide layouts never move.
+7. **Phone to 2560 wide.** Every layout is checked at 390, 1280, 1366, 1920 and 2560. Narrow screens get their own patterns (rail, tab bar, bottom sheets, table rows as cards) through `max-width` rules only, so wide layouts never move when a narrow rule is added; the wide-screen rules (a 1600px content cap, the wider detail panel) are their own, see Layouts.
 8. **Readable for everyone.** WCAG AA contrast against what is actually painted behind the text, in both themes; visible focus; 40px touch targets (44px on phones); reduced motion respected.
 9. **Tokens or nothing.** Colours, font sizes, radii, spacing, shadows, z-index and durations come from tokens. `check_css.py` (in `tools/` in the repo, `toolkit/` in the skill) enforces it, so consistency is checked, not hoped for.
 
@@ -150,7 +150,7 @@ Pick one per app; never mix two systems in one app.
 - **Phone-first app**: `.app.has-tabbar` with a bottom `.tabbar` on phones and the side nav on desktop.
 - **Web page** (`body.site`): sticky glass header, `.hero`, `.section` blocks inside `.container` (max 1200px), `.site-foot`. Same tokens and components; fluid display type.
 
-Widths: form-style pages (settings, rules, lookups) share `--form-max` (760px); wide tables may go full width; running text stops at `--prose-max` (68ch).
+Widths: form-style pages (settings, rules, lookups) share `--form-max` (760px); running text stops at `--prose-max` (68ch). **Wide screens** (option C of the wide-screen samples): overview and list pages stop at `--content-max` (1600px) and sit in the middle (`.content` does this by itself; `.content.flush` and `.content.center` are left alone). On a list | detail screen the list fills and the spare width goes to the detail panel, which is 34% of the window, 360–880px, and sets its cards out in two columns when it is 760px or wider (`.detail-cols`). So 1440p (2560 wide) gets a 1600px overview and a list of about 1470px beside an 870px panel; 1080p stays close to what it was.
 
 Overview of several entities (companies, accounts, projects): one vertical card each in `.grid-4` (4 → 2 → 1 per row), a coloured top edge for status (`.card.edge.ok`), the vital numbers at a glance, and "Show Details" for the rest.
 
@@ -158,7 +158,7 @@ Overview of several entities (companies, accounts, projects): one vertical card 
 
 | Width | What happens |
 |---|---|
-| ≥ 1301 | the design as drawn; 1920 and 2560 never change |
+| ≥ 1301 | the design as drawn; overview and list content stops at 1600px and is centred; the detail panel is 34% wide (360–880px), two columns from 760px |
 | ≤ 1300 (a 1920×1200 laptop at 150%) | nav 200px, tighter top bar, page subtitle hidden, list/detail panel 360px |
 | ≤ 1200 | overview cards two per row |
 | ≤ 980 (tablet, small window) | the side nav becomes a 68px icon rail (labels hidden, counts become corner pips); list/detail: the detail panel covers the list (`.detail.open`) |
@@ -262,6 +262,8 @@ Every rule below came from the owner's issues on the Bank Reconciliation app (is
 **Shadows and glass:** flat, with the material leading (options B and B of the shadow and transparency samples). No shadows at rest; menus, dialogs and toasts keep one because they float. Surfaces are mostly the material colour, 80–96%, with the blur at 28px and no colour boost; content slides under the top and tab bars. Never go more see-through than this: the colour of whatever is underneath must not show through strongly (the earlier, clearer options looked too intense in the top bar).
 
 **Density:** option C, "Two Modes, Auto": Standard and Compact, the default follows the device (compact on a 1300–2200px screen with a mouse, i.e. 1080p), the user can override it. The cutoff was narrowed on 2026-10-28: the owner prefers Standard at 1440p and is fine with Compact at 1080p. See [Space, shape, depth, motion](#space-shape-depth-motion).
+
+**Wide screens:** option C, "Cap, Then Widen the Panel" (picked 2026-10-28, see `demo/samples/wide-screen.html`): overview and list pages stop at 1600px and are centred; on list | detail the spare width goes to the detail panel (34%, up to 880px, two columns from 760px). Not "fill the screen" (rows too far apart on 1440p) and not "cap everything" (the list shrinks to 1000px). See [Layouts](#layouts).
 
 **Navigation:** option C, "Tabs + Trail": a trail above the title, page tabs under it, a neutral-fill current tab. Nav = places, tabs = views of one record, segmented = filters. See [Layouts](#layouts).
 

@@ -95,7 +95,7 @@
   &lt;/div&gt;
 &lt;/div&gt;
 </code></pre>
-<p>The top bar, when it is the first child of <code>.main</code>, floats over the top of <code>.content</code> so content slides under it (frosted); <code>s4.js</code> keeps <code>--bar-h</code> current. With a <code>.banner</code> above it the bar stays in the flow. Wrap nav labels in <code>.lbl</code> so the ≤980px icon rail can hide them. <code>.content.flush</code> removes padding (full-bleed split views); <code>.content.center</code> caps width for single-page tools. A single-page tool with no nav: <code>&lt;div class="app solo"&gt;&lt;div class="main"&gt;…&lt;/div&gt;&lt;/div&gt;</code>.</p>
+<p>The top bar, when it is the first child of <code>.main</code>, floats over the top of <code>.content</code> so content slides under it (frosted); <code>s4.js</code> keeps <code>--bar-h</code> current. With a <code>.banner</code> above it the bar stays in the flow. Wrap nav labels in <code>.lbl</code> so the ≤980px icon rail can hide them. On wide screens <code>.content</code> stops at <code>--content-max</code> (1600px) and centres itself; <code>.content.flush</code> removes padding (full-bleed split views, not capped); <code>.content.center</code> caps width for single-page tools. A single-page tool with no nav: <code>&lt;div class="app solo"&gt;&lt;div class="main"&gt;…&lt;/div&gt;&lt;/div&gt;</code>.</p>
 <h3 id="trail-and-page-tabs">Trail and page tabs</h3>
 <p>Inside the <code>.topbar</code>: a trail first, then the title and actions, then page tabs. Use them on a record's page (an account, a project); a flat app with no depth needs neither.</p>
 <pre><code class="language-html">&lt;header class=&quot;topbar&quot;&gt;
@@ -126,7 +126,9 @@
 <pre><code class="language-html">&lt;main class=&quot;content flush&quot;&gt;
   &lt;div class=&quot;split&quot;&gt;
     &lt;section class=&quot;list-pane&quot;&gt;&lt;div class=&quot;filters&quot;&gt;…&lt;/div&gt;&lt;div class=&quot;table-wrap&quot;&gt;…&lt;/div&gt;&lt;/section&gt;
-    &lt;aside class=&quot;detail open&quot;&gt;…&lt;/aside&gt;   &lt;!-- ≤980px: covers the list; toggle .open, add a Back button --&gt;
+    &lt;aside class=&quot;detail open&quot;&gt;   &lt;!-- ≤980px: covers the list; toggle .open, add a Back button --&gt;
+      &lt;div class=&quot;detail-cols&quot;&gt;&lt;div&gt;…cards…&lt;/div&gt;&lt;div&gt;…cards…&lt;/div&gt;&lt;/div&gt;   &lt;!-- two columns once the panel is 760px wide (1440p), one below --&gt;
+    &lt;/aside&gt;
   &lt;/div&gt;
 &lt;/main&gt;
 </code></pre>
