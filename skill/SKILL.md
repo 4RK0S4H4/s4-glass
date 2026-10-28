@@ -106,7 +106,7 @@ Draw charts as SVG with the toolkit's tokens (reference implementation: `demo/sa
 
 ## Density
 
-- **Two modes, Auto** (decided, option C): `html[data-density]` is `standard` (the stylesheet as written) or `compact` (rows 4px, buttons 28px, cards 12px, nav items 34px, base text 13px; touch targets stay 40px+). Set with `s4Density("auto" | "standard" | "compact")` or a `.seg` with `data-density-seg` and buttons `data-v`; the default, Auto, is compact on a wide screen with a mouse and standard on touch and small screens. Give users the setting where they keep preferences. Use the `--row-py`, `--ctl-h`, `--card-pad`, `--nav-h`, `--stack-gap` tokens in app code so it follows.
+- **Two modes, Auto** (decided, option C): `html[data-density]` is `standard` (the stylesheet as written) or `compact` (rows 4px, buttons 28px, cards 12px, nav items 34px, base text 13px; touch targets stay 40px+). Set with `s4Density("auto" | "standard" | "compact")` or a `.seg` with `data-density-seg` and buttons `data-v`; the default, Auto, is compact on a 1300–2200px wide screen with a mouse (a 1080p monitor) and standard on touch, small screens and larger ones (1440p and up). Give users the setting where they keep preferences. Use the `--row-py`, `--ctl-h`, `--card-pad`, `--nav-h`, `--stack-gap` tokens in app code so it follows.
 - **Calm and spacious** (standard, today's look): the stylesheet as written.
 - **Playful and bold**: 15px body, 14–16px radii, card padding 20px, the accent more generous on headers and empty states, still one primary button per area.
 
