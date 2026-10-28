@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wide-Screen Frame · S4 Glass</title>
+<!-- One screen of a sample app, rendered at its real width inside an iframe on wide-screen.html. ?o=a|b|c  ?v=list|overview  ?t=light|dark -->
+<script data-s4 src="../../toolkit/s4.js"></script>
+<link data-s4 rel="stylesheet" href="../../toolkit/fonts.css">
+<link data-s4 rel="stylesheet" href="../../toolkit/s4.css">
+<style>
+  :root { --accent: #ce0057; --accent-2: #8a0069; --accent-light: #ff5c9d; --cap: 1600px; }
+  tr.sel td { background: var(--accent-soft); }
+  .detail { container-type: inline-size; padding: var(--s-5); }
+  .d-grid { display: grid; gap: var(--s-4); align-items: start; }
+  .d-grid > div { display: flex; flex-direction: column; gap: var(--s-4); min-width: 0; }
+  .cand { display: flex; align-items: center; gap: var(--s-3); padding: 8px 0; border-top: 1px solid var(--border); } .cand:first-of-type { border-top: 0; }
+  .cand .grow small { display: block; color: var(--text3); font-size: var(--fs-xs); }
+  .ov-main[hidden] { display: none; } .ov-main { display: flex; flex-direction: column; gap: var(--stack-gap); }
+
+  /* B: cap everything at --cap and centre it */
+  html[data-o="b"] .content:not(.flush) > *, html[data-o="b"] .content.flush > .split { width: 100%; max-width: var(--cap); margin-inline: auto; }
+  html[data-o="b"] .content.flush > .split { border-inline: 1px solid var(--border); }
+  /* C: cap list and overview pages; the surplus width goes to the detail panel, which turns into two columns */
+  html[data-o="c"] .content:not(.flush) > * { width: 100%; max-width: var(--cap); margin-inline: auto; }
+  html[data-o="c"] .split { grid-template-columns: minmax(0, 1fr) clamp(360px, 34vw, 880px); }
+  @container (min-width: 760px) { html[data-o="c"] .d-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+</style>
+<script data-s4 src="../../toolkit/icons.js"></script>
+</head>
+<body>
+<div class="app">
+  <nav class="nav" aria-label="Main">
+    <div class="brand"><svg data-ic-duo="wallet" class="ic lg"></svg><span>Reconcile<small>Northwind Operating</small></span></div>
+    <a class="item" href="#"><svg data-ic-duo="widget-5"></svg><span class="lbl">Overview</span></a>
+    <a class="item active" href="#" aria-current="page"><svg data-ic-duo="checklist-minimalistic"></svg><span class="lbl">Transactions</span><span class="count">43</span></a>
+    <a class="item" href="#"><svg data-ic-duo="document-text"></svg><span class="lbl">Rules</span></a>
+    <a class="item" href="#"><svg data-ic-duo="settings"></svg><span class="lbl">Settings</span></a>
+    <div class="foot">Saved in this browser</div>
+  </nav>
+  <div class="main">
+    <header class="topbar">
+      <div class="ttl"><h1 id="h1">Transactions</h1><span class="sub">Northwind Operating •••• 2210</span></div>
+      <div class="actions"><button class="btn primary" type="button">Import</button></div>
+    </header>
+    <main class="content" id="content">
+      <!--LIST-->
+      <div class="split">
+        <div class="list-pane">
+          <div class="filters"><div class="seg" role="group" aria-label="Filter"><button class="on" type="button">All<span class="n">43</span></button><button type="button">To Sort<span class="n">12</span></button><button type="button">Suggested<span class="n">8</span></button><button type="button">Matched<span class="n">23</span></button></div></div>
+          <div class="table-wrap"><table class="t"><thead><tr><th>Date</th><th class="dcol">Description</th><th>Reference</th><th>Status</th><th class="num">Amount</th></tr></thead><tbody>
+<tr><td>Oct 23</td><td class="dcol">Northwind Payroll Run 2610<span class="sub">Pre-authorized ACH Debit</span></td><td>PR-2610</td><td><span class="badge solid">Suggested</span></td><td class="num"><span class="brk">(</span>84,105.03<span class="brk">)</span></td></tr>
+<tr class="sel" aria-selected="true"><td>Oct 23</td><td class="dcol">Transfer From Savings •••• 4821<span class="sub">Miscellaneous Credit</span></td><td>TR-4821</td><td><span class="badge warn">To Sort</span></td><td class="num">300,000.00</td></tr>
+<tr><td>Oct 22</td><td class="dcol">Northwind Benefits Funding<span class="sub">Pre-authorized ACH Debit</span></td><td>BN-0917</td><td><span class="badge ok">Matched</span></td><td class="num"><span class="brk">(</span>536.90<span class="brk">)</span></td></tr>
+<tr><td>Oct 22</td><td class="dcol">Contoso Office Supplies<span class="sub">Card Purchase</span></td><td>CD-3380</td><td><span class="badge accent">Journal Entry</span></td><td class="num"><span class="brk">(</span>212.40<span class="brk">)</span></td></tr>
+<tr><td>Oct 21</td><td class="dcol">Fabrikam Freight<span class="sub">Wire Out</span></td><td>WR-5521</td><td><span class="badge warn">To Sort</span></td><td class="num"><span class="brk">(</span>4,980.00<span class="brk">)</span></td></tr>
+<tr><td>Oct 21</td><td class="dcol">Interest Earned<span class="sub">Credit</span></td><td>IN-1021</td><td><span class="badge ok">Matched</span></td><td class="num">18.22</td></tr>
+<tr><td>Oct 20</td><td class="dcol">Harbour & Pine Architects<span class="sub">Pre-authorized ACH Debit</span></td><td>HP-0204</td><td><span class="badge solid">Suggested</span></td><td class="num"><span class="brk">(</span>6,400.00<span class="brk">)</span></td></tr>
+<tr><td>Oct 20</td><td class="dcol">Kestrel Outdoor Co.<span class="sub">Wire In</span></td><td>WR-5498</td><td><span class="badge warn">To Sort</span></td><td class="num">12,750.00</td></tr>
+<tr><td>Oct 19</td><td class="dcol">Meadow Lane Bakery<span class="sub">Card Purchase</span></td><td>CD-3361</td><td><span class="badge ok">Matched</span></td><td class="num"><span class="brk">(</span>284.10<span class="brk">)</span></td></tr>
+<tr><td>Oct 19</td><td class="dcol">Northwind Physio<span class="sub">ACH Credit</span></td><td>AC-7714</td><td><span class="badge warn">To Sort</span></td><td class="num">2,975.50</td></tr>
+<tr><td>Oct 18</td><td class="dcol">Contoso Cloud Hosting<span class="sub">Pre-authorized ACH Debit</span></td><td>CC-0188</td><td><span class="badge solid">Suggested</span></td><td class="num"><span class="brk">(</span>1,280.00<span class="brk">)</span></td></tr>
+<tr><td>Oct 18</td><td class="dcol">Fabrikam Insurance<span class="sub">Pre-authorized ACH Debit</span></td><td>FI-0042</td><td><span class="badge ok">Matched</span></td><td class="num"><span class="brk">(</span>3,140.00<span class="brk">)</span></td></tr>
+<tr><td>Oct 17</td><td class="dcol">Bank Service Fee<span class="sub">Fee</span></td><td>FE-1017</td><td><span class="badge ok">Matched</span></td><td class="num"><span class="brk">(</span>45.00<span class="brk">)</span></td></tr>
+<tr><td>Oct 17</td><td class="dcol">Harbour & Pine Retainer<span class="sub">Wire In</span></td><td>WR-5470</td><td><span class="badge warn">To Sort</span></td><td class="num">9,000.00</td></tr>
+<tr><td>Oct 16</td><td class="dcol">Kestrel Outdoor Co.<span class="sub">ACH Credit</span></td><td>AC-7702</td><td><span class="badge ok">Matched</span></td><td class="num">4,310.00</td></tr>
+<tr><td>Oct 16</td><td class="dcol">Contoso Office Supplies<span class="sub">Card Purchase</span></td><td>CD-3342</td><td><span class="badge ok">Matched</span></td><td class="num"><span class="brk">(</span>96.75<span class="brk">)</span></td></tr>
+<tr><td>Oct 15</td><td class="dcol">Northwind Payroll Run 2609<span class="sub">Pre-authorized ACH Debit</span></td><td>PR-2609</td><td><span class="badge ok">Matched</span></td><td class="num"><span class="brk">(</span>83,940.12<span class="brk">)</span></td></tr>
+<tr><td>Oct 15</td><td class="dcol">Meadow Lane Bakery<span class="sub">Card Purchase</span></td><td>CD-3320</td><td><span class="badge warn">To Sort</span></td><td class="num"><span class="brk">(</span>61.30<span class="brk">)</span></td></tr>
+          </tbody></table></div>
+        </div>
+        <aside class="detail" aria-label="Transaction detail">
+          <div class="d-grid">
+            <div>
+              <div class="card"><span class="sec-sub">Transfer From Savings •••• 4821</span><div class="bigamt" style="font-size: var(--fs-big); font-weight: 600">300,000.00</div><span class="badge warn">To Sort</span></div>
+              <div class="card"><h3>Details</h3><div class="kv"><span class="k">Date</span><span>Oct 23</span><span class="k">Reference</span><span>TR-4821</span><span class="k">Type</span><span>Miscellaneous Credit</span><span class="k">Account</span><span>Operating •••• 2210</span></div></div>
+            </div>
+            <div>
+              <div class="card"><h3>Likely Matches</h3>
+                <div class="cand"><div class="grow">Savings Transfer Out<small>Oct 23 · Reserve •••• 4821</small></div><span class="num">300,000.00</span><button class="btn sm primary" type="button">Match</button></div>
+                <div class="cand"><div class="grow">Funding Journal 0917<small>Oct 22 · Journal Entry</small></div><span class="num">300,000.00</span><button class="btn sm" type="button">Match</button></div>
+              </div>
+              <div class="card"><h3>Activity</h3><div class="kv"><span class="k">Imported</span><span>Oct 24, 08:02</span><span class="k">Suggested</span><span>Oct 24, 08:02</span></div></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+      <!--/LIST-->
+      <!--OVERVIEW-->
+      <div class="ov-main" id="ov" hidden>
+        <div class="grid-4">
+          <div class="card stat"><span>Still to Match</span><b>43</b></div>
+          <div class="card stat"><span>Matched</span><b>23</b></div>
+          <div class="card stat"><span>Money In</span><b class="c-ok">329,035.72</b></div>
+          <div class="card stat"><span>Money Out</span><b>(185,090.60)</b></div>
+        </div>
+        <section class="card flush"><div class="card-head"><h3>Latest Transactions</h3><span class="sec-sub">8 of 43</span></div><div class="table-wrap"><table class="t"><thead><tr><th>Date</th><th class="dcol">Description</th><th>Reference</th><th>Status</th><th class="num">Amount</th></tr></thead><tbody>
+<tr><td>Oct 23</td><td class="dcol">Northwind Payroll Run 2610<span class="sub">Pre-authorized ACH Debit</span></td><td>PR-2610</td><td><span class="badge solid">Suggested</span></td><td class="num"><span class="brk">(</span>84,105.03<span class="brk">)</span></td></tr>
+<tr><td>Oct 23</td><td class="dcol">Transfer From Savings •••• 4821<span class="sub">Miscellaneous Credit</span></td><td>TR-4821</td><td><span class="badge warn">To Sort</span></td><td class="num">300,000.00</td></tr>
+<tr><td>Oct 22</td><td class="dcol">Northwind Benefits Funding<span class="sub">Pre-authorized ACH Debit</span></td><td>BN-0917</td><td><span class="badge ok">Matched</span></td><td class="num"><span class="brk">(</span>536.90<span class="brk">)</span></td></tr>
+<tr><td>Oct 22</td><td class="dcol">Contoso Office Supplies<span class="sub">Card Purchase</span></td><td>CD-3380</td><td><span class="badge accent">Journal Entry</span></td><td class="num"><span class="brk">(</span>212.40<span class="brk">)</span></td></tr>
+<tr><td>Oct 21</td><td class="dcol">Fabrikam Freight<span class="sub">Wire Out</span></td><td>WR-5521</td><td><span class="badge warn">To Sort</span></td><td class="num"><span class="brk">(</span>4,980.00<span class="brk">)</span></td></tr>
+<tr><td>Oct 21</td><td class="dcol">Interest Earned<span class="sub">Credit</span></td><td>IN-1021</td><td><span class="badge ok">Matched</span></td><td class="num">18.22</td></tr>
+<tr><td>Oct 20</td><td class="dcol">Harbour & Pine Architects<span class="sub">Pre-authorized ACH Debit</span></td><td>HP-0204</td><td><span class="badge solid">Suggested</span></td><td class="num"><span class="brk">(</span>6,400.00<span class="brk">)</span></td></tr>
+<tr><td>Oct 20</td><td class="dcol">Kestrel Outdoor Co.<span class="sub">Wire In</span></td><td>WR-5498</td><td><span class="badge warn">To Sort</span></td><td class="num">12,750.00</td></tr>
+        </tbody></table></div></section>
+        <div class="grid-auto" style="--min: 320px"><section class="card"><h3>This Month</h3><div class="kv"><span class="k">Money In</span><span class="num">329,035.72</span><span class="k">Money Out</span><span class="num">(185,090.60)</span><span class="k sum">Net</span><span class="num sum">143,945.12</span></div></section><section class="card"><h3>By Status</h3><div class="kv"><span class="k">To Sort</span><span class="num">12</span><span class="k">Suggested</span><span class="num">8</span><span class="k">Matched</span><span class="num">23</span></div></section></div>
+      </div>
+      <!--/OVERVIEW-->
+    </main>
+  </div>
+</div>
+<script>
+  var q = new URLSearchParams(location.search), o = q.get("o") || "a", v = q.get("v") || "list", t = q.get("t");
+  document.documentElement.setAttribute("data-o", o); if (t) s4Theme(t);
+  if (v === "overview") {
+    var c = document.getElementById("content"), split = c.querySelector(".split"), ov = document.getElementById("ov");
+    split.remove(); ov.hidden = false; c.classList.remove("flush"); document.getElementById("h1").textContent = "Overview";
+  } else { document.getElementById("content").classList.add("flush"); }
+  document.querySelectorAll("a").forEach(function (a) { a.addEventListener("click", function (e) { e.preventDefault(); }); });
+</script>
+</body>
+</html>

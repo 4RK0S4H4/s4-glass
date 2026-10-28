@@ -21,6 +21,7 @@ DEMOS = [  # (title, path, what it shows, duotone icon)
     ("Web Page Template", "templates/page.html", "A web page: sticky header, hero, sections, call to action, footer.", "global"),
     ("Habit Tracker", "demo/examples/habits.html", "A phone-first app built by a fresh Claude session from the skill alone.", "smartphone"),
     ("Icon Samples (draft)", "demo/samples/icons.html", "Solar Bold Duotone next to Phosphor Duotone in the rail, buttons, chips and table rows.", "stars"),
+    ("Wide-Screen Layouts (draft)", "demo/samples/wide-screen.html", "Three ways to use a 1080p and a 1440p monitor: fill, cap and centre, or cap and widen the detail panel.", "monitor"),
     ("Orders Restyle", "demo/examples/orders.html", "A plain HTML table restyled by a fresh Claude session using the skill.", "checklist-minimalistic"),
 ]
 

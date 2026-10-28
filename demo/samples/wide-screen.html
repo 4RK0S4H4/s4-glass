@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en" data-o="a">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wide-Screen Layout Samples · S4 Glass</title>
+<script data-s4 src="../../toolkit/s4.js"></script>
+<link data-s4 rel="stylesheet" href="../../toolkit/fonts.css">
+<link data-s4 rel="stylesheet" href="../../toolkit/s4.css">
+<style>
+  :root { --accent: #ce0057; --accent-2: #8a0069; --accent-light: #ff5c9d; }
+  .g-bar { position: sticky; top: 0; z-index: var(--z-bar); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); padding: 10px var(--s-6); padding-top: max(10px, env(safe-area-inset-top)); border-bottom: 1px solid var(--border); background: var(--bar-bg); -webkit-backdrop-filter: blur(var(--blur)); backdrop-filter: blur(var(--blur)); }
+  .g-bar .title { margin-right: auto; }
+  .g-main { display: flex; flex-direction: column; gap: var(--s-6); padding-top: var(--s-8); padding-bottom: var(--s-16); }
+  .lede { margin: 0; color: var(--text2); max-width: 70ch; }
+  .opt-note { margin: 0; padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--well); color: var(--text2); font-size: var(--fs-sm); max-width: 78ch; }
+  .opt-note b { color: var(--text); }
+  [data-o="a"] .opt-note:not([data-for="a"]), [data-o="b"] .opt-note:not([data-for="b"]), [data-o="c"] .opt-note:not([data-for="c"]) { display: none; }
+  .rec { margin: 0; padding: var(--s-3) var(--s-4); border: 1px solid var(--border2); border-radius: var(--r-md); background: var(--accent-soft); color: var(--text); font-size: var(--fs-ui); max-width: 78ch; } .rec b { font-weight: 600; } .rec .tag { display: inline-block; margin-right: 6px; padding: 1px 8px; border-radius: var(--r-pill); background: var(--accent-chip); color: var(--accent-ink); font-size: var(--fs-xs); font-weight: 600; }
+  .tbl-spec { width: 100%; max-width: 760px; border-collapse: collapse; font-size: var(--fs-sm); } .tbl-spec th, .tbl-spec td { padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border); } .tbl-spec th { color: var(--text2); font-weight: 600; font-size: var(--fs-xs); }
+  .ctl { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); align-items: center; }
+  .shot-note { margin: 0; font-size: var(--fs-sm); color: var(--text3); }
+  .viewport { overflow-x: auto; border: 1px solid var(--border2); border-radius: var(--r-lg); background: var(--page); }
+  .scaler { position: relative; }
+  .scaler iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; background: var(--page); }
+  @media (max-width: 760px) { .g-bar { padding-inline: var(--s-4); } .g-bar .title { flex-basis: 100%; } }
+</style>
+<script data-s4 src="../../toolkit/icons.js"></script>
+</head>
+<body>
+<div class="g-bar">
+  <span class="title">Wide-Screen Layout Samples</span>
+  <div class="seg" id="opt" data-manual role="group" aria-label="Option"><button type="button" class="on" data-v="a">A · Fill the Screen</button><button type="button" data-v="b">B · Cap and Centre</button><button type="button" data-v="c">C · Cap, Then Widen the Panel ★</button></div>
+  <div class="seg" id="theme" data-manual role="group" aria-label="Theme"><button type="button" data-v="light">Light</button><button type="button" data-v="dark">Dark</button><button type="button" data-v="auto">Auto</button></div>
+</div>
+
+<main class="container g-main">
+  <p class="lede">The same app at the width of a 1080p monitor (1920) and a 1440p monitor (2560), shown as a scaled-down but real page. Pick A, B or C at the top, then switch screen and view. Slide the picture sideways on a phone; turn the phone to landscape for a bigger view. Density follows the rules you set: Compact at 1080p, Standard at 1440p.</p>
+  <div class="stack" style="--gap: var(--s-2)">
+    <p class="opt-note" data-for="a"><b>A · Fill the Screen (today).</b> Nothing is capped: tables and cards stretch to the edge, and the detail panel stops at 600px. On 1440p the description and the amount end up about 1,500px apart, so the eye loses its row.</p>
+    <p class="opt-note" data-for="b"><b>B · Cap and Centre.</b> Everything stops at 1600px and sits in the middle, with empty margins either side. Rows are easy to follow, but on a list with a panel the list shrinks to about 1000px and 1440p wastes a third of the screen.</p>
+    <p class="opt-note" data-for="c"><b>C · Cap, Then Widen the Panel.</b> Overview and list pages stop at 1600px and centre. On a list with a panel the list keeps filling and the surplus goes to the detail panel, which grows to 34% of the width (up to 880px) and sets out its cards in two columns. Extra width is used for the working area instead of stretching rows.</p>
+  </div>
+  <p class="rec"><span class="tag">Recommended</span><b>C · Cap, Then Widen the Panel.</b> Reconciliation is done in the detail panel, so the extra width of a 1440p monitor is worth most there, while overview pages are read like a page and shouldn't stretch past about 1600px. At 1080p it behaves almost like today.<br><b>Recommendation basis:</b> S4 Glass rules and the owner's decisions; the front-end design skill was not available in this session.</p>
+  <div class="ctl">
+    <div class="seg" id="screen" data-manual role="group" aria-label="Screen"><button type="button" class="on" data-v="2560">1440p · 2560 wide</button><button type="button" data-v="1920">1080p · 1920 wide</button></div>
+    <div class="seg" id="view" data-manual role="group" aria-label="View"><button type="button" class="on" data-v="list">List and Panel</button><button type="button" data-v="overview">Overview</button></div>
+  </div>
+  <div class="viewport" id="vp"><div class="scaler" id="sc"><iframe id="fr" title="Wide-screen preview" loading="lazy"></iframe></div></div>
+  <p class="shot-note" id="note"></p>
+
+  <table class="tbl-spec" aria-label="Widths at 1440p"><thead><tr><th>At 2560 wide</th><th>A</th><th>B</th><th>C</th></tr></thead><tbody>
+    <tr><td>Overview content width</td><td>2,300px</td><td>1,600px</td><td>1,600px</td></tr>
+    <tr><td>List width (with panel)</td><td>1,740px</td><td>998px</td><td>1,470px</td></tr>
+    <tr><td>Detail panel width</td><td>600px</td><td>600px</td><td>870px, two columns</td></tr>
+    <tr><td>Empty margin each side</td><td>none</td><td>370px (overview and list)</td><td>370px (overview); none with a panel</td></tr>
+  </tbody></table>
+  <table class="tbl-spec" aria-label="Widths at 1080p"><thead><tr><th>At 1920 wide</th><th>A</th><th>B</th><th>C</th></tr></thead><tbody>
+    <tr><td>Overview content width</td><td>1,660px</td><td>1,600px</td><td>1,600px</td></tr>
+    <tr><td>List width (with panel)</td><td>1,100px</td><td>998px</td><td>1,047px</td></tr>
+    <tr><td>Detail panel width</td><td>600px</td><td>600px</td><td>653px</td></tr>
+  </tbody></table>
+</main>
+
+<script>
+  var root = document.documentElement, st = { o: "a", w: 2560, v: "list" }, fr = document.getElementById("fr"), vp = document.getElementById("vp"), sc = document.getElementById("sc");
+  function mark(id, v) { document.querySelectorAll("#" + id + " button").forEach(function (b) { b.classList.toggle("on", b.dataset.v === String(v)); }); }
+  function th() { return root.getAttribute("data-theme") || "light"; }
+  function layout() {
+    var w = st.w, h = w === 2560 ? 1440 : 1080, avail = vp.clientWidth, shown = Math.max(avail, 900), k = shown / w;
+    fr.style.width = w + "px"; fr.style.height = h + "px"; fr.style.transform = "scale(" + k + ")";
+    sc.style.width = shown + "px"; sc.style.height = Math.round(h * k) + "px";
+    document.getElementById("note").textContent = w + " × " + h + " shown at " + Math.round(k * 100) + "% · " + (w === 2560 ? "Standard" : "Compact") + " density";
+  }
+  function load() {
+    var src = "wide-frame.html?o=" + st.o + "&v=" + st.v + "&t=" + th();
+    if (fr.getAttribute("src") !== src) fr.setAttribute("src", src);
+    layout();
+  }
+  var t0 = "auto"; try { t0 = localStorage.getItem("s4-theme") || "auto"; } catch (e) {} mark("theme", t0);
+  document.getElementById("theme").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; s4Theme(b.dataset.v); mark("theme", b.dataset.v); load(); });
+  [["opt", "o"], ["screen", "w"], ["view", "v"]].forEach(function (p) { document.getElementById(p[0]).addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; st[p[1]] = p[1] === "w" ? +b.dataset.v : b.dataset.v; mark(p[0], b.dataset.v); if (p[0] === "opt") root.setAttribute("data-o", b.dataset.v); load(); }); });
+  root.setAttribute("data-o", "a"); window.addEventListener("resize", layout); load();
+</script>
+</body>
+</html>

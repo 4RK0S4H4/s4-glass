@@ -19,6 +19,14 @@ The owner reads on a phone: keep messages short and ask one thing at a time.
 | 4a | Navigation (page headers, breadcrumbs, tabs vs segmented vs nav) | **Done** (PR #13). Owner picked **C Tabs + Trail** | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/navigation.html) |
 | 4b | Density (compact / comfortable) | **Done** (PR #15). Owner picked **C Two Modes, Auto** | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/density.html) |
 | 5 | Icons | **Built and merged (PR #21); skill repackaged, file still to send (step 4).** Owner picked **A Solar Bold Duotone** for every icon in every app (no Linear). `icons.js` is one flat style (91 names, 98 KB); DESIGN.md, SKILL.md, COMPONENTS.md, README, CHANGELOG updated; examples refreshed. Solar is **CC BY 4.0: credit it in each app's About/footer**. Remaining: send `build/s4-glass.skill`. **The private Bank Reconciliation app must follow** (swap its icons to Solar Bold Duotone everywhere, flat icon map, credit line) in a session with that repo | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/icons.html) · [Guide](https://4rk0s4h4.github.io/s4-glass/guide/design.html#icons) |
+| 6 | Wide-screen desktop layouts | **Samples page up (PR open), waiting for the owner's pick.** A Fill the Screen (today) · B Cap and Centre · C Cap, Then Widen the Panel (recommended; front-end design skill not available this session, so the fallback basis is on the page) | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/wide-screen.html) |
+| 7 | Tables at scale (filtering, bulk select, sticky columns, pagination) | Not started. Next after 6 is built and merged | |
+| 8 | Forms and validation (states, errors, help text, date pickers, multi-step) | Not started | |
+| 9 | Empty, loading and error states (skeletons, copy, offline) | Not started | |
+| 10 | Dialogs, toasts and destructive actions (confirm and undo) | Not started | |
+| 11 | Accessibility audit (focus, contrast, keyboard, reduced motion) | Not started. Checks existing work: report, fix clear defects, put changes to a decided look on a samples page first | |
+
+Areas 6–11 go one at a time in this order; start the next only when the owner has picked and the build is merged. Use dataviz only if a chart is involved.
 
 ## Next (not started)
 - Repackage the skill (`tools/package_skill.py`) and send the owner `build/s4-glass.skill` so the installed copy matches.
