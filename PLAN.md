@@ -18,7 +18,7 @@ The owner reads on a phone: keep messages short and ask one thing at a time.
 | 3 | Charts and data visualisation | **Done** (PR #11). Owner picked **A Accent First**: accent is series 1, then blue, aqua, yellow, violet; thin marks, tooltips, table view, texture opt-in | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/charts.html) |
 | 4a | Navigation (page headers, breadcrumbs, tabs vs segmented vs nav) | **Done** (PR #13). Owner picked **C Tabs + Trail** | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/navigation.html) |
 | 4b | Density (compact / comfortable) | **Done** (PR #15). Owner picked **C Two Modes, Auto** | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/density.html) |
-
+| 5 | Icons (Solar Bold Duotone for all apps?) | **Step 1 of 4: draft samples page, PR open, not merged.** Owner wants Solar Bold Duotone everywhere; page compares it with Phosphor Duotone (A Solar ★, B Phosphor, C Solar apps + Phosphor pages). Note: Solar is **CC BY 4.0 (credit required), not MIT**; Phosphor is MIT. Fallback recommendation basis (front-end design skill not in the session). After the owner picks: build into `toolkit/icons.js` (`tools/build_icons.mjs`), `DESIGN.md` (Decided with the owner), `skill/SKILL.md`, `COMPONENTS.md`, refresh examples, repackage the skill; the private Bank Reconciliation app must follow | [Samples](https://4rk0s4h4.github.io/s4-glass/demo/samples/icons.html) |
 
 ## Next (not started)
 - Repackage the skill (`tools/package_skill.py`) and send the owner `build/s4-glass.skill` so the installed copy matches.
