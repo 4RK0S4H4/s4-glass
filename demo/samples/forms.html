@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en" data-o="a">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Form Samples · S4 Glass</title>
+<script data-s4 src="../../toolkit/s4.js"></script>
+<link data-s4 rel="stylesheet" href="../../toolkit/fonts.css">
+<link data-s4 rel="stylesheet" href="../../toolkit/s4.css">
+<style>
+  :root { --accent: #ce0057; --accent-2: #8a0069; --accent-light: #ff5c9d; }
+  .g-bar { position: sticky; top: 0; z-index: var(--z-bar); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); padding: 10px var(--s-6); padding-top: max(10px, env(safe-area-inset-top)); border-bottom: 1px solid var(--border); background: var(--bar-bg); -webkit-backdrop-filter: blur(var(--blur)); backdrop-filter: blur(var(--blur)); }
+  .g-bar .title { margin-right: auto; }
+  .g-main { display: flex; flex-direction: column; gap: var(--s-6); padding-top: var(--s-8); padding-bottom: var(--s-16); }
+  .lede { margin: 0; color: var(--text2); max-width: 70ch; }
+  .opt-note { margin: 0; padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--well); color: var(--text2); font-size: var(--fs-sm); max-width: 78ch; }
+  .opt-note b { color: var(--text); }
+  [data-o="a"] .opt-note:not([data-for="a"]), [data-o="b"] .opt-note:not([data-for="b"]), [data-o="c"] .opt-note:not([data-for="c"]) { display: none; }
+  .rec { margin: 0; padding: var(--s-3) var(--s-4); border: 1px solid var(--border2); border-radius: var(--r-md); background: var(--accent-soft); color: var(--text); font-size: var(--fs-ui); max-width: 78ch; } .rec b { font-weight: 600; } .rec .tag { display: inline-block; margin-right: 6px; padding: 1px 8px; border-radius: var(--r-pill); background: var(--accent-chip); color: var(--accent-ink); font-size: var(--fs-xs); font-weight: 600; }
+  .tbl-spec { width: 100%; max-width: 900px; border-collapse: collapse; font-size: var(--fs-sm); } .tbl-spec th, .tbl-spec td { padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; } .tbl-spec th { color: var(--text2); font-weight: 600; font-size: var(--fs-xs); }
+  h2.sec { margin: 0; font-size: var(--fs-h2); }
+  @media (max-width: 760px) { .g-bar { padding-inline: var(--s-4); } .g-bar .title { flex-basis: 100%; } }
+
+  /* fields: label above, help or error below, never colour alone */
+  .fld { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .fld > label, .fld > .lbl { font-size: var(--fs-xs); font-weight: 500; color: var(--text2); } .fld .opt { color: var(--text3); font-weight: 400; }
+  .ctl { position: relative; display: flex; align-items: center; } .ctl > :is(input, select, textarea) { width: 100%; font-size: var(--fs-base); color: var(--text); }
+  .ctl .pre { z-index: 1; position: absolute; left: 10px; color: var(--text3); font-size: var(--fs-sm); pointer-events: none; } .ctl.has-pre > input { padding-left: 42px; }
+  .ctl .tick { position: absolute; right: 10px; width: 16px; height: 16px; color: var(--ok); display: none; pointer-events: none; } .fld.ok .ctl .tick { display: block; } .fld.ok .ctl > input { padding-right: 32px; }
+  .hint { display: flex; justify-content: space-between; gap: var(--s-2); color: var(--text3); font-size: var(--fs-xs); }
+  .err { display: none; align-items: flex-start; gap: 5px; color: var(--bad); font-size: var(--fs-xs); font-weight: 500; } .err svg { width: 14px; height: 14px; flex: none; margin-top: 1px; }
+  .fld.bad .err { display: flex; } .fld.bad .hint { display: none; }
+  .fld.bad :is(input, select, textarea) { border-color: var(--bad); background-color: var(--bad-bg); }
+  .fld.bad :is(input, select, textarea):focus { background-color: var(--bad-bg); }
+  .fld.over .cnt { color: var(--bad); font-weight: 600; }
+  :is(input, select, textarea):disabled { opacity: .55; cursor: not-allowed; }
+  :is(input, textarea)[readonly] { background-color: var(--well); border-color: transparent; }
+  .fld .presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+  [data-demo="focus"] { border-color: var(--field-focus-line) !important; background-color: var(--field-focus-bg) !important; }
+  .form-card { padding: var(--s-5); max-width: 760px; } .form-card .actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); margin-top: var(--s-5); } .form-card .actions .grow { flex: 1; }
+  .errsum { display: none; margin-bottom: var(--s-4); padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--bad-bg); color: var(--text); border: 1px solid var(--bad); outline: none; } .errsum.on { display: block; } .errsum h3 { margin: 0 0 6px; font-size: var(--fs-title); color: var(--bad); } .errsum ul { margin: 0; padding-left: 1.2em; } .errsum a { color: var(--bad); font-weight: 500; }
+  .status-line { color: var(--bad); font-size: var(--fs-ui); font-weight: 500; }
+  .done-card { display: none; max-width: 760px; text-align: center; padding: var(--s-8); } .done-card.on { display: block; } .done-card svg { width: 40px; height: 40px; color: var(--ok); }
+  .stepper { display: none; gap: 6px; margin-bottom: var(--s-5); counter-reset: s; overflow-x: auto; scrollbar-width: none; }
+  [data-o="c"] .stepper { display: flex; }
+  .stepper li { list-style: none; display: flex; align-items: center; gap: 8px; flex: 1 1 0; min-width: max-content; padding: 6px 10px; border-radius: var(--r-xl); color: var(--text2); font-size: var(--fs-ui); counter-increment: s; }
+  .stepper li::before { content: counter(s); display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--mute-bg); font-size: var(--fs-xs); font-weight: 600; }
+  .stepper li.on { background: var(--bg-sel); color: var(--text); font-weight: 600; } .stepper li.on::before { background: var(--btn); color: var(--btn-fg); }
+  .stepper li.done::before { content: "✓"; background: var(--ok-bg); color: var(--ok); }
+  .step { display: grid; gap: var(--s-5) var(--s-4); grid-template-columns: repeat(2, minmax(0, 1fr)); } .step[hidden] { display: none; } .step .span2 { grid-column: 1 / -1; }
+  [data-o="a"] .step, [data-o="b"] .step { display: grid; } @media (max-width: 760px) { .step { grid-template-columns: 1fr; } }
+  form[data-o="a"] .step + .step, form[data-o="b"] .step + .step { margin-top: var(--s-5); }
+  [data-o="c"] .only-ab, [data-o="a"] .only-c, [data-o="b"] .only-c { display: none !important; }
+  .review { display: grid; grid-template-columns: max-content 1fr auto; gap: 8px var(--s-4); align-items: baseline; font-size: var(--fs-base); } .review dt { color: var(--text2); font-size: var(--fs-sm); } .review dd { margin: 0; } .review .span3 { grid-column: 1 / -1; border-top: 1px solid var(--border); }
+  .states { display: grid; gap: var(--s-4) var(--s-4); grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); max-width: 960px; }
+</style>
+<script data-s4 src="../../toolkit/icons.js"></script>
+</head>
+<body>
+<div class="g-bar">
+  <span class="title">Form Samples</span>
+  <div class="seg" id="opt" data-manual role="group" aria-label="Option"><button type="button" class="on" data-v="a">A · Check as You Go</button><button type="button" data-v="b">B · Check on Submit</button><button type="button" data-v="c">C · One Step at a Time</button></div>
+  <div class="seg" id="theme" data-manual role="group" aria-label="Theme"><button type="button" data-v="light">Light</button><button type="button" data-v="dark">Dark</button><button type="button" data-v="auto">Auto</button></div>
+</div>
+
+<main class="container g-main">
+  <p class="lede">The same "New Payment" form, behaving three different ways. Try breaking it: leave fields empty, type a bad invoice number such as <b>12</b>, pick a due date before the invoice date, then press the button at the bottom. Fictional data only.</p>
+  <div class="stack" style="--gap: var(--s-2)">
+    <p class="opt-note" data-for="a"><b>A · Check as You Go.</b> One page. A field is checked when you leave it, and a problem shows right under the field with an icon and a soft red fill. As soon as you fix it, the message goes and a green tick appears. Empty fields aren't flagged until you press Save, so tabbing through doesn't shout. Save jumps to the first problem.</p>
+    <p class="opt-note" data-for="b"><b>B · Check on Submit.</b> One page, nothing is checked while you type. Press Save and a red summary at the top lists every problem as a link that jumps to the field; the fields show their messages too, and the summary shrinks as you fix things. Quiet while you work; you meet all the problems at once.</p>
+    <p class="opt-note" data-for="c"><b>C · One Step at a Time.</b> The form is split into three short steps and a review. Each step is checked when you press Next, with the same messages as A, and Back never loses what you typed. The last screen lists everything with an Edit link per line before you send it.</p>
+  </div>
+  <p class="rec"><span class="tag">Recommended</span><b>A · Check as You Go.</b> This is the form people use all day (a rule, a lookup, a payment). Telling someone about a mistake the moment they leave the field, next to the field, is the fastest way for them to fix it, and not flagging untouched empty fields keeps it calm. Add B's summary only to very long forms (ten or more fields), where a list of problems helps more than hunting for red. Keep C for the rare long flow (an import, first-time setup): for a normal form, three screens and a review are more clicks than the form is worth.<br><b>Recommendation basis:</b> my own design judgement (when an error is most useful, calm for people who tab through, accessibility of messages, how long the form is). The front-end design skill was not available in this session, so it was not used.</p>
+
+  <h2 class="sec">Field States</h2>
+  <div class="states" id="states" aria-label="Every state of a field"></div>
+
+  <h2 class="sec">New Payment</h2>
+  <form class="card form-card" id="form" novalidate aria-label="New payment" data-o="a">
+    <ol class="stepper" id="stepper" aria-label="Steps"><li class="on">Vendor and Invoice</li><li>Dates and Payment</li><li>Approval</li><li>Review</li></ol>
+    <div class="errsum" id="sum" tabindex="-1" role="alert"></div>
+    <section class="step" data-step="0" id="s0"></section>
+    <section class="step" data-step="1" id="s1"></section>
+    <section class="step" data-step="2" id="s2"></section>
+    <section class="step" data-step="3" id="s3" hidden><dl class="review" id="review"></dl></section>
+    <div class="actions"><span class="status-line" id="status" role="status"></span><span class="grow"></span>
+      <button class="btn subtle only-c" type="button" id="back" hidden>Back</button>
+      <button class="btn primary" type="submit" id="go">Save Payment</button></div>
+  </form>
+  <div class="card done-card" id="done"><svg data-ic-duo="check-circle"></svg><h3 style="margin: var(--s-3) 0 4px">Payment Saved</h3><p class="c-text2" style="margin: 0 0 var(--s-4)">This is a sample, nothing was sent.</p><button class="btn" type="button" id="again">Start Over</button></div>
+
+  <table class="tbl-spec" aria-label="What each option does"><thead><tr><th></th><th>A · Check as You Go</th><th>B · Check on Submit</th><th>C · One Step at a Time</th></tr></thead><tbody>
+    <tr><td>When a problem shows</td><td>When you leave the field; empty fields wait for Save</td><td>Only after Save</td><td>When you press Next (and when you leave a field after that)</td></tr>
+    <tr><td>Where</td><td>Under the field</td><td>A summary on top plus under each field</td><td>Under the field, one step at a time</td></tr>
+    <tr><td>When it clears</td><td>As you type the fix</td><td>As you type the fix; the summary shrinks</td><td>As you type the fix</td></tr>
+    <tr><td>Best for</td><td>Everyday forms</td><td>Very long forms</td><td>Imports, setup, anything with a review</td></tr>
+    <tr><td>All options</td><td colspan="3">Errors always have an icon and words, never colour alone; fields keep their label above; the invoice and due dates use the phone's own date picker with quick "Today" and "Net 30" buttons; the note has a live character count.</td></tr>
+  </tbody></table>
+</main>
+
+<script>
+  var root = document.documentElement, form = document.getElementById("form");
+  function mark(id, v) { document.querySelectorAll("#" + id + " button").forEach(function (b) { b.classList.toggle("on", b.dataset.v === v); }); }
+  var th = "auto"; try { th = localStorage.getItem("s4-theme") || "auto"; } catch (e) {} mark("theme", th);
+  document.getElementById("theme").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; s4Theme(b.dataset.v); mark("theme", b.dataset.v); });
+
+  function iso(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  var today = iso(new Date());
+  function plus(base, n) { var d = new Date((base || today) + "T00:00:00"); d.setDate(d.getDate() + n); return iso(d); }
+  var VENDORS = ["Kestrel Outdoor Co.", "Meadow Lane Bakery", "Contoso Cloud Hosting", "Fabrikam Freight"];
+  var F = [
+    { id: "vendor", step: 0, label: "Vendor", type: "select", help: "Who is being paid", check: function (v) { return v ? "" : "Choose a vendor."; } },
+    { id: "inv", step: 0, label: "Invoice Number", type: "text", ph: "INV-1042", help: "Three letters, a dash, 3 to 6 digits", tick: true, check: function (v) { return !v ? "Enter the invoice number." : /^[A-Za-z]{3}-\d{3,6}$/.test(v) ? "" : "Use the format INV-1042: three letters, a dash and 3 to 6 digits."; } },
+    { id: "amount", step: 0, label: "Amount", type: "text", pre: "USD", ph: "0.00", mode: "decimal", help: "Up to two decimals", tick: true, check: function (v) { var n = v.replace(/,/g, ""); return !v ? "Enter the amount." : !/^\d+(\.\d{1,2})?$/.test(n) ? "Use digits with up to two decimals, like 1,280.00." : +n <= 0 ? "Enter an amount greater than 0." : ""; } },
+    { id: "idate", step: 1, label: "Invoice Date", type: "date", presets: [["Today", function () { return today; }]], check: function (v) { return !v ? "Pick the invoice date." : v > today ? "The invoice date can't be in the future." : ""; } },
+    { id: "ddate", step: 1, label: "Due Date", type: "date", presets: [["Net 15", 15], ["Net 30", 30], ["Net 45", 45]], help: "Net 30 means 30 days after the invoice date", check: function (v, g) { var i = g("idate"); return !v ? "Pick the due date." : (i && v < i) ? "The due date must be on or after the invoice date." : ""; } },
+    { id: "method", step: 1, label: "Payment Method", type: "seg", span: 2 },
+    { id: "email", step: 2, label: "Approver Email", type: "text", inputType: "email", ph: "name@company.com", help: "They get the approval request", tick: true, check: function (v) { return !v ? "Enter the approver's email." : /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v) ? "" : "Enter an email like name@company.com."; } },
+    { id: "note", step: 2, label: "Note", opt: true, type: "textarea", span: 2, max: 200, check: function (v) { return v.length > 200 ? "Keep the note to 200 characters or fewer." : ""; } }
+  ];
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
+  function fieldHtml(f) {
+    var d = f.id + "-h " + f.id + "-e", ctl;
+    if (f.type === "select") ctl = '<select id="' + f.id + '" name="' + f.id + '" aria-describedby="' + d + '"><option value="">Choose…</option>' + VENDORS.map(function (v) { return "<option>" + v + "</option>"; }).join("") + "</select>";
+    else if (f.type === "date") ctl = '<input id="' + f.id + '" name="' + f.id + '" type="date" aria-describedby="' + d + '">';
+    else if (f.type === "textarea") ctl = '<textarea id="' + f.id + '" name="' + f.id + '" rows="3" aria-describedby="' + d + '"></textarea>';
+    else if (f.type === "seg") return '<div class="fld' + (f.span ? " span2" : "") + '"><span class="lbl" id="method-l">' + f.label + '</span><div class="seg" role="radiogroup" aria-labelledby="method-l" id="method"><button type="button" role="radio" class="on" aria-checked="true" data-v="ACH">ACH</button><button type="button" role="radio" aria-checked="false" data-v="Wire">Wire</button><button type="button" role="radio" aria-checked="false" data-v="Check">Check</button></div></div>';
+    else ctl = (f.pre ? '<span class="pre">' + f.pre + "</span>" : "") + '<input id="' + f.id + '" name="' + f.id + '" type="' + (f.inputType || "text") + '"' + (f.mode ? ' inputmode="' + f.mode + '"' : "") + (f.ph ? ' placeholder="' + f.ph + '"' : "") + ' autocomplete="off" aria-describedby="' + d + '">' + (f.tick ? '<svg class="tick" data-ic="check-circle"></svg>' : "");
+    var pre = f.presets ? '<div class="presets">' + f.presets.map(function (p, i) { return '<button type="button" class="fchip" data-preset="' + f.id + "|" + i + '">' + p[0] + "</button>"; }).join("") + "</div>" : "";
+    return '<div class="fld' + (f.span ? " span2" : "") + '" data-f="' + f.id + '"><label for="' + f.id + '">' + f.label + (f.opt ? ' <span class="opt">(Optional)</span>' : "") + '</label><div class="ctl' + (f.pre ? " has-pre" : "") + '">' + ctl + "</div>" + pre +
+      '<span class="hint" id="' + f.id + '-h"><span>' + (f.help || "") + "</span>" + (f.max ? '<span class="cnt" id="note-c">0 / ' + f.max + "</span>" : "") + '</span><span class="err" id="' + f.id + '-e"><svg data-ic="danger-triangle"></svg><span></span></span></div>';
+  }
+  [0, 1, 2].forEach(function (s) { document.getElementById("s" + s).innerHTML = F.filter(function (f) { return f.step === s; }).map(fieldHtml).join(""); });
+  if (window.s4Icons) s4Icons(form);
+
+  var st = { o: "a", attempted: false, step: 0, errors: {}, touched: {}, method: "ACH" };
+  function g(id) { var e = document.getElementById(id); return e ? e.value.trim() : ""; }
+  function fld(id) { return form.querySelector('[data-f="' + id + '"]'); }
+  function showErr(f, msg) { var w = fld(f.id), inp = document.getElementById(f.id); w.classList.toggle("bad", !!msg); w.classList.remove("ok"); if (inp) inp.setAttribute("aria-invalid", msg ? "true" : "false"); w.querySelector(".err span").textContent = msg || ""; if (msg) st.errors[f.id] = msg; else delete st.errors[f.id]; }
+  function validate(f, quiet) { var v = g(f.id), msg = f.check ? f.check(v, g) : ""; if (quiet) return msg; showErr(f, msg); if (!msg && v && f.tick) fld(f.id).classList.add("ok"); if (st.o === "b") renderSum(); return msg; }
+  function stepFields() { return st.o === "c" ? F.filter(function (f) { return f.step === st.step && f.check; }) : F.filter(function (f) { return f.check; }); }
+  function renderSum() {
+    var el = document.getElementById("sum"), ids = Object.keys(st.errors);
+    if (st.o !== "b" || !st.attempted || !ids.length) { el.classList.remove("on"); el.innerHTML = ""; return; }
+    el.innerHTML = "<h3>" + (ids.length === 1 ? "Fix 1 Thing to Save" : "Fix " + ids.length + " Things to Save") + "</h3><ul>" + F.filter(function (f) { return st.errors[f.id]; }).map(function (f) { return '<li><a href="#' + f.id + '" data-jump="' + f.id + '">' + f.label + ": " + esc(st.errors[f.id]) + "</a></li>"; }).join("") + "</ul>"; el.classList.add("on");
+  }
+  form.addEventListener("click", function (e) {
+    var j = e.target.closest("[data-jump]"); if (j) { e.preventDefault(); document.getElementById(j.dataset.jump).focus(); return; }
+    var p = e.target.closest("[data-preset]"); if (p) { var a = p.dataset.preset.split("|"), f = F.filter(function (x) { return x.id === a[0]; })[0], v = f.presets[+a[1]][1], inp = document.getElementById(f.id); inp.value = typeof v === "function" ? v() : plus(g("idate") || today, v); inp.dispatchEvent(new Event("input", { bubbles: true })); if (st.o !== "b" || st.attempted) validate(f); return; }
+    var m = e.target.closest("#method button"); if (m) { form.querySelectorAll("#method button").forEach(function (b) { b.classList.toggle("on", b === m); b.setAttribute("aria-checked", b === m); }); st.method = m.dataset.v; }
+    var ed = e.target.closest("[data-edit]"); if (ed) { goStep(+ed.dataset.edit); }
+  });
+  form.addEventListener("focusout", function (e) { var id = e.target.id, f = F.filter(function (x) { return x.id === id; })[0]; if (!f || !f.check || st.o === "b") return; st.touched[id] = true; if (!g(id) && !st.attempted) return; validate(f); });
+  form.addEventListener("input", function (e) { var id = e.target.id, f = F.filter(function (x) { return x.id === id; })[0]; if (!f) return;
+    if (id === "note") { var n = e.target.value.length, c = document.getElementById("note-c"); c.textContent = n + " / " + f.max; fld(id).classList.toggle("over", n > f.max); }
+    if (st.errors[id] || (st.o === "b" && st.attempted)) validate(f); else fld(id).classList.remove("ok");
+    if (id === "idate" && (st.errors.ddate || g("ddate"))) validate(F.filter(function (x) { return x.id === "ddate"; })[0], st.o === "b" && !st.attempted); });
+
+  function firstBad(list) { var b = null; list.forEach(function (f) { if (!b && st.errors[f.id]) b = f; }); return b; }
+  function goStep(n) { st.step = n; [0, 1, 2, 3].forEach(function (i) { document.getElementById("s" + i).hidden = i !== n; }); form.querySelectorAll("#stepper li").forEach(function (li, i) { li.classList.toggle("on", i === n); li.classList.toggle("done", i < n); });
+    document.getElementById("back").hidden = n === 0; document.getElementById("go").textContent = n === 3 ? "Save Payment" : "Next"; document.getElementById("status").textContent = "";
+    if (n === 3) { var rows = F.filter(function (f) { return f.type !== "seg" || true; }).map(function (f) { var v = f.id === "method" ? st.method : g(f.id) || "–"; return "<dt>" + f.label + "</dt><dd>" + esc(v) + '</dd><dd><button type="button" class="lnk" data-edit="' + f.step + '">Edit</button></dd>'; }).join(""); document.getElementById("review").innerHTML = rows; }
+    var first = form.querySelector("#s" + n + " input, #s" + n + " select, #s" + n + " textarea"); if (first && n < 3) first.focus(); }
+  function layout() { var c = st.o === "c"; [0, 1, 2].forEach(function (i) { document.getElementById("s" + i).hidden = c && i !== st.step; }); document.getElementById("s3").hidden = !(c && st.step === 3); document.getElementById("back").hidden = !(c && st.step > 0); document.getElementById("go").textContent = c ? (st.step === 3 ? "Save Payment" : "Next") : "Save Payment"; }
+  form.addEventListener("submit", function (e) {
+    e.preventDefault(); var list = stepFields();
+    if (st.o === "c" && st.step === 3) { finish(); return; }
+    st.attempted = true; list.forEach(function (f) { validate(f); }); var bad = firstBad(list);
+    if (bad) { document.getElementById("status").textContent = Object.keys(st.errors).length + (Object.keys(st.errors).length === 1 ? " field needs" : " fields need") + " attention"; if (st.o === "b") { renderSum(); var s = document.getElementById("sum"); s.focus(); s.scrollIntoView({ block: "nearest" }); } else document.getElementById(bad.id).focus(); return; }
+    document.getElementById("status").textContent = "";
+    if (st.o === "c") { st.attempted = false; goStep(st.step + 1); } else finish();
+  });
+  document.getElementById("back").addEventListener("click", function () { goStep(st.step - 1); });
+  function finish() { form.hidden = true; document.getElementById("done").classList.add("on"); }
+  function reset() { form.reset(); form.hidden = false; document.getElementById("done").classList.remove("on"); st.attempted = false; st.errors = {}; st.step = 0; st.method = "ACH"; form.querySelectorAll(".fld").forEach(function (w) { w.classList.remove("bad", "ok", "over"); }); form.querySelectorAll("[aria-invalid]").forEach(function (i) { i.removeAttribute("aria-invalid"); }); form.querySelectorAll("#method button").forEach(function (b, i) { b.classList.toggle("on", i === 0); b.setAttribute("aria-checked", i === 0); }); document.getElementById("note-c").textContent = "0 / 200"; document.getElementById("status").textContent = ""; document.getElementById("sum").classList.remove("on"); form.querySelectorAll("#stepper li").forEach(function (li, i) { li.classList.toggle("on", i === 0); li.classList.remove("done"); }); layout(); }
+  document.getElementById("again").addEventListener("click", reset);
+  function setOpt(o) { st.o = o; root.setAttribute("data-o", o); form.setAttribute("data-o", o); mark("opt", o); reset(); try { sessionStorage.setItem("s4-form-opt", o); } catch (x) {} }
+  document.getElementById("opt").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) setOpt(b.dataset.v); });
+
+  /* the field-state specimens */
+  document.getElementById("states").innerHTML = [
+    ["Default", '<input type="text" placeholder="INV-1042" aria-label="Default">', "Help text sits under the field"],
+    ["Focus", '<input type="text" data-demo="focus" value="INV-10" aria-label="Focus">', "A slightly brighter fill and a neutral border, never an accent ring"],
+    ["Filled", '<input type="text" value="INV-1042" aria-label="Filled">', ""],
+    ["Valid", '<input type="text" value="INV-1042" aria-label="Valid" style="padding-right: 32px">', "", "ok"],
+    ["Error", '<input type="text" value="12" aria-label="Error" aria-invalid="true">', "", "bad"],
+    ["Disabled", '<input type="text" value="INV-1042" disabled aria-label="Disabled">', "Not available right now"],
+    ["Read-only", '<input type="text" value="INV-1042" readonly aria-label="Read-only">', "Shown, can't be changed"],
+    ["Note", '<input type="text" placeholder="Anything to add?" aria-label="Optional note">', ""]
+  ].map(function (s) { return '<div class="fld ' + (s[3] || "") + '"><span class="lbl">' + s[0] + (s[0] === "Note" ? ' <span class="opt">(Optional)</span>' : "") + '</span><div class="ctl">' + s[1] + (s[3] === "ok" ? '<svg class="tick" data-ic="check-circle"></svg>' : "") + '</div><span class="hint"><span>' + s[2] + '</span></span><span class="err"><svg data-ic="danger-triangle"></svg><span>Use the format INV-1042: three letters, a dash and 3 to 6 digits.</span></span></div>'; }).join("");
+  if (window.s4Icons) s4Icons(document.getElementById("states"));
+  var sv = "a"; try { sv = sessionStorage.getItem("s4-form-opt") || "a"; } catch (e) {} setOpt(sv);
+</script>
+</body>
+</html>
