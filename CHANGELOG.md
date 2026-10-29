@@ -1,5 +1,8 @@
 # Changelog
 
+## Tables at scale (2026-10-29)
+- **Option C, "Pages, Totals Below"** (owner's pick): `.t-bar`, `.t-applied` + `.xchip`, sticky columns (`.sticky-l`, `.sticky-l2`, `.sticky-r`, for tables that scroll sideways, not `.cards`), `.sel-dock` (the sum of the selected amounts under the table), `.t-foot` and `.pager`.
+
 ## Wide screens (2026-10-28)
 - **Option C, "Cap, Then Widen the Panel"** (owner's pick): `.content` stops at `--content-max` (1600px) and centres itself (`.content.flush` and `.content.center` unchanged); `.split` detail panel is `clamp(360px, 34vw, 880px)` (was 36vw up to 600px) and a `container-type: inline-size`, with `.detail-cols` laying cards out in two columns from 760px.
 
