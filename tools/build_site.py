@@ -24,6 +24,7 @@ DEMOS = [  # (title, path, what it shows, duotone icon)
     ("Wide-Screen Layouts (draft)", "demo/samples/wide-screen.html", "Three ways to use a 1080p and a 1440p monitor: fill, cap and centre, or cap and widen the detail panel.", "monitor"),
     ("Table Samples (draft)", "demo/samples/tables.html", "A 240-row table with search, filters, bulk select, sticky columns and three ways to page and show the selection.", "checklist-minimalistic"),
     ("Form Samples (draft)", "demo/samples/forms.html", "One payment form three ways: check as you go, check on submit, or one step at a time; with every field state.", "pen"),
+    ("Date Picker Samples (draft)", "demo/samples/date-picker.html", "An S4 calendar and month picker instead of the browser's, and two ways to handle a phone: a calendar sheet or the phone's own picker.", "calendar"),
     ("Orders Restyle", "demo/examples/orders.html", "A plain HTML table restyled by a fresh Claude session using the skill.", "checklist-minimalistic"),
 ]
 
