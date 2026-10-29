@@ -518,6 +518,23 @@ table.t tr[class*="st-"] td:first-child::before { content: ""; position: absolut
 tr.st-ok { --st: var(--ok-bar); } tr.st-warn { --st: var(--warn-bar); } tr.st-bad { --st: var(--bad-bar); } tr.st-accent { --st: var(--btn); } tr.st-mute { --st: var(--mute-bar); }
 table.t tr.done td { color: var(--text2); }
 td.row-acts { text-align: right; white-space: nowrap; }
+/* tables at scale (option C, "Pages, Totals Below"): a bar above (search, filters, then chips for what is applied), sticky columns, a selection dock with the sum, page controls.
+   Sticky columns are for tables that scroll sideways (not table.t.cards, which is the phone layout): .sticky-l (tick box, 44px), .sticky-l2 (the description), .sticky-r (the amount). Solid fill so scrolled cells don't show through; a hairline marks the edge. */
+.t-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); min-height: 56px; padding: 10px 14px; border-bottom: 1px solid var(--border); background: var(--bar-bg); }
+.t-bar .search { width: clamp(160px, 22vw, 260px); } .t-bar select { width: auto; max-width: 100%; } .t-bar .grow { flex: 1; }
+.t-applied { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px 14px; border-bottom: 1px solid var(--border); color: var(--text2); font-size: var(--fs-sm); } .t-applied[hidden] { display: none; }
+.xchip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 4px 2px 10px; border-radius: var(--r-pill); background: var(--fill2); color: var(--accent-ink); font-size: var(--fs-sm); font-weight: 600; }   /* a removable filter: <span class="xchip">Status: To Sort<button aria-label="Remove Status: To Sort">×</button></span> */
+.xchip button { all: unset; display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; cursor: pointer; } .xchip button:hover { background: var(--hov); } .xchip button:focus-visible { box-shadow: 0 0 0 2px var(--field-focus-line); } .xchip svg { width: 14px; height: 14px; }
+table.t:not(.cards) :is(th, td):is(.sticky-l, .sticky-l2, .sticky-r) { position: sticky; z-index: 1; background-color: var(--pop-bg); }
+table.t:not(.cards) tbody tr:is(*, :hover, .sel) td:is(.sticky-l, .sticky-l2, .sticky-r) { background-color: var(--pop-bg); }   /* beats the translucent hover and selected fills */
+table.t:not(.cards) tbody tr:hover td:is(.sticky-l, .sticky-l2, .sticky-r) { background-image: linear-gradient(var(--bg-hover), var(--bg-hover)); }
+table.t:not(.cards) tbody tr.sel td:is(.sticky-l, .sticky-l2, .sticky-r) { background-image: linear-gradient(var(--bg-sel), var(--bg-sel)); }
+table.t:not(.cards) th:is(.sticky-l, .sticky-l2, .sticky-r) { z-index: 3; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.sticky-l { left: 0; width: 44px; min-width: 44px; padding-right: 0; } .sticky-l2 { left: 44px; min-width: 240px; max-width: 280px; border-right: 1px solid var(--border2); } .sticky-r { right: 0; border-left: 1px solid var(--border2); }
+.sel-dock { display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; padding: 10px 14px; border-top: 1px solid var(--border2); background: var(--accent-soft); } .sel-dock[hidden] { display: none; }   /* appears under the table while rows are ticked: the sum of the selected amounts next to the actions */
+.sel-dock .sum { font-size: var(--fs-big); font-weight: 600; line-height: 1.1; } .sel-dock .grow { flex: 1; } .sel-dock small { display: block; color: var(--text2); font-size: var(--fs-xs); }
+.t-foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); padding: 8px 14px; border-top: 1px solid var(--border); color: var(--text2); font-size: var(--fs-sm); } .t-foot .grow { flex: 1; } .t-foot select { width: auto; }
+.pager { display: inline-flex; align-items: center; gap: 4px; } .pager .btn[disabled] { opacity: .4; }
 
 /* ---------- 11b. charts: marks are SVG you draw; this styles the pieces around them ---------- */
 .plot { position: relative; width: 100%; } .plot svg { display: block; overflow: visible; }
@@ -698,7 +715,7 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
   .content { padding: 14px; padding-left: max(14px, env(safe-area-inset-left)); padding-right: max(14px, env(safe-area-inset-right)); }
   /* iOS zooms into any field under 16px: fields are 16px on phones */
   .input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=date], select, textarea, label.f :is(.input, input, select, textarea) { font-size: 16px; }
-  .search { width: 100%; }
+  .search, .t-bar .search { width: 100%; }
   .form-grid, .grid-4 { grid-template-columns: minmax(0, 1fr); }
   .ptabs { grid-template-columns: repeat(2, 1fr); } .keys { display: none; }
   .phone-only { display: revert; } .desk-only { display: none; }

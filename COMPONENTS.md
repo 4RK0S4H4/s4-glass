@@ -183,6 +183,25 @@ Use `inputmode` (numeric / decimal / email) so phones show the right keyboard.
 ```
 Sorting is automatic for `th.sortable` (`s4Sort`); give status cells `data-sort` with their urgency rank (bad 1 … mute 6) and cells whose text doesn't sort well (dates as 9/28) an ISO `data-sort`. `tr.r` clickable · `tr.sel` selected (neutral) · `tr.done` finished (quieter) · `td.row-acts` row buttons · `table.t.compact` dense · `td.wrap` lets a short column wrap. On phones every `td` needs `data-label`; the description cell gets `.lead` and moves to the top.
 
+### Tables at scale
+
+For tables of hundreds of rows (option C of the table samples; full working example `demo/samples/tables.html`, option C): a bar above, sticky columns, the selected total under the table, page controls.
+```html
+<section class="card flush">
+  <div class="t-bar"><input class="input search" type="search" placeholder="Search Description or Reference" aria-label="Search">
+    <div class="cluster"><button class="fchip on" aria-pressed="true">All<span class="n">240</span></button><button class="fchip">To Sort<span class="n">75</span></button></div>
+    <select aria-label="Account"><option>All Accounts</option></select></div>
+  <div class="t-applied"><span>Filters</span><span class="xchip">Status: To Sort<button aria-label="Remove Status: To Sort"><svg data-ic="close"></svg></button></span><button class="lnk">Clear All</button></div>   <!-- only while a filter is applied -->
+  <div class="table-wrap scroll"><table class="t">        <!-- min-width on the table so it scrolls sideways; not .cards -->
+    <thead><tr><th class="sticky-l"><input type="checkbox" aria-label="Select this page"></th><th class="sticky-l2">Description</th><th>Date</th><th>Status</th><th class="num sticky-r">Amount</th></tr></thead>
+    <tbody><tr class="sel"><td class="sticky-l"><input type="checkbox" checked aria-label="Select Northwind Payroll"></td><td class="sticky-l2"><span class="trunc">Northwind Payroll Run 2610</span><span class="sub">ACH Debit</span></td><td>Oct 23</td><td><span class="badge ok">Matched</span></td><td class="num sticky-r">…</td></tr></tbody>
+  </table></div>
+  <div class="sel-dock"><div><div class="sum">(13,423.00)</div><small>25 Selected</small></div><button class="lnk">Select All 75 Matching</button><span class="grow"></span><button class="btn sm primary">Match</button><button class="btn sm subtle">Clear</button></div>   <!-- hidden until a row is ticked -->
+  <div class="t-foot"><span>1–25 of 75</span><span class="grow"></span><label>Rows per page <select><option>25</option></select></label><span class="pager"><button class="btn icon sm" aria-label="Previous Page">…</button><span>Page 1 of 3</span><button class="btn icon sm" aria-label="Next Page">…</button></span></div>
+</section>
+```
+The header tick selects the shown page; after a full page is ticked offer "Select All N Matching". The sum uses the bracket style (`.brk`) for negatives. Sticky columns and `.cards` are alternatives: on a phone use cards, or let the table scroll sideways with the tick box, description and amount fixed.
+
 ## Charts
 
 SVG you draw; the toolkit supplies colours (`--series-1…5`, `--seq-0…4`, `--viz-soft`, `--viz-grid`, `--viz-axis`) and the pieces around the plot. Full working example: `demo/samples/charts.html`.
