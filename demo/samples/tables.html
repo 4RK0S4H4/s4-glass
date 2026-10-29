@@ -17,7 +17,8 @@
   .opt-note b { color: var(--text); }
   [data-o="a"] .opt-note:not([data-for="a"]), [data-o="b"] .opt-note:not([data-for="b"]), [data-o="c"] .opt-note:not([data-for="c"]) { display: none; }
   .rec { margin: 0; padding: var(--s-3) var(--s-4); border: 1px solid var(--border2); border-radius: var(--r-md); background: var(--accent-soft); color: var(--text); font-size: var(--fs-ui); max-width: 78ch; } .rec b { font-weight: 600; } .rec .tag { display: inline-block; margin-right: 6px; padding: 1px 8px; border-radius: var(--r-pill); background: var(--accent-chip); color: var(--accent-ink); font-size: var(--fs-xs); font-weight: 600; }
-  .tbl-spec { width: 100%; max-width: 900px; border-collapse: collapse; font-size: var(--fs-sm); } .tbl-spec th, .tbl-spec td { padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; } .tbl-spec th { color: var(--text2); font-weight: 600; font-size: var(--fs-xs); }
+  .readout { margin: 0; font-size: var(--fs-sm); color: var(--text3); }
+  .tbl-spec { width: 100%; max-width: 820px; border-collapse: collapse; font-size: var(--fs-sm); } .tbl-spec th, .tbl-spec td { padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; } .tbl-spec th { color: var(--text2); font-weight: 600; font-size: var(--fs-xs); }
   @media (max-width: 760px) { .tb-bar .search { width: 100%; } table.t .sl1 { min-width: 150px; max-width: 160px; } table.t td.dcol1 { max-width: 160px; }
     .g-bar { padding-inline: var(--s-4); } .g-bar .title { flex-basis: 100%; } }
 
@@ -25,99 +26,87 @@
   .tb-card { position: relative; overflow: clip; }
   .tb-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); padding: 10px 14px; border-bottom: 1px solid var(--border); background: var(--bar-bg); min-height: 56px; }
   .tb-bar .search { width: clamp(160px, 22vw, 260px); } .tb-bar select { width: auto; max-width: 100%; }
-  .tb-bar .grow, .tb-foot .grow { flex: 1; }
-  .only-a, .only-b, .only-c { display: none; }
-  [data-o="a"] .only-a, [data-o="b"] .only-b, [data-o="c"] .only-c { display: inline-flex; }
-  [data-o="a"] .only-a.blk, [data-o="b"] .only-b.blk, [data-o="c"] .only-c.blk { display: flex; }
-  .tb-sel { display: none; width: 100%; align-items: center; gap: var(--s-2); flex-wrap: wrap; } .tb-sel b { font-weight: 600; }
-  [data-has-sel="1"][data-o="a"] .tb-filters { display: none; } [data-has-sel="1"][data-o="a"] .tb-sel { display: flex; } [data-has-sel="1"][data-o="a"] .tb-bar { background: var(--accent-soft); }
+  .tb-sel { display: none; width: 100%; align-items: center; gap: var(--s-2); flex-wrap: wrap; }
+  .tb-sel b { font-weight: 600; } .tb-sel .grow { flex: 1; }
+  [data-has-sel="1"][data-o="a"] .tb-filters, [data-has-sel="1"][data-o="b"] .tb-filters { display: none; }
+  [data-has-sel="1"][data-o="a"] .tb-sel.top, [data-has-sel="1"][data-o="b"] .tb-sel.top { display: flex; }
+  [data-has-sel="1"][data-o="a"] .tb-bar, [data-has-sel="1"][data-o="b"] .tb-bar { background: var(--accent-soft); }
   .tb-filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); width: 100%; }
-  .tb-body { display: block; } [data-o="c"] .tb-body { display: grid; grid-template-columns: 220px minmax(0, 1fr); }
-  .rail { display: none; padding: 14px; border-right: 1px solid var(--border); flex-direction: column; gap: var(--s-4); font-size: var(--fs-ui); }
-  [data-o="c"] .rail { display: flex; } .rail h4 { margin: 0 0 6px; font-size: var(--fs-xs); font-weight: 600; color: var(--text2); } .rail label { display: flex; align-items: center; gap: 8px; padding: 3px 0; cursor: pointer; } .rail label .n { margin-left: auto; color: var(--text3); font-size: var(--fs-sm); font-variant-numeric: tabular-nums; }
-  @media (max-width: 760px) { [data-o="c"] .tb-body { grid-template-columns: 1fr; } .rail { border-right: 0; border-bottom: 1px solid var(--border); flex-direction: row; flex-wrap: wrap; } }
-  .tb-scroll { max-height: 460px; overflow: auto; --th-h: 37px; }
-  .tb-scroll table.t { min-width: 1060px; } [data-o="c"] .tb-scroll table.t { min-width: 900px; }
+  .tb-applied { display: none; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px 14px; border-bottom: 1px solid var(--border); font-size: var(--fs-sm); color: var(--text2); }
+  [data-o="c"] .tb-applied.has { display: flex; }
+  .xchip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 4px 2px 10px; border-radius: var(--r-pill); background: var(--fill2); color: var(--accent-ink); font-size: var(--fs-sm); font-weight: 600; }
+  .xchip button { all: unset; display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; cursor: pointer; } .xchip button:hover { background: var(--hov); } .xchip button:focus-visible { box-shadow: 0 0 0 2px var(--field-focus-line); } .xchip svg { width: 14px; height: 14px; }
+  .tb-scroll { max-height: 440px; overflow: auto; }
+  .tb-scroll table.t { min-width: 1080px; }
   .tb-scroll table.t th { background: var(--pop-bg); backdrop-filter: none; -webkit-backdrop-filter: none; }
   /* sticky columns: a solid fill so scrolled cells don't show through, a hairline marks the edge */
   table.t .sl, table.t .sr { position: sticky; z-index: 1; }
+  table.t tbody tr:is(*, :hover, .sel) td:is(.sl, .sr) { background-color: var(--pop-bg); }   /* beats the translucent hover and selected fills */
   table.t th.sl, table.t th.sr { z-index: 3; }
   table.t .sl0 { left: 0; width: 44px; min-width: 44px; padding-right: 0; } table.t .sl1 { left: 44px; min-width: 240px; max-width: 280px; border-right: 1px solid var(--border2); }
   table.t .sr { right: 0; border-left: 1px solid var(--border2); }
-  table.t tbody tr:is(*, :hover, .sel) td:is(.sl, .sr) { background-color: var(--pop-bg); }   /* beats the translucent hover and selected fills */
   table.t tbody tr:hover td:is(.sl, .sr) { background-image: linear-gradient(var(--bg-hover), var(--bg-hover)); }
   table.t tbody tr.sel td:is(.sl, .sr) { background-image: linear-gradient(var(--bg-sel), var(--bg-sel)); }
   table.t td.dcol1 { width: auto; max-width: 280px; }
-  /* B: filter buttons in the headers, denser rows */
-  .hf { all: unset; display: inline-grid; place-items: center; width: 22px; height: 22px; margin-left: 4px; border-radius: var(--r-xs); cursor: pointer; vertical-align: middle; color: var(--text3); } .hf:hover { background: var(--hov); color: var(--text); } .hf:focus-visible { box-shadow: 0 0 0 2px var(--field-focus-line); } .hf.on { background: var(--fill2); color: var(--accent-ink); } .hf svg { width: 14px; height: 14px; }
-  [data-o="b"] table.t td { padding-block: calc(var(--row-py) - 2px); } [data-o="b"] table.t td .sub { display: none; }
-  .hmenu { position: fixed; z-index: var(--z-menu); min-width: 200px; max-width: calc(100vw - 16px); padding: 8px; border: 1px solid var(--border2); border-radius: var(--r); background: var(--pop-bg); box-shadow: var(--shadow-2); display: flex; flex-direction: column; gap: 2px; font-size: var(--fs-ui); }
-  .hmenu label { display: flex; align-items: center; gap: 8px; padding: 5px 6px; border-radius: var(--r-xs); cursor: pointer; } .hmenu label:hover { background: var(--hov); } .hmenu hr { width: 100%; margin: 4px 0; border: 0; border-top: 1px solid var(--border); }
-  .sumline { display: none; padding: 6px 14px; border-bottom: 1px solid var(--border); font-size: var(--fs-sm); color: var(--text2); } .sumline.has { display: block; }
-  [data-o="a"] .sumline, [data-o="c"] .sumline { display: none; }
-  /* C: day groups with a subtotal */
-  table.t tr.grp td { font-weight: 600; font-size: var(--fs-ui); cursor: pointer; }
-  table.t tbody tr.grp:is(*, :hover) td { position: sticky; top: var(--th-h); z-index: 2; background-color: color-mix(in srgb, var(--text) 5%, var(--pop-bg)); background-image: none; border-bottom: 1px solid var(--border2); }
-  table.t tr.grp td.sl0 { z-index: 4; } table.t tr.grp td.sr { z-index: 4; }
-  .grp .gl { display: inline-flex; align-items: center; gap: 8px; } .grp .gl svg { width: 14px; height: 14px; transition: transform var(--dur-2) var(--ease); } .grp.closed .gl svg { transform: rotate(-90deg); } .grp small { margin-left: 8px; color: var(--text3); font-weight: 400; }
   .tb-foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); padding: 8px 14px; border-top: 1px solid var(--border); font-size: var(--fs-sm); color: var(--text2); }
-  .tb-foot select { width: auto; }
-  .pager { align-items: center; gap: 4px; } .pager .btn[disabled] { opacity: .4; }
+  .tb-foot .grow { flex: 1; } .tb-foot select { width: auto; }
+  .pager { display: inline-flex; align-items: center; gap: 4px; } .pager .btn[disabled] { opacity: .4; }
+  [data-o="b"] .pager-box, [data-o="b"] .rpp { display: none; } [data-o="a"] .more-box, [data-o="c"] .more-box { display: none; }
   .dock { display: none; align-items: center; gap: var(--s-3); flex-wrap: wrap; padding: 10px 14px; border-top: 1px solid var(--border2); background: var(--accent-soft); }
   [data-has-sel="1"][data-o="c"] .dock { display: flex; } .dock .sum { font-size: var(--fs-big); font-weight: 600; line-height: 1.1; } .dock .grow { flex: 1; } .dock small { display: block; color: var(--text2); font-size: var(--fs-xs); }
-  .sbar { display: none; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-5); padding: 8px 14px; border-top: 1px solid var(--border2); background: var(--th-bg); font-size: var(--fs-ui); }
-  [data-o="b"] .sbar { display: flex; } .sbar span { color: var(--text2); } .sbar b { color: var(--text); font-weight: 600; margin-left: 4px; } .sbar .grow { flex: 1; } .sbar.on { background: var(--accent-soft); }
 </style>
 <script data-s4 src="../../toolkit/icons.js"></script>
 </head>
 <body>
 <div class="g-bar">
   <span class="title">Table Samples</span>
-  <div class="seg" id="opt" data-manual role="group" aria-label="Option"><button type="button" class="on" data-v="a">A · Toolbar and Pages</button><button type="button" data-v="b">B · Spreadsheet Style</button><button type="button" data-v="c">C · Day Ledger ★</button></div>
+  <div class="seg" id="opt" data-manual role="group" aria-label="Option"><button type="button" class="on" data-v="a">A · Pages, Bar on Top</button><button type="button" data-v="b">B · Endless Scroll</button><button type="button" data-v="c">C · Pages, Totals Below ★</button></div>
   <div class="seg" id="theme" data-manual role="group" aria-label="Theme"><button type="button" data-v="light">Light</button><button type="button" data-v="dark">Dark</button><button type="button" data-v="auto">Auto</button></div>
 </div>
 
 <main class="container g-main">
-  <p class="lede">Three different ways to work a table of 240 transactions (fictional data). In every option the header and the first columns stay put when you scroll sideways, and the amount stays on the right. Pick A, B or C at the top, then try it: filter, tick rows and watch the total.</p>
+  <p class="lede">A table of 240 transactions with fictional data. Try it: search, filter by status or account, tick rows, tick the header box, and scroll sideways (the checkbox and description stay on the left, the amount on the right). Pick A, B or C at the top and see how paging and the selection bar change.</p>
   <div class="stack" style="--gap: var(--s-2)">
-    <p class="opt-note" data-for="a"><b>A · Toolbar and Pages.</b> The familiar one: a search box, status chips and an account drop-down above the table; 25 rows to a page; tick rows and the toolbar turns into a selection bar (count, total, actions). Works the same on a phone.</p>
-    <p class="opt-note" data-for="b"><b>B · Spreadsheet Style.</b> Closest to Excel: each column header has its own filter (the funnel); rows are denser; click a row to select it, Shift-click a range, Ctrl-click to add; endless scroll; and a status bar at the bottom always shows the count, sum and average of what is selected (or of everything shown). Fast for power users; harder to discover, and on a phone it needs a different filter sheet.</p>
-    <p class="opt-note" data-for="c"><b>C · Day Ledger.</b> Rows grouped by day, each day with its own subtotal, like the bank's statement, so you can tie each day out. Filters sit in a side rail with live counts for every value. Tick a day to select all its rows; the selection total docks under the table. "Show Earlier Days" loads more. On a phone the rail turns into a row above the table.</p>
+    <p class="opt-note" data-for="a"><b>A · Pages, Bar on Top.</b> 25 rows a page with "Rows per page", Previous and Next, and "26–50 of 240". Ticking a row swaps the filter bar for a selection bar (count, actions, Clear). The header tick selects the page, and a link offers all 240 matches.</p>
+    <p class="opt-note" data-for="b"><b>B · Endless Scroll.</b> 30 rows load, more arrive as you reach the bottom (and a Load More button for keyboards). No page numbers, so you lose your place less, but you can't say "row 180" or jump to the end, and the page gets heavy on a phone. Selection bar as in A.</p>
+    <p class="opt-note" data-for="c"><b>C · Pages, Totals Below.</b> Pages as in A, but the filter bar stays put, applied filters show as removable chips under it, and the selection appears as a bar docked under the table with the <b>sum of the selected amounts</b> next to the actions. For reconciliation you see what you're about to match without leaving the table.</p>
   </div>
-  <p class="rec"><span class="tag">Recommended</span><b>C · Day Ledger.</b> Reconciling is a tie-out job: you compare the app with a bank statement that is organised by day, so day groups with subtotals mirror the thing people check against and make a missing or doubled line obvious without adding anything up. The rail with counts answers "how many are left, and where?" before anyone clicks, and the total next to the action stops mis-matches. Option B is the faster tool for a trained user, but nothing in it tells a newcomer what to do; A is the safest and the least helpful.<br><b>Recommendation basis:</b> my own design judgement for finance work (scan paths, tie-out, discoverability, phone fallback). The front-end design skill was not available in this session, so it was not used.</p>
+  <p class="rec"><span class="tag">Recommended</span><b>C · Pages, Totals Below.</b> Reconciling is "pick these rows, check they add up, then act", so the running total belongs next to the action, and the filter bar shouldn't change under your hand. Pages keep the row position stable and let people say "page 3, row 4"; endless scroll doesn't.<br><b>Recommendation basis:</b> my own design judgement for finance work (the running total next to the action, stable row positions, a filter bar that doesn't change under your hand). The front-end design skill was not available in this session, so it was not used.</p>
+  <p class="readout" id="readout" aria-live="polite"></p>
 
   <section class="card flush tb-card" id="tb" data-o="a" data-has-sel="0" aria-label="Transactions">
     <div class="tb-bar">
       <div class="tb-filters">
         <input class="input search" id="q" type="search" placeholder="Search Description or Reference" aria-label="Search">
-        <div class="cluster only-a" role="group" aria-label="Status" id="chips" style="--gap: 6px"></div>
-        <select class="only-a" id="acct" aria-label="Account"><option value="">All Accounts</option><option>Operating •••• 2210</option><option>Payroll •••• 7731</option><option>Reserve •••• 4821</option></select>
-        <span class="grow"></span>
-        <button class="btn sm subtle only-b" type="button" id="clearB">Clear Filters</button>
+        <div class="cluster" role="group" aria-label="Status" id="st" style="--gap: 6px">
+          <button type="button" class="fchip on" data-v="all" aria-pressed="true">All<span class="n"></span></button>
+          <button type="button" class="fchip" data-v="sort" aria-pressed="false">To Sort<span class="n"></span></button>
+          <button type="button" class="fchip" data-v="sugg" aria-pressed="false">Suggested<span class="n"></span></button>
+          <button type="button" class="fchip" data-v="match" aria-pressed="false">Matched<span class="n"></span></button>
+        </div>
+        <select id="acct" aria-label="Account"><option value="">All Accounts</option><option>Operating •••• 2210</option><option>Payroll •••• 7731</option><option>Reserve •••• 4821</option></select>
       </div>
-      <div class="tb-sel" id="selTop"></div>
+      <div class="tb-sel top" id="selTop"></div>
     </div>
-    <div class="tb-body">
-      <aside class="rail" id="rail" aria-label="Filters"></aside>
-      <div class="table-wrap tb-scroll" id="sc"><table class="t" id="t"><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
-    </div>
+    <div class="tb-applied" id="applied"></div>
+    <div class="table-wrap tb-scroll" id="sc"><table class="t" id="t">
+      <thead><tr><th class="sl sl0"><input type="checkbox" id="all" aria-label="Select this page"></th><th class="sl sl1">Description</th><th>Date</th><th>Account</th><th>Reference</th><th>Category</th><th>Status</th><th class="num sr">Amount</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table></div>
     <div class="dock" id="dock"></div>
-    <div class="sbar" id="sbar"></div>
     <div class="tb-foot">
       <span id="count"></span><span class="grow"></span>
-      <label class="cluster only-a" style="--gap: 6px">Rows per page <select id="rpp"><option>25</option><option>50</option><option>100</option></select></label>
-      <span class="pager only-a"><button class="btn icon sm" type="button" id="prev" aria-label="Previous Page"><svg data-ic="alt-arrow-right" style="transform: scaleX(-1)"></svg></button><span id="pg"></span><button class="btn icon sm" type="button" id="next" aria-label="Next Page"><svg data-ic="alt-arrow-right"></svg></button></span>
-      <button class="btn sm only-b" type="button" id="more">Load More</button>
-      <button class="btn sm only-c" type="button" id="moreDays">Show Earlier Days</button>
+      <label class="rpp cluster" style="--gap: 6px">Rows per page <select id="rpp"><option>25</option><option>50</option><option>100</option></select></label>
+      <span class="pager pager-box"><button class="btn icon sm" type="button" id="prev" aria-label="Previous Page"><svg data-ic="alt-arrow-right" style="transform: scaleX(-1)"></svg></button><span id="pg"></span><button class="btn icon sm" type="button" id="next" aria-label="Next Page"><svg data-ic="alt-arrow-right"></svg></button></span>
+      <span class="more-box"><button class="btn sm" type="button" id="more">Load More</button></span>
     </div>
   </section>
 
-  <table class="tbl-spec" aria-label="What each option sets"><thead><tr><th></th><th>A · Toolbar and Pages</th><th>B · Spreadsheet Style</th><th>C · Day Ledger</th></tr></thead><tbody>
-    <tr><td>Filters</td><td>Bar above the table</td><td>In each column header</td><td>Side rail with live counts</td></tr>
-    <tr><td>Selecting</td><td>Tick boxes</td><td>Click, Shift-click, Ctrl-click, or tick</td><td>Tick rows or a whole day</td></tr>
-    <tr><td>Totals</td><td>In the selection bar</td><td>Status bar: count, sum, average</td><td>Day subtotals, plus the selection total docked</td></tr>
-    <tr><td>More rows</td><td>Pages of 25 / 50 / 100</td><td>Endless scroll</td><td>A week at a time</td></tr>
-    <tr><td>On a phone</td><td>Same, table scrolls sideways</td><td>Needs its own filter sheet</td><td>Rail becomes a row of filters</td></tr>
+  <table class="tbl-spec" aria-label="What each option sets"><thead><tr><th></th><th>A</th><th>B</th><th>C</th></tr></thead><tbody>
+    <tr><td>Paging</td><td>25 / 50 / 100 per page</td><td>30 at a time, more on scroll</td><td>25 / 50 / 100 per page</td></tr>
+    <tr><td>Selection</td><td>Bar replaces the filters</td><td>Bar replaces the filters</td><td>Docked under the table, with the sum</td></tr>
+    <tr><td>Applied filters</td><td>Visible in the bar</td><td>Visible in the bar</td><td>Also as removable chips</td></tr>
+    <tr><td>All options</td><td colspan="3">Header and first two columns stay put when scrolling; the amount stays on the right; the search, status and account filters work; "Select All Matching" appears after ticking a full page.</td></tr>
   </tbody></table>
 </main>
 
@@ -134,117 +123,64 @@
   var SB = { sort: ["warn", "To Sort"], sugg: ["solid", "Suggested"], match: ["ok", "Matched"] };
   var rows = [], seed = 7;
   function rnd() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
-  function dayOf(k) { return new Date(2026, 9, 28 - k); }
-  for (var i = 0; i < 240; i++) { var neg = rnd() < .72, amt = Math.round((neg ? -1 : 1) * (Math.pow(rnd(), 3) * 9000 + 12) * 100) / 100, k = Math.floor(i / 9);
-    rows.push({ id: i, day: k, name: V[Math.floor(rnd() * V.length)] + " " + (2600 + i), type: T[Math.floor(rnd() * T.length)], acct: A[i % 3], ref: ["PR", "CD", "WR", "AC", "FE"][i % 5] + "-" + (1000 + Math.floor(rnd() * 8999)), cat: C[Math.floor(rnd() * C.length)], st: S[Math.floor(rnd() * S.length)], amt: amt }); }
-  function fmt(n) { return Math.abs(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-  function money(n) { return n < 0 ? '<span class="brk">(</span>' + fmt(n) + '<span class="brk">)</span>' : fmt(n) + '<span class="psp">)</span>'; }
-  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
-  function dshort(k) { return dayOf(k).toLocaleDateString("en-US", { month: "short", day: "numeric" }); }
-  function dlong(k) { return dayOf(k).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }); }
-  var KEYS = { st: "Status", acct: "Account", cat: "Category" };
-  function label(key, v) { return key === "st" ? SB[v][1] : v; }
-  function vals(key) { return key === "st" ? ["sort", "sugg", "match"] : key === "acct" ? A : C; }
+  for (var i = 0; i < 240; i++) { var neg = rnd() < .72, amt = Math.round((neg ? -1 : 1) * (Math.pow(rnd(), 3) * 9000 + 12) * 100) / 100, d = 28 - Math.floor(i / 9);
+    rows.push({ id: i, name: V[Math.floor(rnd() * V.length)] + " " + (2600 + i), type: T[Math.floor(rnd() * T.length)], date: (d > 0 ? "Oct " + d : "Sep " + (30 + d)), acct: A[i % 3], ref: ["PR", "CD", "WR", "AC", "FE"][i % 5] + "-" + (1000 + Math.floor(rnd() * 8999)), cat: C[Math.floor(rnd() * C.length)], st: S[Math.floor(rnd() * S.length)], amt: amt }); }
+  function money(n) { var s = Math.abs(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); return n < 0 ? '<span class="brk">(</span>' + s + '<span class="brk">)</span>' : s + '<span class="psp">)</span>'; }
+  function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
 
-  var st = { o: "a", q: "", fs: { st: [], acct: [], cat: [] }, page: 0, size: 25, shown: 40, days: 7, sel: {}, anchor: null, closed: {} };
-  function pass(r, skip) { var q = st.q.toLowerCase(); if (q && (r.name + " " + r.ref).toLowerCase().indexOf(q) < 0) return false; for (var k in st.fs) if (k !== skip && st.fs[k].length && st.fs[k].indexOf(r[k]) < 0) return false; return true; }
-  function filtered() { return rows.filter(function (r) { return pass(r); }); }
-  function count(key, v) { return rows.filter(function (r) { return pass(r, key) && r[key] === v; }).length; }
-  function visible(f) { if (st.o === "a") return f.slice(st.page * st.size, st.page * st.size + st.size); if (st.o === "b") return f.slice(0, st.shown); return f.filter(function (r) { return r.day < st.days; }); }
-  function selRows() { return rows.filter(function (r) { return st.sel[r.id]; }); }
-  function sum(a) { return a.reduce(function (t, r) { return t + r.amt; }, 0); }
-
-  function head() {
-    var b = st.o === "b", f = function (key, text) { var on = st.fs[key].length; return text + (b ? '<button class="hf' + (on ? " on" : "") + '" type="button" data-hf="' + key + '" aria-label="Filter ' + text + '"><svg data-ic="filter"></svg></button>' : ""); };
-    return '<tr><th class="sl sl0"><input type="checkbox" id="all" aria-label="Select all shown"></th><th class="sl sl1">Description</th>' + (st.o === "c" ? "" : "<th>Date</th>") + "<th>" + f("acct", "Account") + "</th><th>Reference</th><th>" + f("cat", "Category") + "</th><th>" + f("st", "Status") + '</th><th class="num sr">Amount</th></tr>';
-  }
-  function rowHtml(r) { var b = SB[r.st];
-    return '<tr data-id="' + r.id + '" class="' + (st.sel[r.id] ? "sel" : "") + '"><td class="sl sl0"><input type="checkbox" data-id="' + r.id + '"' + (st.sel[r.id] ? " checked" : "") + ' aria-label="Select ' + esc(r.name) + '"></td><td class="sl sl1 dcol1"><span class="trunc">' + esc(r.name) + '</span><span class="sub">' + r.type + '</span></td>' + (st.o === "c" ? "" : "<td>" + dshort(r.day) + "</td>") + '<td>' + r.acct + '</td><td>' + r.ref + '</td><td>' + r.cat + '</td><td><span class="badge ' + b[0] + '">' + b[1] + '</span></td><td class="num sr">' + money(r.amt) + '</td></tr>'; }
-
+  var st = { o: "a", q: "", status: "all", acct: "", page: 0, size: 25, shown: 30, sel: {} };
+  function filtered() { var q = st.q.toLowerCase(); return rows.filter(function (r) { return (st.status === "all" || r.st === st.status) && (!st.acct || r.acct === st.acct) && (!q || (r.name + " " + r.ref).toLowerCase().indexOf(q) >= 0); }); }
+  function selIds() { return Object.keys(st.sel).filter(function (k) { return st.sel[k]; }).map(Number); }
   function render() {
-    var f = filtered(), vis = visible(f), body = "";
-    if (st.o === "c") {
-      var days = {}; vis.forEach(function (r) { (days[r.day] = days[r.day] || []).push(r); });
-      Object.keys(days).sort(function (a, b) { return a - b; }).forEach(function (k) { var g = days[k], n = g.filter(function (r) { return st.sel[r.id]; }).length, closed = st.closed[k];
-        body += '<tr class="grp' + (closed ? " closed" : "") + '" data-day="' + k + '"><td class="sl sl0"><input type="checkbox" data-day="' + k + '"' + (n === g.length ? " checked" : "") + ' aria-label="Select ' + dlong(k) + '"></td><td colspan="4"><span class="gl"><svg data-ic="alt-arrow-down"></svg>' + dlong(k) + '<small>' + g.length + ' lines</small></span></td><td></td><td class="num sr">' + money(sum(g)) + '</td></tr>';
-        if (!closed) body += g.map(rowHtml).join(""); });
-    } else body = vis.map(rowHtml).join("");
-    var cols = st.o === "c" ? 7 : 8;
-    document.getElementById("thead").innerHTML = head();
-    document.getElementById("tbody").innerHTML = body || '<tr><td colspan="' + cols + '" style="padding: var(--s-8); text-align: center; color: var(--text2)">Nothing matches these filters.</td></tr>';
+    var f = filtered(), paged = st.o !== "b", pages = Math.max(1, Math.ceil(f.length / st.size));
+    if (st.page >= pages) st.page = pages - 1;
+    var vis = paged ? f.slice(st.page * st.size, st.page * st.size + st.size) : f.slice(0, st.shown);
+    document.getElementById("tbody").innerHTML = vis.length ? vis.map(function (r) { var b = SB[r.st];
+      return '<tr class="' + (st.sel[r.id] ? "sel" : "") + '"><td class="sl sl0"><input type="checkbox" data-id="' + r.id + '"' + (st.sel[r.id] ? " checked" : "") + ' aria-label="Select ' + esc(r.name) + '"></td><td class="sl sl1 dcol1"><span class="trunc">' + esc(r.name) + '</span><span class="sub">' + r.type + '</span></td><td>' + r.date + '</td><td>' + r.acct + '</td><td>' + r.ref + '</td><td>' + r.cat + '</td><td><span class="badge ' + b[0] + '">' + b[1] + '</span></td><td class="num sr">' + money(r.amt) + '</td></tr>'; }).join("") : '<tr><td colspan="8" style="padding: var(--s-8); text-align: center; color: var(--text2)">Nothing matches these filters.</td></tr>';
     var all = document.getElementById("all"), n = vis.filter(function (r) { return st.sel[r.id]; }).length;
     all.checked = vis.length > 0 && n === vis.length; all.indeterminate = n > 0 && n < vis.length;
-    document.querySelectorAll(".grp input").forEach(function (c) { var g = vis.filter(function (r) { return r.day == c.dataset.day; }), m = g.filter(function (r) { return st.sel[r.id]; }).length; c.indeterminate = m > 0 && m < g.length; });
-    /* A: chips */
-    var cur = st.fs.st.length === 1 ? st.fs.st[0] : "";
-    document.getElementById("chips").innerHTML = [["", "All", rows.filter(function (r) { return pass(r, "st"); }).length]].concat(["sort", "sugg", "match"].map(function (v) { return [v, SB[v][1], count("st", v)]; })).map(function (c) { return '<button type="button" class="fchip' + (cur === c[0] ? " on" : "") + '" data-chip="' + c[0] + '" aria-pressed="' + (cur === c[0]) + '">' + c[1] + '<span class="n"> ' + c[2] + '</span></button>'; }).join("");
-    /* C: rail */
-    document.getElementById("rail").innerHTML = ["st", "acct"].map(function (key) { return '<div><h4>' + KEYS[key] + '</h4>' + vals(key).map(function (v) { return '<label><input type="checkbox" data-rail="' + key + '|' + v + '"' + (st.fs[key].indexOf(v) >= 0 ? " checked" : "") + '>' + esc(label(key, v)) + '<span class="n">' + count(key, v) + '</span></label>'; }).join("") + '</div>'; }).join("");
-    /* footer */
-    var tot = f.length, shownN = vis.length;
-    document.getElementById("count").textContent = st.o === "a" ? (tot ? st.page * st.size + 1 : 0) + "–" + Math.min(tot, st.page * st.size + st.size) + " of " + tot : st.o === "b" ? "Showing " + shownN + " of " + tot : "Showing " + Math.min(st.days, 27) + " days · " + shownN + " of " + tot + " lines";
-    var pages = Math.max(1, Math.ceil(tot / st.size)); document.getElementById("pg").textContent = " Page " + (st.page + 1) + " of " + pages + " ";
+    all.setAttribute("aria-label", paged ? "Select this page" : "Select loaded rows");
+    document.querySelectorAll("#st .fchip").forEach(function (b) { var v = b.dataset.v; b.classList.toggle("on", v === st.status); b.setAttribute("aria-pressed", v === st.status); b.querySelector(".n").textContent = " " + rows.filter(function (r) { return (v === "all" || r.st === v) && (!st.acct || r.acct === st.acct); }).length; });
+    var from = f.length ? (paged ? st.page * st.size + 1 : 1) : 0, to = paged ? Math.min(f.length, st.page * st.size + st.size) : vis.length;
+    document.getElementById("count").textContent = paged ? from + "–" + to + " of " + f.length : "Showing " + to + " of " + f.length;
+    document.getElementById("pg").textContent = " Page " + (st.page + 1) + " of " + pages + " ";
     document.getElementById("prev").disabled = st.page === 0; document.getElementById("next").disabled = st.page >= pages - 1;
-    document.getElementById("more").disabled = shownN >= tot; document.getElementById("moreDays").disabled = shownN >= tot;
-    /* selection: A bar on top, C dock, B status bar */
-    var sr = selRows(), s = sum(sr), fullPage = st.o !== "b" && tot > sr.length && n === vis.length && vis.length > 0;
-    tb.setAttribute("data-has-sel", sr.length ? "1" : "0");
+    document.getElementById("more").disabled = vis.length >= f.length;
+    /* applied-filter chips (C) */
+    var ap = []; if (st.status !== "all") ap.push(["status", "Status: " + SB[st.status][1]]); if (st.acct) ap.push(["acct", "Account: " + st.acct]); if (st.q) ap.push(["q", "Search: " + st.q]);
+    var apEl = document.getElementById("applied"); apEl.classList.toggle("has", ap.length > 0);
+    apEl.innerHTML = ap.length ? "Filters " + ap.map(function (a) { return '<span class="xchip">' + esc(a[1]) + '<button type="button" data-x="' + a[0] + '" aria-label="Remove ' + esc(a[1]) + '"><svg data-ic="close"></svg></button></span>'; }).join("") + ' <button class="lnk" type="button" data-x="all">Clear All</button>' : "";
+    if (window.s4Icons) s4Icons(apEl);
+    /* selection */
+    var ids = selIds(), sum = ids.reduce(function (t, id) { return t + rows[id].amt; }, 0), allMatch = f.length > ids.length && n === vis.length && vis.length > 0;
+    tb.setAttribute("data-has-sel", ids.length ? "1" : "0");
     var acts = '<button class="btn sm primary" type="button">Match</button><button class="btn sm" type="button">Export</button><button class="btn sm subtle" type="button" data-clear>Clear</button>';
-    var more = fullPage ? '<button class="lnk" type="button" data-allmatch>Select All ' + tot + ' Matching</button>' : "";
-    document.getElementById("selTop").innerHTML = '<b>' + sr.length + ' Selected</b><span>' + money(s) + '</span>' + more + '<span class="grow"></span>' + acts;
-    document.getElementById("dock").innerHTML = '<div><div class="sum">' + money(s) + '</div><small>' + sr.length + ' Selected' + (s === 0 && sr.length ? " · balances to zero" : "") + '</small></div>' + more + '<span class="grow"></span>' + acts;
-    var base = sr.length ? sr : f, sb = document.getElementById("sbar"); sb.classList.toggle("on", sr.length > 0);
-    sb.innerHTML = '<span>' + (sr.length ? "Selected" : "All shown") + '<b>' + base.length + '</b></span><span>Sum<b>' + money(sum(base)) + '</b></span><span>Average<b>' + (base.length ? money(sum(base) / base.length) : "–") + '</b></span><span class="grow"></span>' + (sr.length ? '<button class="btn sm subtle" type="button" data-clear>Clear</button>' : '<span>Shift-click to select a range</span>');
-    document.getElementById("clearB").style.visibility = (st.fs.st.length + st.fs.acct.length + st.fs.cat.length + (st.q ? 1 : 0)) ? "visible" : "hidden";
-    var sc = document.getElementById("sc"), h = sc.querySelector("thead"); sc.style.setProperty("--th-h", (h ? h.offsetHeight : 37) + "px");
+    var more = allMatch ? ' <button class="lnk" type="button" data-allmatch>Select All ' + f.length + ' Matching</button>' : "";
+    document.getElementById("selTop").innerHTML = '<b>' + ids.length + ' Selected</b>' + more + '<span class="grow"></span>' + acts;
+    document.getElementById("dock").innerHTML = '<div><div class="sum">' + money(sum) + '</div><small>' + ids.length + ' Selected' + (ids.length ? " · " + (sum === 0 ? "balances to zero" : "net amount") : "") + '</small></div>' + more + '<span class="grow"></span>' + acts;
     if (window.s4Icons) s4Icons(tb);
   }
-
-  /* header filter menu (B) */
-  var menu = null;
-  function closeMenu() { if (menu) { menu.remove(); menu = null; } }
-  function openMenu(btn, key) { closeMenu(); var r = btn.getBoundingClientRect(); menu = document.createElement("div"); menu.className = "hmenu"; menu.setAttribute("role", "dialog"); menu.setAttribute("aria-label", "Filter " + KEYS[key]);
-    menu.innerHTML = vals(key).map(function (v) { return '<label><input type="checkbox" data-mv="' + key + '|' + v + '"' + (st.fs[key].indexOf(v) >= 0 ? " checked" : "") + '>' + esc(label(key, v)) + '<span class="n" style="margin-left:auto;color:var(--text3)">' + count(key, v) + '</span></label>'; }).join("") + '<hr><button class="btn sm subtle" type="button" data-mclear="' + key + '">Clear</button>';
-    document.body.appendChild(menu); menu.style.top = (r.bottom + 4) + "px"; menu.style.left = Math.max(8, Math.min(r.left, innerWidth - menu.offsetWidth - 8)) + "px"; var f = menu.querySelector("input"); if (f) f.focus(); }
-  document.addEventListener("click", function (e) { if (menu && !menu.contains(e.target) && !e.target.closest(".hf")) closeMenu(); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeMenu(); });
-  function toggle(key, v, on) { var a = st.fs[key], i = a.indexOf(v); if (on && i < 0) a.push(v); if (!on && i >= 0) a.splice(i, 1); st.page = 0; st.shown = 40; st.days = 7; }
-  document.addEventListener("change", function (e) { var t = e.target; if (!menu || !menu.contains(t) || !t.dataset.mv) return; var p = t.dataset.mv.split("|"); toggle(p[0], p[1], t.checked); render(); });
-  document.addEventListener("click", function (e) { var c = e.target.closest("[data-mclear]"); if (c) { st.fs[c.dataset.mclear] = []; closeMenu(); render(); } });
-
-  function ids() { return visible(filtered()).map(function (r) { return r.id; }); }
   tb.addEventListener("click", function (e) {
-    var hf = e.target.closest("[data-hf]"); if (hf) { openMenu(hf, hf.dataset.hf); return; }
+    var x = e.target.closest("[data-x]"); if (x) { var k = x.dataset.x; if (k === "all") { st.status = "all"; st.acct = ""; st.q = ""; document.getElementById("q").value = ""; document.getElementById("acct").value = ""; } else if (k === "status") st.status = "all"; else if (k === "acct") { st.acct = ""; document.getElementById("acct").value = ""; } else { st.q = ""; document.getElementById("q").value = ""; } st.page = 0; render(); return; }
     if (e.target.closest("[data-clear]")) { st.sel = {}; render(); return; }
     if (e.target.closest("[data-allmatch]")) { filtered().forEach(function (r) { st.sel[r.id] = true; }); render(); return; }
-    var ch = e.target.closest("[data-chip]"); if (ch) { st.fs.st = ch.dataset.chip ? [ch.dataset.chip] : []; st.page = 0; render(); return; }
-    var g = e.target.closest("tr.grp"); if (g && !e.target.closest("input")) { var k = g.dataset.day; st.closed[k] = !st.closed[k]; render(); return; }
-    var tr = e.target.closest("#tbody tr[data-id]");
-    if (tr && st.o === "b" && !e.target.closest("input")) { var id = +tr.dataset.id, order = ids();
-      if (e.shiftKey && st.anchor !== null) { var a = order.indexOf(st.anchor), z = order.indexOf(id); if (a >= 0 && z >= 0) { if (!(e.ctrlKey || e.metaKey)) st.sel = {}; order.slice(Math.min(a, z), Math.max(a, z) + 1).forEach(function (x) { st.sel[x] = true; }); } }
-      else if (e.ctrlKey || e.metaKey) { st.sel[id] = !st.sel[id]; st.anchor = id; }
-      else { var only = selRows().length === 1 && st.sel[id]; st.sel = {}; if (!only) st.sel[id] = true; st.anchor = id; }
-      render(); }
+    var fc = e.target.closest("#st .fchip"); if (fc) { st.status = fc.dataset.v; st.page = 0; st.shown = 30; render(); }
   });
   tb.addEventListener("change", function (e) {
     var t = e.target;
-    if (t.id === "all") { visible(filtered()).forEach(function (r) { st.sel[r.id] = t.checked; }); render(); }
-    else if (t.dataset.day !== undefined && t.closest(".grp")) { visible(filtered()).filter(function (r) { return r.day == t.dataset.day; }).forEach(function (r) { st.sel[r.id] = t.checked; }); render(); }
-    else if (t.dataset.rail) { var p = t.dataset.rail.split("|"); toggle(p[0], p[1], t.checked); render(); }
-    else if (t.dataset.id !== undefined && t.closest("#tbody")) { st.sel[t.dataset.id] = t.checked; st.anchor = +t.dataset.id; render(); }
-    else if (t.id === "acct") { st.fs.acct = t.value ? [t.value] : []; st.page = 0; render(); }
+    if (t.id === "all") { var f = filtered(), paged = st.o !== "b", vis = paged ? f.slice(st.page * st.size, st.page * st.size + st.size) : f.slice(0, st.shown); vis.forEach(function (r) { st.sel[r.id] = t.checked; }); render(); }
+    else if (t.dataset && t.dataset.id) { st.sel[t.dataset.id] = t.checked; render(); }
+    else if (t.id === "acct") { st.acct = t.value; st.page = 0; st.shown = 30; render(); }
     else if (t.id === "rpp") { st.size = +t.value; st.page = 0; render(); }
   });
-  document.getElementById("clearB").addEventListener("click", function () { st.fs = { st: [], acct: [], cat: [] }; st.q = ""; document.getElementById("q").value = ""; render(); });
-  document.getElementById("q").addEventListener("input", function () { st.q = this.value; st.page = 0; st.shown = 40; st.days = 7; render(); });
+  document.getElementById("q").addEventListener("input", function () { st.q = this.value; st.page = 0; st.shown = 30; render(); });
   document.getElementById("prev").addEventListener("click", function () { st.page--; render(); document.getElementById("sc").scrollTop = 0; });
   document.getElementById("next").addEventListener("click", function () { st.page++; render(); document.getElementById("sc").scrollTop = 0; });
-  document.getElementById("more").addEventListener("click", function () { st.shown += 40; render(); });
-  document.getElementById("moreDays").addEventListener("click", function () { st.days += 7; render(); });
-  document.getElementById("sc").addEventListener("scroll", function () { if (st.o === "b" && this.scrollTop + this.clientHeight > this.scrollHeight - 80 && st.shown < filtered().length) { st.shown += 40; render(); } });
-  function setOpt(o) { st.o = o; root.setAttribute("data-o", o); tb.setAttribute("data-o", o); mark("opt", o); st.page = 0; st.shown = 40; st.days = 7; closeMenu(); document.getElementById("sc").scrollTop = 0; document.getElementById("sc").scrollLeft = 0; render(); }
-  document.getElementById("opt").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; setOpt(b.dataset.v); try { sessionStorage.setItem("s4-tbl-opt", b.dataset.v); } catch (x) {} });
-  var sv = "a"; try { sv = sessionStorage.getItem("s4-tbl-opt") || "a"; } catch (e) {} setOpt(sv);
+  document.getElementById("more").addEventListener("click", function () { st.shown += 30; render(); });
+  document.getElementById("sc").addEventListener("scroll", function () { if (st.o === "b" && this.scrollTop + this.clientHeight > this.scrollHeight - 80 && st.shown < filtered().length) { st.shown += 30; render(); } });
+  document.getElementById("opt").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; st.o = b.dataset.v; root.setAttribute("data-o", st.o); tb.setAttribute("data-o", st.o); mark("opt", st.o); st.page = 0; st.shown = 30; document.getElementById("sc").scrollTop = 0; render(); try { sessionStorage.setItem("s4-tbl-opt", st.o); } catch (x) {} });
+  try { var sv = sessionStorage.getItem("s4-tbl-opt"); if (sv) { st.o = sv; root.setAttribute("data-o", sv); tb.setAttribute("data-o", sv); mark("opt", sv); } } catch (e) {}
+  root.setAttribute("data-o", st.o); render();
 </script>
 </body>
 </html>
