@@ -234,7 +234,23 @@ Use `.plot text` for axis labels (they take `--text3`); `text.ink` for the curre
 <span class="copy empty">–</span>
 <div class="keys"><span class="kh"><span class="kbd">J</span>Journal Entry</span><span class="kh"><span class="kbd">Enter ↵</span>Match</span></div>
 ```
-Wrap the value in its own `<span>` (the chip is a flex box). Negatives copy as `-1289.30`.
+Wrap the value in its own `<span>` (the chip is a flex box). Negatives copy as `-1289.30`. The green and the tick stay 0.6s, then the green fades (`.fade`, 0.14s) with the tick still there.
+
+Variants (all `.copy` + a modifier):
+```html
+<button class="copy icon-only" data-copy="40117" aria-label="Copy Reference"><svg data-ic="copy"></svg></button>          <!-- just the icon -->
+<button class="copy block" data-copy="Northwind Tech, 100 Harbour Way"><span>Northwind Tech<br>100 Harbour Way</span><svg data-ic="copy"></svg></button>   <!-- several lines -->
+<button class="copy date" data-copy="9/28/2026"><span>9/28</span><svg data-ic="copy"></svg></button>   <!-- a date copies as M/D/YYYY -->
+<span class="copy empty">–</span>   <!-- a value still to come; in td.num it aligns right -->
+```
+
+### Row quick actions, owner pills, removable chip, locked setting
+```html
+<span class="qs"><button class="qb on"><svg data-ic="link-circle"></svg>Match</button><button class="qb">JE</button><button class="qb" disabled>Pay</button></span>
+<span class="pp-row"><button class="pp on">Dana</button><button class="pp hint">Lee</button></span>   <!-- .hint = suggested, not yet chosen -->
+<span class="chip">6150 · Rent<button class="chip-x" aria-label="Remove 6150 · Rent"><svg data-ic="close-circle"></svg></button></span>
+<div class="f locked-f">Closing Day<span>Sep 30, 2026</span></div>   <!-- a setting someone else locked: a plain value, not a field -->
+```
 
 ## Menus
 
@@ -247,13 +263,21 @@ Wrap the value in its own `<span>` (the chip is a flex box). Negatives copy as `
   <button role="menuitem"><svg data-ic="history"></svg><span><b>Restore from a Backup…</b></span></button>
 </div>
 ```
-`s4Menu()` places it under the button and inside the window; Escape and outside clicks close it.
+`s4Menu()` places it under the button and inside the window; Escape and outside clicks close it. Arrow keys, Home and End move between items and Enter picks; opened from the keyboard, the first item takes focus.
+- **Sections**: wrap a group in `<div class="menu-sec"><div class="menu-h">Changes</div>…</div>`. A menu with sections has a fixed width (400px) so counts line up at the right edge and long rows get an ellipsis (`<b class="trunc">`).
+- **Options menu** (`.menu.opts`): each choice is `<button class="on"><b>Matched First</b><small>what it does</small></button>`; the current one has `.on`.
+
+### Dropdown
+```html
+<label class="f">Company<select><option>2101 · Northwind Tech</option><option>2102 · Northwind US</option></select></label>
+```
+`s4Select()` wraps every `<select>` on load (call it for ones added later): a `button.sel` + `ul.sel-list` listbox with arrows, Home/End, type-ahead, Enter or Space to pick, a tick on the current option, opening upward near the bottom. The `<select>` stays in the page, hidden, and keeps the value and the `change` event. Touch screens keep the native select; `data-native` opts one out. In React use `<Select>` (`toolkit/react/`).
 
 ## Dialogs and sheets
 
 ```html
 <button class="btn" data-open="del">Delete All Data…</button>
-<div class="scrim" id="del" hidden>                     <!-- add data-dirty to stop backdrop clicks closing it -->
+<div class="scrim" id="del" hidden>                     <!-- data-dirty="the queued files": a backdrop click does nothing and Escape asks "Discard the queued files?" first -->
   <div class="modal narrow" role="dialog" aria-modal="true" aria-labelledby="del-h">
     <div class="grab"></div>                             <!-- the handle, shown on phones -->
     <header><h2 id="del-h">Delete all data?</h2><button class="btn icon subtle" data-close aria-label="Close"><svg data-ic="close-circle"></svg></button></header>
@@ -267,9 +291,11 @@ On phones every dialog is a bottom sheet with full-width footer buttons. Close w
 ## Toasts and tooltips
 
 ```js
-s4Toast("Undone: Match 40", { action: "Redo", onAction: redo });   // rises in, fades out after ~4s
+s4Toast("Undone: Match 40", { action: "Redo", onAction: redo });   // rises in; fades out after ~4s, 6.5s with an action
+s4Toast("Match 40 undone", { action: "Redo", anchor: undoButton }); // an undo pop-up: next to the Undo button, with a pointer to it
 ```
-Cut-off text with `.trunc` gets a `.tip` tooltip on hover automatically (`s4Tips`), only when it is actually cut off.
+With `data-dirty` on the scrim, Escape shows a "Discard …?" bar inside the dialog (Keep Editing / Discard); set or clear the attribute as the input changes.
+Cut-off text with `.trunc` gets a `.tip` tooltip on hover automatically (`s4Tips`), only when it is actually cut off, after a short delay, flipping above near the bottom. A `.sub` or `<small>` inside the element becomes a quieter second line.
 
 ## Folds and steps
 

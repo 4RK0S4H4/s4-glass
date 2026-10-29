@@ -37,17 +37,17 @@ Work the phases in order. Each phase is one or more PRs; tick items off here as 
 ### Phase 1 – Harvest Bank Rec's components into S4 Glass, and replace browser-default controls
 Bring the components over **without company specifics**, in plain JS (`toolkit/s4.js` + `s4.css`) **and** as a small React kit (`toolkit/react/`, plain TSX files an app copies or imports: no build step for the toolkit). Each gets a gallery entry (`demo/components.html`), markup in `COMPONENTS.md`, a line in `DESIGN.md` → Components and the condensed rule in `skill/SKILL.md`. No new look, so no samples round, **except** where noted (a visible design choice → one lettered page in `demo/samples/` first). Source: `bankrec/src/ui.tsx` and `bankrec/src/styles.css` in arko-EMOVIS/bank-reconciliation-app (private: read it, never copy data or names into this public repo).
 
-From Bank Rec (better than the toolkit today):
-- [ ] **Dropdown** (`Select` in ui.tsx, `button.sel` + `.sel-list`): themed listbox, arrows/Home/End/type-ahead, opens upward near the bottom, tick on the current option, open = focused-field look, native picker on touch (`pointer: coarse`).
-- [ ] **Dialog with unsaved input**: Escape asks "Discard …?" inside the dialog (Keep Editing / Discard). **Fixes a toolkit bug**: `s4Dialog` closes a `data-dirty` dialog on Escape without asking.
-- [ ] **Undo pop-up** anchored next to the undo buttons, with a pointer (`.toast.undo-pop`); the spec already requires it (#178).
-- [ ] **Menus**: arrow-key navigation (missing in `s4Menu`), sections with headers (`.menu-sec`), fixed width so counts line up, an options menu with descriptions (`.ptab-menu`).
-- [ ] **Toast**: 6.5s when it has an action (time to reach Undo), ~4s otherwise.
-- [ ] **Copy cells**: icon-only, block (multi-line), date copy, the "–" empty placeholder (`.amt-empty`); the tick stays until the green has faded.
-- [ ] **Row quick actions and owner pills** (`.qb`, `.pp`): small inline actions on a table row with a quiet on-state.
-- [ ] **Truncation tooltip** with a main line and a quieter sub-line, a short delay, flips above near the bottom (`DescTip`).
-- [ ] **Sorting**: blanks always last (`s4Sort` sorts them first today).
-- [ ] **Locked settings** read as plain values (`.locked-f`); **removable chip** (`.chip-x`).
+From Bank Rec (better than the toolkit today) – **PR 1 of 3, built on `claude/phase1-bankrec-harvest`** (plain JS + CSS, `toolkit/react/` kit, gallery, COMPONENTS, DESIGN, SKILL). `frontend-design` was **not** in the session's skill list on 2026-10-29 (needed for the date-picker samples: say so on the page, use the fallback basis wording, ask the owner to add it). Remaining Phase 1: PR 2 (date + month picker, samples first) and PR 3 (combobox, radios, `data-tip` tooltips, search clear, `::selection`, textarea grip). React kit has no gallery of its own (the plain HTML gallery shows the same markup); it type-checks against @types/react.
+- [x] **Dropdown** (`Select` in ui.tsx, `button.sel` + `.sel-list`): themed listbox, arrows/Home/End/type-ahead, opens upward near the bottom, tick on the current option, open = focused-field look, native picker on touch (`pointer: coarse`).
+- [x] **Dialog with unsaved input**: Escape asks "Discard …?" inside the dialog (Keep Editing / Discard). **Fixes a toolkit bug**: `s4Dialog` closes a `data-dirty` dialog on Escape without asking.
+- [x] **Undo pop-up** anchored next to the undo buttons, with a pointer (`.toast.undo-pop`); the spec already requires it (#178).
+- [x] **Menus**: arrow-key navigation (missing in `s4Menu`), sections with headers (`.menu-sec`), fixed width so counts line up, an options menu with descriptions (`.ptab-menu`).
+- [x] **Toast**: 6.5s when it has an action (time to reach Undo), ~4s otherwise.
+- [x] **Copy cells**: icon-only, block (multi-line), date copy, the "–" empty placeholder (`.amt-empty`); the tick stays until the green has faded.
+- [x] **Row quick actions and owner pills** (`.qb`, `.pp`): small inline actions on a table row with a quiet on-state.
+- [x] **Truncation tooltip** with a main line and a quieter sub-line, a short delay, flips above near the bottom (`DescTip`).
+- [x] **Sorting**: blanks always last (`s4Sort` sorts them first today).
+- [x] **Locked settings** read as plain values (`.locked-f`); **removable chip** (`.chip-x`).
 
 Browser-default controls to replace with S4 Glass versions (owner, 2026-10-29: "controls like these use an S4 Glass version instead of the browser default"):
 - [ ] **Date picker** – today the browser's calendar (blue selected day, blue Clear/Today, unstyled). Build an S4 calendar pop-over: month header with previous/next, Mon–Sun or Sun–Sat per locale, today marked with a ring-free soft fill, the selected day solid accent, out-of-month days `--text3`, min/max respected, Clear and Today as `.btn.subtle`, full keyboard (arrows, PgUp/PgDn, Home/End, Enter, Escape), typing a date still works. Also a **month picker** (Bank Rec's "Sep 2026" box). **Samples first**: one page with the picker and the phone behaviour as options (A S4 calendar in a bottom sheet on phones, B the phone's own picker as the dropdown does). Used in Bank Rec by Month End → Closing Day.

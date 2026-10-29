@@ -373,6 +373,16 @@ label.f.row { flex-direction: row; align-items: center; gap: var(--s-2); }
 label.f .err, .err { color: var(--bad); font-size: var(--fs-xs); font-weight: 500; }
 label.f .hint { color: var(--text3); font-size: var(--fs-xs); }
 .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3) var(--s-4); } .form-grid .span2 { grid-column: 1 / -1; }
+/* dropdown (s4Select): replaces the browser's own list. The native <select> stays in the page, hidden, as the value; on touch screens it is left alone (the phone's picker is better). */
+button.sel { display: inline-flex; align-items: center; justify-content: space-between; gap: 10px; min-width: 0; max-width: 100%; min-height: 34px; padding: 6px 10px 6px 11px; border: 1px solid var(--field-line); border-radius: var(--r-md); background: var(--field-bg); color: var(--text); font: inherit; text-align: left; cursor: pointer; transition: background-color var(--dur-2), border-color var(--dur-2); }
+button.sel:hover:not(:disabled) { background: var(--hov); } button.sel:disabled { opacity: .5; cursor: default; }
+button.sel[aria-expanded="true"] { border-color: var(--field-focus-line); background-color: var(--field-focus-bg); }   /* open = the focused-field look, not an accent ring */
+button.sel:focus-visible { outline: none; border-color: var(--field-focus-line); background-color: var(--field-focus-bg); }
+button.sel .sel-v { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } button.sel .sel-c { flex: none; width: 12px; height: 12px; color: var(--text2); transition: transform var(--dur-2) var(--ease); }
+button.sel[aria-expanded="true"] .sel-c { transform: rotate(180deg); }
+label.f button.sel { width: 100%; font-size: var(--fs-base); } td button.sel { width: 100%; }
+/* a setting someone else locked: shows as a plain value, not a field: <div class="f locked-f">Closing Day<span>Sep 30, 2026</span></div> */
+.f.locked-f { display: flex; flex-direction: column; gap: 4px; font-size: var(--fs-xs); color: var(--text2); } .locked-f > span { font-size: var(--fs-base); color: var(--text); }
 
 /* ---------- 8. choosers ---------- */
 /* segmented filter: "All 46 | Still to Do 12 | Done 34". Starts on All, changes only on a click. s4Slider() adds the sliding pill. */
@@ -440,6 +450,8 @@ input[type=radio] { accent-color: var(--btn); width: 16px; height: 16px; margin:
 .badge.accent { color: var(--accent-ink); background: var(--accent-chip); }
 .badge.solid { color: var(--btn-fg); background: var(--btn); }
 .chip { display: inline-flex; align-items: center; gap: 4px; padding: 1px 7px; border: 1px solid var(--border); border-radius: var(--r-xs); background: var(--well); font-size: var(--fs-badge); }   /* a small code or ID */
+.chip-x { display: inline-grid; place-items: center; width: 18px; height: 18px; margin-right: -3px; padding: 0; border: 0; border-radius: var(--r-xs); background: none; color: var(--text3); cursor: pointer; }   /* the x on a removable chip: <span class="chip">GL 6150<button class="chip-x" aria-label="Remove GL 6150"><svg data-ic="close-circle"></svg></button></span> */
+.chip-x:hover, .chip-x:focus-visible { color: var(--bad); background: var(--well); } .chip-x svg { width: 12px; height: 12px; }
 .dot { display: inline-block; width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--mute-bar); }
 .dot.ok { background: var(--ok-bar); } .dot.warn { background: var(--warn-bar); } .dot.bad { background: var(--bad-bar); } .dot.accent { background: var(--btn); }
 /* progress: <div class="bar"><i class="ok" style="width:40%"></i>…</div> */
@@ -536,6 +548,18 @@ table.t:not(.cards) th:is(.sticky-l, .sticky-l2, .sticky-r) { z-index: 3; backdr
 .t-foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); padding: 8px 14px; border-top: 1px solid var(--border); color: var(--text2); font-size: var(--fs-sm); } .t-foot .grow { flex: 1; } .t-foot select { width: auto; }
 .pager { display: inline-flex; align-items: center; gap: 4px; } .pager .btn[disabled] { opacity: .4; }
 
+/* row quick actions and owner pills: small inline choices on a table row, with a quiet on-state. <span class="qs"><button class="qb on">Match</button><button class="qb">JE</button></span> · <span class="pp-row"><button class="pp on">Dana</button><button class="pp hint">Lee</button></span> */
+.qs, .pp-row { display: inline-flex; gap: 3px; }
+.qb, .pp { box-sizing: border-box; border: 1px solid var(--border); background: transparent; font: inherit; font-size: var(--fs-xs); line-height: 1.5; white-space: nowrap; cursor: pointer; transition: background-color var(--dur-2), color var(--dur-2), border-color var(--dur-2); }
+.pp { padding: 2px 8px; border-radius: var(--r-pill); color: var(--text3); } .pp:hover { border-color: var(--soft-ring); color: var(--text); }
+.pp.on, .pp.on:hover { background: var(--fill2); border-color: var(--soft-ring); color: var(--accent-ink); font-weight: 600; }
+.pp.hint { border-style: dashed; border-color: var(--soft-ring); color: var(--accent-text); }   /* the suggested owner, not yet chosen */
+.qb { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: var(--r-sm); color: var(--text2); }
+.qb:hover:not(:disabled) { color: var(--text); } .qb:hover:not(:disabled):not(.on) { border-color: var(--border2); background: var(--hov); }
+.qb:disabled { opacity: .35; cursor: default; }
+.qb.on { background: var(--fill2); border-color: var(--soft-ring); color: var(--accent-ink); font-weight: 600; } .qb.on:hover:not(:disabled) { color: var(--text); }
+.qb svg { width: 14px; height: 14px; flex: none; }
+
 /* ---------- 11b. charts: marks are SVG you draw; this styles the pieces around them ---------- */
 .plot { position: relative; width: 100%; } .plot svg { display: block; overflow: visible; }
 .plot text { fill: var(--text3); font-family: inherit; font-size: var(--fs-xs); font-feature-settings: "ss01", "cv09"; font-variant-numeric: tabular-nums; }   /* axis and labels wear text tokens, never the series colour */
@@ -567,6 +591,16 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3 4.7-5' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3 4.7-5' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat; }
 .copy.empty { border-style: dashed; color: var(--text3); cursor: default; background: transparent; }   /* "–" placeholder for a value still to come */
+.copy.fade { transition: background-color .14s linear; }   /* s4Copy: the green fades out while the tick stays, so colour and icon go back together */
+.copy.fade, table .copy.fade { border-color: transparent; background: transparent; } .copy.fade > svg { display: none; }
+.copy.fade::after { content: ""; flex: none; width: 13px; height: 13px; background: var(--ok);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3 4.7-5' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3 4.7-5' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat; }
+.copy.empty { min-width: 44px; justify-content: center; } table .copy.empty { border-color: var(--border2); } td.num > .copy.empty { display: flex; width: fit-content; margin-left: auto; }   /* "–" where an amount is still to come */
+.copy.icon-only { padding: 6px; justify-content: center; } table .copy.icon-only:not(:hover):not(:focus-visible):not(.done) svg { opacity: .8; }   /* just the icon: for a cell that is only a copy action */
+.copy.icon-only.disabled { opacity: .35; cursor: default; }
+.copy.block { display: flex; text-align: left; align-items: flex-start; justify-content: space-between; width: 100%; padding: 8px 10px; white-space: normal; } .copy.block > svg { margin-top: 2px; }   /* several lines in one copy box (an address, a posting) */
+.copy.date { padding: 1px 7px; }   /* a date: copies as M/D/YYYY */
 .kbd { display: inline-flex; align-items: center; justify-content: center; gap: 3px; min-width: 20px; height: 20px; padding: 0 6px; font: 600 var(--fs-cap)/1 var(--font); letter-spacing: .02em; color: var(--text); border-radius: var(--r-xs); border: 1px solid var(--kbd-line); background: var(--kbd-bg); box-shadow: var(--kbd-shadow); vertical-align: middle; }
 .btn .kbd { height: 18px; min-width: 18px; }
 .kbd.on-pri { color: #fff; background: rgba(0,0,0,.14); border-color: rgba(255,255,255,.32); box-shadow: 0 1.5px 0 rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.2); }
@@ -582,6 +616,13 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
 .menu b { display: block; font-weight: 600; } .menu small { display: block; margin-top: 1px; color: var(--text3); font-size: var(--fs-xs); }
 .menu .menu-h { padding: 4px 6px 6px; font-size: var(--fs-xs); font-weight: 600; color: var(--text3); }
 .menu hr { width: 100%; margin: 3px 0; border: 0; border-top: 1px solid var(--border); }
+.menu:has(.menu-sec) { width: 400px; }   /* with sections the menu has a fixed width, so counts line up at the right edge and long rows get an ellipsis */
+.menu-sec { margin-top: 3px; padding: 8px 4px 2px; border-top: 1px solid var(--border); } .menu-sec .menu-h { padding: 0 6px 6px; }
+.menu.opts { width: min(330px, 80vw); min-width: 0; } .menu.opts button { flex-direction: column; gap: 3px; padding: 10px 12px; } .menu.opts button.on b { color: var(--accent-text); }   /* an options menu: each choice has a line saying what it does */
+.sel-list { position: fixed; z-index: var(--z-menu); margin: 0; padding: 6px; list-style: none; overflow: auto; border: 1px solid var(--border2); border-radius: var(--r); background: var(--pop-bg); color: var(--text); box-shadow: var(--shadow-2); animation: s4-pop .14s var(--ease); transform-origin: top left; }
+.sel-list.up { transform-origin: bottom left; }
+.sel-list li { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 7px 10px; border-radius: var(--r-sm); white-space: nowrap; cursor: pointer; }
+.sel-list li.act { background: var(--hov); } .sel-list li.on { font-weight: 600; color: var(--accent-text); } .sel-list li svg { width: 14px; height: 14px; flex: none; }
 .scrim { position: fixed; inset: 0; z-index: var(--z-modal); display: grid; place-items: center; padding: var(--s-4); background: var(--scrim); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: s4-fade var(--dur-2) ease-out; }
 .modal { display: flex; flex-direction: column; width: min(560px, 100%); max-height: 92vh; max-height: 92dvh; overflow: clip; background: var(--modal-bg); border: 1px solid var(--modal-line); border-radius: var(--r-xl); box-shadow: var(--shadow-3); animation: s4-grow var(--dur-3) var(--ease); }
 .modal.wide { width: min(1000px, 100%); } .modal.narrow { width: min(440px, 100%); }
@@ -589,9 +630,13 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
 .modal .body { display: flex; flex-direction: column; gap: 14px; padding: 6px var(--s-5) var(--s-4); overflow: auto; overscroll-behavior: contain; } .modal .body > * { min-width: 0; }
 .modal footer { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; padding: var(--s-3) var(--s-5); border-top: 1px solid var(--border); }
 .modal .grab { display: none; }   /* the handle on a phone bottom sheet */
+.modal .ask { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); align-items: center; justify-content: space-between; padding: var(--s-3) var(--s-5); border-top: 1px solid var(--border); background: var(--bad-bg); color: var(--bad-ink); font-weight: 500; } .modal .ask .row { display: inline-flex; gap: var(--s-2); }   /* Escape on a dialog with unsaved input asks "Discard …?" here (s4Dialog + data-dirty) */
 .scrim.closing { pointer-events: none; animation: s4-fade-out .15s ease-in forwards; } .scrim.closing .modal { animation: s4-shrink .15s ease-in forwards; }   /* s4Close: a short exit; focus is already back */
 .toast { position: fixed; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: var(--z-toast); display: flex; align-items: center; gap: 14px; width: max-content; max-width: min(560px, calc(100vw - 32px)); padding: 10px 16px; border-radius: var(--r-sm); background: var(--toast-bg); color: var(--on-dark); border: 1px solid rgba(255,255,255,.12); box-shadow: var(--shadow-1); font-size: var(--fs-ui); animation: s4-rise var(--dur-3) var(--ease); }
 .toast.leaving { animation: s4-sink .16s ease-in forwards; }   /* s4Toast fades it out rather than cutting it */
+.toast.undo-pop { left: auto; bottom: auto; transform: none; max-width: min(380px, calc(100vw - 16px)); z-index: var(--z-toast); animation: s4-pop .14s var(--ease); }   /* s4Toast(…, {anchor}): next to the Undo and Redo buttons, with a pointer to them */
+.toast.undo-pop::before { content: ""; position: absolute; top: -5px; left: var(--arrow-x, 24px); width: 10px; height: 10px; margin-left: -5px; background: inherit; border-left: 1px solid rgba(255,255,255,.12); border-top: 1px solid rgba(255,255,255,.12); transform: rotate(45deg); }
+.toast.undo-pop.up::before { top: auto; bottom: -5px; transform: rotate(225deg); }
 .toast button { flex: none; min-height: 30px; padding: 0 12px; border: 1px solid rgba(255,255,255,.28); border-radius: 7px; background: rgba(255,255,255,.12); color: var(--on-dark); font: inherit; font-weight: 600; cursor: pointer; } .toast button:hover { background: rgba(255,255,255,.22); }   /* "Undone: … [Redo]" */
 .tip { position: fixed; z-index: var(--z-tip); max-width: min(480px, calc(100vw - 24px)); padding: 8px 11px; border: 1px solid var(--tip-line); border-radius: var(--r-md); background: var(--tip-bg); color: var(--on-dark); font-size: var(--fs-ui); line-height: 1.4; box-shadow: var(--shadow-2); pointer-events: none; overflow-wrap: anywhere; animation: s4-fade .12s ease-out; }   /* the full text of something cut off */
 .tip small { display: block; margin-top: 2px; color: var(--on-dark2); font-size: var(--fs-xs); }
