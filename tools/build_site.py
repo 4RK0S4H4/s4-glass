@@ -22,7 +22,7 @@ DEMOS = [  # (title, path, what it shows, duotone icon)
     ("Habit Tracker", "demo/examples/habits.html", "A phone-first app built by a fresh Claude session from the skill alone.", "smartphone"),
     ("Icon Samples (draft)", "demo/samples/icons.html", "Solar Bold Duotone next to Phosphor Duotone in the rail, buttons, chips and table rows.", "stars"),
     ("Wide-Screen Layouts (draft)", "demo/samples/wide-screen.html", "Three ways to use a 1080p and a 1440p monitor: fill, cap and centre, or cap and widen the detail panel.", "monitor"),
-    ("Table Samples (draft)", "demo/samples/tables.html", "Three ways to work 240 transactions: toolbar and pages, spreadsheet style, or a day ledger with subtotals.", "checklist-minimalistic"),
+    ("Table Samples (draft)", "demo/samples/tables.html", "A 240-row table with search, filters, bulk select, sticky columns and three ways to page and show the selection.", "checklist-minimalistic"),
     ("Orders Restyle", "demo/examples/orders.html", "A plain HTML table restyled by a fresh Claude session using the skill.", "checklist-minimalistic"),
 ]
 
