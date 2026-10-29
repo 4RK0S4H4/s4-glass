@@ -26,18 +26,66 @@ The owner reads on a phone: keep messages short and ask one thing at a time.
 | 10 | Dialogs, toasts and destructive actions (confirm and undo) | Not started | |
 | 11 | Accessibility audit (focus, contrast, keyboard, reduced motion) | Not started. Checks existing work: report, fix clear defects, put changes to a decided look on a samples page first | |
 
-Areas 6–11 go one at a time in this order; start the next only when the owner has picked and the build is merged. Use dataviz only if a chart is involved.
+New areas (9–11) wait until phases 1–3 of the roadmap below are done (agreed with the owner 2026-10-29). Area 7 (Tables) is built (option C, PR #30). Area 8 (Forms) samples were already under way in another session (PR #31); the owner can still pick there, but its native date pickers are replaced by the S4 date picker from Phase 1. Use dataviz only if a chart is involved.
 
-## Next (not started)
-- Repackage the skill (`tools/package_skill.py`) and send the owner `build/s4-glass.skill` so the installed copy matches.
-- Owner picks the next area, or proposes candidates (use the `frontend-design` skill, now available, and say so on the page).
-- Optional: re-check the recommendation boxes on the older samples pages with the skill.
-- Skills agreed 2026-10-29 (see CLAUDE.md → "Skills to use"): front-end design for decisions, the Design plugin for system consistency, accessibility and copy, Skill Creator to restructure `skill/SKILL.md` and add evals across app types. Suggested next: the Skill Creator restructure and evals; recheck area 7's recommendation with the front-end design skill.
+## Roadmap (agreed with the owner 2026-10-29)
 
-- Density Auto cutoff changed (owner, 2026-10-28): compact only 1300–2200px wide with a mouse, standard on 1440p and up.
-- Icons: a separate session is making `demo/samples/icons.html` (Solar Bold Duotone vs Phosphor Duotone). The owner wants Solar Bold Duotone across all glass apps going forward, pending the draft.
-- Candidate next areas (from the front-end design skill, used as a lens): wide-screen desktop layouts (recommended), tables at scale, forms and validation, empty/loading/error states, dialogs/toasts/destructive actions, accessibility audit.
+**Why:** an end-to-end review found the visual foundations on track, but the *behaviour* layer off course. How controls behave (dropdowns, dialogs, menus, copy, sorting, undo) lives in each app's own code, so the Bank Reconciliation app (React) built better versions than the toolkit (plain JS) and they never came back. The public examples are also too thin to teach the skill (Orders is a 3-row table). Bank Rec, meanwhile, is behind on the newer S4 decisions (65 of its 82 icons are still Linear; no density, wide-screen, trail/tabs or chart tokens). Goal: **S4 Glass holds the best version of every control, and Bank Rec runs on it**.
+
+Work the phases in order. Each phase is one or more PRs; tick items off here as they merge.
+
+### Phase 1 – Harvest Bank Rec's components into S4 Glass, and replace browser-default controls
+Bring the components over **without company specifics**, in plain JS (`toolkit/s4.js` + `s4.css`) **and** as a small React kit (`toolkit/react/`, plain TSX files an app copies or imports: no build step for the toolkit). Each gets a gallery entry (`demo/components.html`), markup in `COMPONENTS.md`, a line in `DESIGN.md` → Components and the condensed rule in `skill/SKILL.md`. No new look, so no samples round, **except** where noted (a visible design choice → one lettered page in `demo/samples/` first). Source: `bankrec/src/ui.tsx` and `bankrec/src/styles.css` in arko-EMOVIS/bank-reconciliation-app (private: read it, never copy data or names into this public repo).
+
+From Bank Rec (better than the toolkit today):
+- [ ] **Dropdown** (`Select` in ui.tsx, `button.sel` + `.sel-list`): themed listbox, arrows/Home/End/type-ahead, opens upward near the bottom, tick on the current option, open = focused-field look, native picker on touch (`pointer: coarse`).
+- [ ] **Dialog with unsaved input**: Escape asks "Discard …?" inside the dialog (Keep Editing / Discard). **Fixes a toolkit bug**: `s4Dialog` closes a `data-dirty` dialog on Escape without asking.
+- [ ] **Undo pop-up** anchored next to the undo buttons, with a pointer (`.toast.undo-pop`); the spec already requires it (#178).
+- [ ] **Menus**: arrow-key navigation (missing in `s4Menu`), sections with headers (`.menu-sec`), fixed width so counts line up, an options menu with descriptions (`.ptab-menu`).
+- [ ] **Toast**: 6.5s when it has an action (time to reach Undo), ~4s otherwise.
+- [ ] **Copy cells**: icon-only, block (multi-line), date copy, the "–" empty placeholder (`.amt-empty`); the tick stays until the green has faded.
+- [ ] **Row quick actions and owner pills** (`.qb`, `.pp`): small inline actions on a table row with a quiet on-state.
+- [ ] **Truncation tooltip** with a main line and a quieter sub-line, a short delay, flips above near the bottom (`DescTip`).
+- [ ] **Sorting**: blanks always last (`s4Sort` sorts them first today).
+- [ ] **Locked settings** read as plain values (`.locked-f`); **removable chip** (`.chip-x`).
+
+Browser-default controls to replace with S4 Glass versions (owner, 2026-10-29: "controls like these use an S4 Glass version instead of the browser default"):
+- [ ] **Date picker** – today the browser's calendar (blue selected day, blue Clear/Today, unstyled). Build an S4 calendar pop-over: month header with previous/next, Mon–Sun or Sun–Sat per locale, today marked with a ring-free soft fill, the selected day solid accent, out-of-month days `--text3`, min/max respected, Clear and Today as `.btn.subtle`, full keyboard (arrows, PgUp/PgDn, Home/End, Enter, Escape), typing a date still works. Also a **month picker** (Bank Rec's "Sep 2026" box). **Samples first**: one page with the picker and the phone behaviour as options (A S4 calendar in a bottom sheet on phones, B the phone's own picker as the dropdown does). Used in Bank Rec by Month End → Closing Day.
+- [ ] **Suggestions while typing** (combobox) – replaces `<datalist>` (browser-drawn list; Bank Rec's Payments → Vendor / Customer Name). Same list look as the dropdown, free text allowed.
+- [ ] **Radio buttons** – today native with `accent-color`; draw them like the S4 checkbox (soft ring, solid accent dot when on).
+- [ ] **Tooltips** – Bank Rec has 104 `title=` attributes (slow, unstyled OS tooltips). An S4 tooltip on hover and keyboard focus (`.tip`, `data-tip`) for icon-only buttons and short hints; keep `aria-label`.
+- [ ] **Search fields** – hide the browser's own clear "×" and give `.search` an S4 clear button.
+- [ ] **Text selection colour** (`::selection` from the accent, readable in both themes) and the **textarea resize grip**.
+- Keep native on purpose: file pickers (hidden behind S4 buttons and the drop zone), the dropdown on touch screens.
+
+### Phase 2 – A flagship example (public, fictional)
+- [ ] A realistic list | detail app in `demo/examples/` (e.g. an expense or invoice tracker, ~50 rows of fictional data) that uses every Phase 1 component at real density, in both themes, at 390 / 1280 / 1920 / 2560. It is the reference the skill, the evals and new apps learn from. Card in `DEMOS`, passes `check_pages`.
+
+### Phase 3 – Bring Bank Rec up to the current S4 Glass (private repo, its own session)
+- [ ] Bank Rec uses the S4 React kit and `s4.css` tokens instead of its own copies (its decisions stay; see its NOTES.md).
+- [ ] Icons: Solar Bold Duotone everywhere, flat icon map, Solar credit line (area 5).
+- [ ] Density (`s4Density`, setting in Settings), wide screens (1600 cap, 34% panel), current motion (press 97%, S4 pop/exit timings), chart tokens, trail + page tabs where a screen has depth.
+- [ ] The Phase 1 replacements (date picker on Closing Day, combobox on Vendor / Customer Name, S4 radios, S4 tooltips).
+- [ ] Bank Rec's own checks and screenshots (its CLAUDE.md). Afterwards, an improvement reaches Bank Rec by updating the kit, not by hand.
+
+### Phase 4 – Restructure the skill (Skill Creator)
+- [ ] `SKILL.md` down to a short core (about a third of today's 35 KB): principles, then "read X when doing Y" pointers into `references/`; point to the React kit and the flagship.
+- [ ] Description tuned so it triggers for S4 Glass and not S4 Material / S4 Orion.
+- [ ] Evals from 3 to 6 (add a dashboard, a multi-step form, a React list | detail app); run them before every repackage.
+- [ ] One check script named in the skill (`check_pages.mjs`, or say when `shoot.py` from s4-app-studio applies).
+- [ ] Repackage (`tools/package_skill.py`) and send the owner `build/s4-glass.skill`.
+
+### Phase 5 – Resume the areas
+- [x] 7 Tables: built, option C (PR #30). Repackage the skill with Phase 4.
+- [ ] 8 Forms: build the owner's pick from PR #31's samples, with the S4 date picker and combobox from Phase 1.
+- [ ] 9 States, 10 Dialogs/toasts: mostly document what Phase 1 brought over, then samples only for real gaps.
+- [ ] 11 Accessibility: `design:accessibility-review` across the gallery, the flagship and Bank Rec together.
+
+### Smaller items found in the review
+- `DESIGN.md` mixes spec and history (issue numbers in most rules); consider moving the history to a decisions log during Phase 4.
+- Bank Rec's scrim blur (6px) and dialog shadow are literals; S4 has tokens (Phase 3).
+- Design note, not re-opened: in Bank Rec's Transactions nearly every row shows the solid "Suggested" badge, so the status column becomes a solid accent stripe. Decided (#189); raise only if the owner asks.
 
 ## Open items
 - Habits and Orders (`demo/examples/`) are refreshed with the final toolkit (`python3 tools/refresh_examples.py`); Habits also shows the density setting. Re-run the script after any toolkit change.
-- **Still to do: the Bank Reconciliation app** (arko-EMOVIS/bank-reconciliation-app, private). Its tokens must follow, per CLAUDE.md: `--ease` (motion), the surface tokens (`--glass`, `--glass2`, `--bar-bg`, `--nav-bg`, `--modal-bg`, `--blur`, `--sat`, `--shadow-1`), the new chart tokens (`--series-*`, `--seq-*`, `--viz-*`), density (`--row-py`, `--ctl-h`, `--card-pad`, `--nav-h`, `--stack-gap`, `s4Density()`), and the trail and page tabs (`.crumbs`, `.pagetabs`). Do it in a session with that repo attached, and keep that app's own decisions.
+- **The Bank Reconciliation app** (arko-EMOVIS/bank-reconciliation-app, private) catches up in **Phase 3** of the roadmap above: tokens (`--ease`, surfaces, chart, density), trail and page tabs, icons, and the S4 React kit. Do it in a session with that repo attached, and keep that app's own decisions.
