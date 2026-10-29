@@ -26,7 +26,7 @@ The owner reads on a phone: keep messages short and ask one thing at a time.
 | 10 | Dialogs, toasts and destructive actions (confirm and undo) | Not started | |
 | 11 | Accessibility audit (focus, contrast, keyboard, reduced motion) | Not started. Checks existing work: report, fix clear defects, put changes to a decided look on a samples page first | |
 
-Areas 8–11 now wait until phases 1–3 of the roadmap below are done (agreed with the owner 2026-10-29). Area 7 (Tables) can still be picked at any time. Use dataviz only if a chart is involved.
+New areas (9–11) wait until phases 1–3 of the roadmap below are done (agreed with the owner 2026-10-29). Area 7 (Tables) is built (option C, PR #30). Area 8 (Forms) samples were already under way in another session (PR #31); the owner can still pick there, but its native date pickers are replaced by the S4 date picker from Phase 1. Use dataviz only if a chart is involved.
 
 ## Roadmap (agreed with the owner 2026-10-29)
 
@@ -76,8 +76,9 @@ Browser-default controls to replace with S4 Glass versions (owner, 2026-10-29: "
 - [ ] Repackage (`tools/package_skill.py`) and send the owner `build/s4-glass.skill`.
 
 ### Phase 5 – Resume the areas
-- [ ] 7 Tables: owner's pick (recheck the recommendation with the front-end design skill).
-- [ ] 8 Forms, 9 States, 10 Dialogs/toasts: mostly document what Phase 1 brought over, then samples only for real gaps.
+- [x] 7 Tables: built, option C (PR #30). Repackage the skill with Phase 4.
+- [ ] 8 Forms: build the owner's pick from PR #31's samples, with the S4 date picker and combobox from Phase 1.
+- [ ] 9 States, 10 Dialogs/toasts: mostly document what Phase 1 brought over, then samples only for real gaps.
 - [ ] 11 Accessibility: `design:accessibility-review` across the gallery, the flagship and Bank Rec together.
 
 ### Smaller items found in the review
