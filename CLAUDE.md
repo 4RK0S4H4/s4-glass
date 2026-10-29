@@ -24,6 +24,7 @@ The S4 Glass design language: spec (`DESIGN.md`), component markup (`COMPONENTS.
 ## Rules
 - `DESIGN.md` is the source of truth; `skill/SKILL.md` is the condensed version for Claude. Change both together, and the Bank Reconciliation app (arko-EMOVIS/bank-reconciliation-app) if a token or rule it uses changes.
 - Decisions the owner made (DESIGN.md → "Decided with the owner") are not re-opened unless the owner asks.
+- **Improvements flow back.** When an app (e.g. Bank Rec) improves a shared control or pattern, the improvement goes into S4 Glass (toolkit, React kit, gallery, docs) in the same batch, so apps and the language never drift apart. Controls use an S4 Glass version, not the browser default (date pickers, dropdowns, suggestions, radios, tooltips); file pickers and the dropdown on touch screens stay native on purpose.
 - Work on a `claude/…` branch, open a PR and let CI go green, then **merge it yourself** (squash) and send the owner the Pages link(s). Standing permission from the owner, so don't wait to be asked. Don't merge while CI is red or a review comment is open, and still ask first when a change is large or goes against "Decided with the owner".
 
 ## Recommendations
