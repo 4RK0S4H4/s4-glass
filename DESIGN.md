@@ -193,7 +193,12 @@ Component rules that matter most:
 - **Active nav item**: the accent gradient, a white label and icon (the duotone's faded half at 62%), a darker count pill, a faint diffuse glow. `background-origin: border-box`. About 6px between items.
 - **Tables**: one text size (values 14, headers and sub-lines 12, badges 11.5); short columns never wrap; the description column takes the leftover width and shows a tooltip only when cut off; status is one badge plus the slim left edge, never a tinted row; every table sorts by its headers (asc → desc → default; `s4Sort` does it) unless it mirrors an external layout, and a status column sorts by urgency (bad, warn, needs a decision, accent, ok, mute – put the rank in `data-sort`); don't show the same text twice.
 - **Filters start on All** and change only when clicked; a jump to a row the filter hides keeps the filter and shows `.hidden-note` with Show All.
-- **Copy chips**: click to copy, a 0.6s green flash that never stays; in tables they read as plain text until hovered.
+- **Copy chips**: click to copy, a 0.6s green flash that never stays (the tick holds until the green has faded); in tables they read as plain text until hovered. Variants: icon only, block (several lines), date (M/D/YYYY), and a "–" placeholder for a value still to come.
+- **Dropdown** (`s4Select`, React `Select`): replaces the browser's list; arrows, Home/End, type-ahead, a tick on the current option, opens upward near the bottom, open = the focused-field look. Touch screens keep the phone's picker.
+- **Dialog with unsaved input**: `data-dirty="what would be lost"`: no backdrop-click close, and Escape asks "Discard …?" inside the dialog (Keep Editing / Discard).
+- **Undo pop-up**: a toast with an action can be anchored to the Undo / Redo button, with a pointer. Toasts last ~4s, 6.5s with an action.
+- **Menus** move with arrow keys; sections (`.menu-sec`) give a fixed width so counts align; an options menu (`.menu.opts`) puts a one-line explanation under each choice.
+- **Row quick actions** (`.qb`) and **owner pills** (`.pp`): small inline choices on a table row, quiet on-state. **Sorting** puts blank cells last, up or down. A **truncation tooltip** has a main line and a quieter sub line, a short delay, and flips above near the bottom. A **locked setting** (`.locked-f`) reads as a plain value; a **removable chip** has a `.chip-x`.
 - **Pop-overs** are solid (`--pop-bg`); dialogs are glass over a blurred scrim; toasts are dark with one optional action ("Undone: Match 40 [Redo]").
 - **Cards fit their content**; spare space goes below a list card, not inside it.
 - **Say things once**: a hint that applies to every row goes in the line above the list.

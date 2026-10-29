@@ -99,13 +99,15 @@
 
   <section class="g-sec">
     <h2>Fields</h2>
-    <p>Focus brightens the fill and darkens the border; it never draws an accent ring. On a phone fields are 16px so iOS doesn't zoom.</p>
+    <p>Dropdowns are drawn by S4 Glass (<code>s4Select</code> wraps every <code>&lt;select&gt;</code>: arrows, Home/End, type-ahead, a tick on the current option, opens upward near the bottom); on a touch screen the phone's own picker stays. Focus brightens the fill and darkens the border; it never draws an accent ring. On a phone fields are 16px so iOS doesn't zoom.</p>
     <div class="card form-page">
       <div class="form-grid">
         <label class="f">Company<select><option>2101 · Northwind Tech</option><option>2102 · Northwind US</option></select></label>
         <label class="f">Posting Date<input type="date" value="2026-09-30"></label>
         <label class="f">Offset GL Account<input type="text" inputmode="numeric" placeholder="e.g. 61500000"><span class="hint">8 digits</span></label>
         <label class="f">SAP Document<input type="text" class="bad" value="10000"><span class="err">10 digits needed</span></label>
+        <div class="f locked-f">Closing Day<span>Sep 30, 2026</span></div>
+        <div class="f locked-f">Accounts<div class="cluster"><span class="chip">6150 · Rent<button class="chip-x" type="button" aria-label="Remove 6150 · Rent"><svg data-ic="close-circle"></svg></button></span><span class="chip">6200 · Travel<button class="chip-x" type="button" aria-label="Remove 6200 · Travel"><svg data-ic="close-circle"></svg></button></div></div>
         <label class="f span2">Note<textarea placeholder="e.g. Rent, transfer to savings"></textarea></label>
         <div class="cluster span2" style="--gap: var(--s-5)">
           <label class="chk"><input type="checkbox" checked>The full statement is in</label>
@@ -191,6 +193,26 @@
   </section>
 
   <section class="g-sec">
+    <h2>Copy Cells, Row Actions and Sorting</h2>
+    <p>Copy variants: text, icon only, several lines, a date (copies as M/D/YYYY), and "–" where a value is still to come. The tick stays until the green has faded. Quick actions and owner pills sit on a row with a quiet on-state. Sort a column: blank cells are always last, up or down. Hover the cut-off description: a main line and a quieter sub line.</p>
+    <div class="card flush">
+      <div class="table-wrap">
+        <table class="t">
+          <thead><tr><th class="sortable"><button class="th-sort">Date<svg class="sort-ic" data-ic="alt-arrow-down"></svg></button></th><th class="dcol">Description</th><th>Reference</th><th>Owner</th><th>Action</th><th class="sortable num"><button class="th-sort">Amount<svg class="sort-ic" data-ic="alt-arrow-down"></svg></button></th><th>Copy</th></tr></thead>
+          <tbody>
+            <tr class="r"><td data-sort="2"><button class="copy date" data-copy="9/28/2026"><span>9/28</span><svg data-ic="copy"></svg></button></td><td class="dcol lead"><span class="trunc">ACME SUPPLIES INVOICE 40117 – OFFICE FURNITURE AND CABLING FOR THE NEW FLOOR<span class="sub">Vendor Payment</span></span></td><td><button class="copy" data-copy="40117"><span>40117</span><svg data-ic="copy"></svg></button></td><td><span class="pp-row"><button class="pp on" type="button">Dana</button><button class="pp" type="button">Lee</button></span></td><td><span class="qs"><button class="qb on" type="button"><svg data-ic="link-circle"></svg>Match</button><button class="qb" type="button">JE</button><button class="qb" type="button" disabled>Pay</button></span></td><td class="num" data-sort="-3688.74"><button class="copy" data-copy="-3688.74"><span><span class="brk">(</span>3,688.74<span class="brk">)</span></span><svg data-ic="copy"></svg></button></td><td><button class="copy icon-only" data-copy="40117 · 3688.74" aria-label="Copy reference and amount"><svg data-ic="copy"></svg></button></td></tr>
+            <tr class="r"><td data-sort="1"><button class="copy date" data-copy="9/24/2026"><span>9/24</span><svg data-ic="copy"></svg></button></td><td class="dcol lead"><span class="trunc">Monthly sweep to the operating account</span></td><td><span class="copy empty">–</span></td><td><span class="pp-row"><button class="pp" type="button">Dana</button><button class="pp hint" type="button">Lee</button></span></td><td><span class="qs"><button class="qb" type="button">Match</button><button class="qb on" type="button">JE</button><button class="qb" type="button">Pay</button></span></td><td class="num" data-sort=""><span class="copy empty">–</span></td><td><span class="copy icon-only disabled" aria-hidden="true"><svg data-ic="copy"></svg></span></td></tr>
+            <tr class="r"><td data-sort="3"><button class="copy date" data-copy="9/21/2026"><span>9/21</span><svg data-ic="copy"></svg></button></td><td class="dcol lead"><span class="trunc">Benefits provider funding</span></td><td><button class="copy" data-copy="260918"><span>260918</span><svg data-ic="copy"></svg></button></td><td><span class="pp-row"><button class="pp on" type="button">Lee</button></span></td><td><span class="qs"><button class="qb" type="button">Match</button><button class="qb" type="button">JE</button><button class="qb" type="button">Pay</button></span></td><td class="num" data-sort="-536.9"><button class="copy" data-copy="-536.90"><span><span class="brk">(</span>536.90<span class="brk">)</span></span><svg data-ic="copy"></svg></button></td><td><button class="copy icon-only" data-copy="260918 · 536.90" aria-label="Copy reference and amount"><svg data-ic="copy"></svg></button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="stack mt-4" style="max-width: 380px">
+      <button class="copy block" type="button" data-copy="Northwind Tech, 100 Harbour Way, Springfield"><span>Northwind Tech<br>100 Harbour Way<br>Springfield</span><svg data-ic="copy"></svg></button>
+    </div>
+  </section>
+
+  <section class="g-sec">
     <h2>Steps, Folds and Empty States</h2>
     <p>Native &lt;details&gt; for folding; numbered only when the content really is a sequence.</p>
     <div class="grid-auto" style="--min: 320px">
@@ -210,7 +232,11 @@
       <button class="btn" type="button" data-menu="m1" aria-haspopup="menu" aria-expanded="false"><svg data-ic="diskette"></svg>Backup<svg data-ic="alt-arrow-down"></svg></button>
       <button class="btn" type="button" data-open="dlg">Open a Dialog</button>
       <button class="btn" type="button" onclick="s4Toast('Undone: Match 40', {action: 'Redo'})">Show a Toast</button>
-      <span class="trunc" style="max-width: 180px">Hover me: a long description that doesn't fit</span>
+      <button class="btn" type="button" data-open="dlg2">Dialog With Unsaved Input</button>
+      <button class="btn" type="button" data-menu="m2" aria-haspopup="menu" aria-expanded="false">Options<svg data-ic="alt-arrow-down"></svg></button>
+      <button class="btn" type="button" data-menu="m3" aria-haspopup="menu" aria-expanded="false">Changes<svg data-ic="alt-arrow-down"></svg></button>
+      <span class="cluster" role="group" aria-label="History"><button class="btn icon" type="button" aria-label="Undo" onclick="s4Toast('Match 40 undone', {action: 'Redo', anchor: this})"><svg data-ic="undo-left"></svg></button><button class="btn icon" type="button" aria-label="Redo" disabled><svg data-ic="undo-right"></svg></button></span>
+      <span class="trunc" style="max-width: 180px">Hover me: a long description that doesn't fit<span class="sub">Vendor Payment</span></span>
     </div>
     <div class="menu static mt-4" style="width: 300px"><div class="menu-h">Backup</div><button type="button"><svg data-ic="diskette"></svg><span><b>Save a Backup</b><small>9 changes since Oct 23, 2026, 6:10 PM</small></span></button><button type="button"><svg data-ic="history"></svg><span><b>Restore from a Backup…</b><small>Replaces the data in this browser</small></span></button></div>
     <div class="banner info mt-4" style="border-radius: var(--r-md); border: 0"><svg data-ic="info-circle"></svg>Time for a backup: 25 changes since the last one.<button class="btn sm ml-auto" type="button">Save a Backup</button></div>
@@ -218,6 +244,12 @@
 </main>
 
 <div class="menu" id="m1" role="menu" hidden><button role="menuitem" type="button"><svg data-ic="diskette"></svg><span><b>Save a Backup</b><small>9 changes since the last one</small></span></button><button role="menuitem" type="button"><svg data-ic="history"></svg><span><b>Restore from a Backup…</b></span></button></div>
+<div class="menu opts" id="m2" role="menu" hidden><button role="menuitem" type="button" class="on"><b>Matched First</b><small>Matched rows on top, newest first</small></button><button role="menuitem" type="button"><b>Newest First</b><small>Every row by date, ignoring status</small></button><button role="menuitem" type="button"><b>Largest Amount</b><small>Biggest amounts first, blanks last</small></button></div>
+<div class="menu" id="m3" role="menu" hidden><div class="menu-h">Backup</div><button role="menuitem" type="button"><svg data-ic="diskette"></svg><span><b>Save a Backup</b><small>9 changes since Oct 23</small></span></button><div class="menu-sec"><div class="menu-h">Changes Since the Last Backup</div><button role="menuitem" type="button"><span style="flex:1;min-width:0"><b class="trunc">Matched 40 to Benefits Provider Funding</b></span><span class="n">3</span></button><button role="menuitem" type="button"><span style="flex:1;min-width:0"><b class="trunc">Journal Entry 12</b></span><span class="n">6</span></button></div></div>
+<div class="scrim" id="dlg2" hidden data-dirty="the queued files"><div class="modal narrow" role="dialog" aria-modal="true" aria-labelledby="dlg2-h"><div class="grab"></div>
+  <header><h2 id="dlg2-h">Import Statements</h2><button class="btn icon subtle" type="button" data-close aria-label="Close"><svg data-ic="close-circle"></svg></button></header>
+  <div class="body"><p class="m-0">Two files are queued. Press Escape: the dialog asks before it throws them away.</p><label class="f">Account<select><option>Operating</option><option>Savings</option><option>Payroll</option></select></label></div>
+  <footer><button class="btn" type="button" data-close>Cancel</button><button class="btn primary" type="button" data-close>Import</button></footer></div></div>
 <div class="scrim" id="dlg" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="dlg-h"><div class="grab"></div>
   <header><h2 id="dlg-h">Delete all data?</h2><button class="btn icon subtle" type="button" data-close aria-label="Close"><svg data-ic="close-circle"></svg></button></header>
   <div class="body"><p class="m-0">This removes every Bank Transaction, SAP line and setting from this browser. Save a backup first if you might need them.</p><label class="chk"><input type="checkbox">I don't need my current data</label></div>

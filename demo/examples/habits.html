@@ -15,14 +15,15 @@
    s4Theme("light" | "dark" | "auto")   theme toggle; data-theme is always "light" or "dark" (auto follows the device)
    s4Density("auto" | "standard" | "compact")  density setting; data-density is always "standard" or "compact" (auto: compact on a wide screen with a mouse, standard on touch and small screens). A [data-density-seg] box of buttons with data-v is wired and kept in step.
    s4Slider(box, ".on")                  one indicator that slides between options of .seg / .nav / .ptabs (on click only)
-   s4Copy(el, text)                      copy + the 0.6s green flash; any [data-copy] element copies on click
-   s4Tips(root)                          tooltips (.tip) for .trunc / .dcol text, only when it is actually cut off
-   s4Menu(button, menu)                  open a .menu under its button; any [data-menu="id"] button opens #id
-   s4Dialog(scrim) / s4Close(scrim)      open / close a .scrim dialog: focus moves in and back, Escape closes, a 0.15s exit
-   s4Toast("Saved", {action, onAction})  a dark toast for ~4s, with an optional action button ("Undo")
+   s4Copy(el, text)                      copy + the 0.6s green flash (the tick stays until the green has faded); any [data-copy] element copies on click
+   s4Tips(root)                          tooltips (.tip) for .trunc / .dcol text, only when it is actually cut off: a main line, a quieter sub line (<small> or .sub), a short delay, flips above near the bottom
+   s4Menu(button, menu)                  open a .menu under its button; arrows / Home / End move, Enter picks; any [data-menu="id"] button opens #id
+   s4Select(select)                      a themed dropdown for a <select> (every select is wired on load; add data-native to keep the browser's; touch screens keep it anyway)
+   s4Dialog(scrim) / s4Close(scrim)      open / close a .scrim dialog: focus moves in and back, Escape closes, a 0.15s exit. With data-dirty="the queued files", Escape asks "Discard the queued files?" first
+   s4Toast("Saved", {action, onAction, anchor})  a dark toast for ~4s (6.5s with an action, time to reach "Undo"); anchor = the button it points to (an undo pop-up)
    s4Fold(details, open)                 open or close a details.fold with its height animating; summary clicks are wired
    s4Swap(el)                            replay the fade on new tab content (give it class="swap")
-   s4Sort(table)                         header sorting: asc → desc → back to the original order; any table.t with th.sortable is wired
+   s4Sort(table)                         header sorting: asc → desc → back to the original order, blank cells always last; any table.t with th.sortable is wired
 */
 (function () {
   var KEY = "s4-theme", t = "auto", m = window.matchMedia && matchMedia("(prefers-color-scheme: dark)");
@@ -76,37 +77,63 @@ function s4Slider(box, sel) {
 
 /* Copy chips: <button class="copy" data-copy="-1234.56"><span>(1,234.56)</span><svg…/></button>. Negatives copy as -1234.56. */
 function s4Copy(el, text) {
-  function flash() { el.classList.add("done"); clearTimeout(el._s4t); el._s4t = setTimeout(function () { el.classList.remove("done"); }, 600); }
+  function flash() {   /* green + tick for 0.6s, then the green fades (.fade, 0.14s) with the tick still there, so colour and icon go back together */
+    clearTimeout(el._s4t); el.classList.remove("fade"); el.classList.add("done");
+    el._s4t = setTimeout(function () { el.classList.remove("done"); el.classList.add("fade"); el._s4t = setTimeout(function () { el.classList.remove("fade"); }, s4Still() ? 0 : 140); }, 600);
+  }
   function legacy() { var ta = document.createElement("textarea"); ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
     document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); flash(); } catch (e) {} ta.remove(); }
   try { navigator.clipboard.writeText(text).then(flash, legacy); } catch (e) { legacy(); }
 }
 
-/* Tooltips for cut-off text: only when the text really doesn't fit. */
+/* Tooltips for cut-off text: only when the text really doesn't fit, after a short delay (so crossing a table doesn't flicker). A <small> or .sub
+   inside the element becomes a quieter second line. Shows under the text, above it near the bottom of the window. */
 function s4Tips(root) {
   var tip = document.createElement("div"); tip.className = "tip"; tip.hidden = true; tip.setAttribute("role", "tooltip"); document.body.appendChild(tip);
+  var timer, cur, SEL = ".trunc, .tip-on-cut";
+  function hide() { clearTimeout(timer); cur = null; tip.hidden = true; }
   function show(el) {
-    if (el.scrollWidth <= el.clientWidth + 1) return;
-    tip.textContent = el.textContent.trim(); tip.hidden = false;
+    if (cur !== el || !el.isConnected) return;
+    var sub = el.querySelector("small, .sub"), subText = sub ? sub.textContent.trim() : "";
+    var main = (sub ? Array.prototype.map.call(el.childNodes, function (n) { return n === sub || (n.nodeType === 1 && n.contains(sub)) ? "" : n.textContent; }).join("") : el.textContent).trim();
+    if (subText.toLowerCase() === main.toLowerCase()) subText = "";
+    tip.textContent = ""; var m = document.createElement("div"); m.textContent = main; tip.appendChild(m);
+    if (subText) { var sm = document.createElement("small"); sm.textContent = subText; tip.appendChild(sm); }
+    tip.hidden = false;
     var r = el.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
-    var x = Math.min(Math.max(8, r.left), innerWidth - w - 8), y = r.bottom + 6 + h > innerHeight ? r.top - h - 6 : r.bottom + 6;
+    var x = Math.min(Math.max(8, r.left - 9), innerWidth - w - 8), y = r.bottom + 6 + h > innerHeight - 8 ? r.top - h - 6 : r.bottom + 6;
     tip.style.left = x + "px"; tip.style.top = y + "px";
   }
-  (root || document).addEventListener("mouseover", function (e) { var el = e.target.closest && e.target.closest(".trunc, .tip-on-cut"); if (el) show(el); });
-  (root || document).addEventListener("mouseout", function (e) { if (e.target.closest && e.target.closest(".trunc, .tip-on-cut")) tip.hidden = true; });
-  addEventListener("scroll", function () { tip.hidden = true; }, true);
+  (root || document).addEventListener("mouseover", function (e) {
+    var el = e.target.closest && e.target.closest(SEL); if (el === cur) return;
+    hide(); if (!el || el.scrollWidth <= el.clientWidth + 1) return;
+    cur = el; timer = setTimeout(function () { show(el); }, 280);
+  });
+  (root || document).addEventListener("mouseout", function (e) { if (cur && !(e.relatedTarget && cur.contains(e.relatedTarget))) hide(); });
+  document.addEventListener("mousedown", hide); addEventListener("blur", hide); addEventListener("scroll", hide, true);
 }
 
-/* Menus: placed under (or above) the button, kept inside the window; Escape or a click outside closes. */
+/* Menus: placed under (or above) the button, kept inside the window; Escape or a click outside closes. Arrow keys, Home and End move between
+   the items, Enter picks; opened from the keyboard, the first item takes focus. */
 function s4Menu(btn, menu) {
   var open = !menu.hidden; document.querySelectorAll(".menu:not(.static)").forEach(function (x) { x.hidden = true; });
   if (open) return;
+  var byKey = btn.matches && btn.matches(":focus-visible");
   menu.hidden = false; btn.setAttribute("aria-expanded", "true");
   var r = btn.getBoundingClientRect(), w = menu.offsetWidth, h = menu.offsetHeight;
   var x = Math.min(Math.max(8, r.right - w), innerWidth - w - 8), y = r.bottom + 6 + h > innerHeight - 8 ? Math.max(8, r.top - h - 6) : r.bottom + 6;
   menu.style.left = x + "px"; menu.style.top = y + "px";
+  function items() { return Array.prototype.filter.call(menu.querySelectorAll("button:not(:disabled), a[href]"), function (b) { return b.offsetParent !== null; }); }
+  if (byKey) { var first = items()[0]; if (first) first.focus(); }
   function close(e) {
-    if (e && e.type === "keydown" && e.key !== "Escape") return;
+    if (e && e.type === "keydown") {
+      var k = e.key, list = items(), i = list.indexOf(document.activeElement);
+      if (k === "ArrowDown" || k === "ArrowUp" || k === "Home" || k === "End") {
+        e.preventDefault(); if (!list.length) return;
+        list[k === "Home" ? 0 : k === "End" ? list.length - 1 : k === "ArrowDown" ? (i + 1) % list.length : (i <= 0 ? list.length - 1 : i - 1)].focus(); return;
+      }
+      if (k !== "Escape") return;
+    }
     if (e && e.type === "click" && (menu.contains(e.target) && !e.target.closest("button, a") || btn.contains(e.target))) return;
     menu.hidden = true; btn.setAttribute("aria-expanded", "false");
     document.removeEventListener("click", close, true); document.removeEventListener("keydown", close);
@@ -115,22 +142,110 @@ function s4Menu(btn, menu) {
   setTimeout(function () { document.addEventListener("click", close, true); document.addEventListener("keydown", close); });
 }
 
+/* Dropdown: wraps a <select>. The select stays in the page, hidden, and keeps the value (forms, change events); a button + listbox shows and sets it.
+   Arrows / Home / End / type-ahead / Enter / Escape; opens upward near the bottom; a tick marks the current option. Touch screens and [data-native] keep the browser's. */
+function s4Select(sel) {
+  if (sel._s4sel || sel.hasAttribute("data-native") || sel.multiple || sel.size > 1 || (window.matchMedia && matchMedia("(pointer: coarse)").matches)) return;
+  sel._s4sel = true;
+  var btn = document.createElement("button"); btn.type = "button"; btn.className = "sel " + sel.className.replace(/\bbad\b/, "").trim();
+  var lab = sel.getAttribute("aria-label") || (sel.id && document.querySelector('label[for="' + sel.id + '"]') ? document.querySelector('label[for="' + sel.id + '"]').textContent.trim() : "");
+  if (lab) btn.setAttribute("aria-label", lab); else if (sel.closest("label")) btn.setAttribute("aria-label", sel.closest("label").textContent.replace(sel.textContent, "").trim());
+  btn.setAttribute("role", "combobox"); btn.setAttribute("aria-haspopup", "listbox"); btn.setAttribute("aria-expanded", "false"); btn.disabled = sel.disabled;
+  btn.innerHTML = '<span class="sel-v"></span><svg class="sel-c" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  sel.parentNode.insertBefore(btn, sel); sel.hidden = true;
+  var list, act = 0, typed = "", typedAt = 0, uid = "s4sel" + Math.random().toString(36).slice(2, 7);
+  function opts() { return Array.prototype.slice.call(sel.options); }
+  function sync() { var o = sel.options[sel.selectedIndex]; btn.querySelector(".sel-v").textContent = o ? o.textContent : ""; btn.disabled = sel.disabled; }
+  sync(); sel.addEventListener("change", sync);
+  function pick(i) {
+    var o = opts()[i]; shut(true);
+    if (o && !o.disabled && sel.selectedIndex !== i) { sel.selectedIndex = i; sel.dispatchEvent(new Event("change", { bubbles: true })); }
+  }
+  function mark(i) {
+    act = i; Array.prototype.forEach.call(list.children, function (li, k) { li.classList.toggle("act", k === i); });
+    btn.setAttribute("aria-activedescendant", uid + "-" + i); var li = list.children[i]; if (li && li.scrollIntoView) li.scrollIntoView({ block: "nearest" });
+  }
+  function away(e) { if (!btn.contains(e.target) && !list.contains(e.target)) shut(); }
+  function shut(focus) {
+    if (!list) return; list.remove(); list = null; btn.setAttribute("aria-expanded", "false"); btn.removeAttribute("aria-activedescendant");
+    document.removeEventListener("mousedown", away); removeEventListener("resize", shut); removeEventListener("blur", shut); if (focus) btn.focus();
+  }
+  function show() {
+    if (list) return;
+    list = document.createElement("ul"); list.className = "sel-list"; list.id = uid; list.setAttribute("role", "listbox"); if (btn.getAttribute("aria-label")) list.setAttribute("aria-label", btn.getAttribute("aria-label"));
+    opts().forEach(function (o, i) {
+      var li = document.createElement("li"); li.id = uid + "-" + i; li.setAttribute("role", "option"); li.setAttribute("aria-selected", i === sel.selectedIndex); li.textContent = o.textContent;
+      if (i === sel.selectedIndex) { li.classList.add("on"); li.insertAdjacentHTML("beforeend", '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.3l2.3 2.3 4.7-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'); }
+      if (o.disabled) li.setAttribute("aria-disabled", "true");
+      li.addEventListener("mousemove", function () { mark(i); }); li.addEventListener("mousedown", function (e) { e.preventDefault(); }); li.addEventListener("click", function () { pick(i); });
+      list.appendChild(li);
+    });
+    document.body.appendChild(list); btn.setAttribute("aria-expanded", "true"); btn.setAttribute("aria-controls", uid);
+    var r = btn.getBoundingClientRect(), below = innerHeight - r.bottom - 12, above = r.top - 12, up = below < 180 && above > below;
+    list.style.left = Math.min(r.left, innerWidth - 168) + "px"; list.style.minWidth = Math.max(r.width, 160) + "px"; list.style.maxHeight = Math.min(320, up ? above : below) + "px";
+    if (up) { list.classList.add("up"); list.style.bottom = innerHeight - r.top + 4 + "px"; } else list.style.top = r.bottom + 4 + "px";
+    mark(Math.max(0, sel.selectedIndex));
+    document.addEventListener("mousedown", away); addEventListener("resize", shut); addEventListener("blur", shut);
+  }
+  btn.addEventListener("click", function () { if (list) shut(); else show(); });
+  btn.addEventListener("keydown", function (e) {
+    var n = sel.options.length; if (!n) return;
+    var k = e.key;
+    if (k === "Escape" && !list) return;   /* a closed dropdown leaves Escape to the dialog around it */
+    if (k === "Tab") { shut(); return; }
+    var typing = k.length === 1 && !e.ctrlKey && !e.metaKey && k !== " ";
+    if (!(["ArrowDown", "ArrowUp", "Home", "End", "Enter", " ", "Escape"].indexOf(k) >= 0 || typing)) return;
+    e.preventDefault(); e.stopPropagation && k === "Escape" && e.stopPropagation();
+    if (!list && !typing) { show(); return; }
+    if (k === "Escape") { shut(true); return; }
+    if (k === "ArrowDown") mark(Math.min(n - 1, act + 1)); else if (k === "ArrowUp") mark(Math.max(0, act - 1));
+    else if (k === "Home") mark(0); else if (k === "End") mark(n - 1);
+    else if (k === "Enter" || k === " ") pick(act);
+    else {
+      var now = Date.now(); typed = (now - typedAt > 700 ? "" : typed) + k.toLowerCase(); typedAt = now;
+      var from = list ? act : Math.max(0, sel.selectedIndex), o = opts(), hit = -1;
+      for (var q = 0; q < n && hit < 0; q++) { var c = (q + from + (typed.length === 1 ? 1 : 0)) % n; if (o[c].textContent.toLowerCase().indexOf(typed) === 0) hit = c; }
+      if (hit >= 0) { if (list) mark(hit); else if (sel.selectedIndex !== hit) { sel.selectedIndex = hit; sel.dispatchEvent(new Event("change", { bubbles: true })); } }
+    }
+  });
+}
+
 /* Dialogs: <div class="scrim" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="…">…</div></div> */
 function s4Dialog(scrim) {
-  clearTimeout(scrim._s4t); scrim.classList.remove("closing");
+  clearTimeout(scrim._s4t); scrim.classList.remove("closing"); var old = scrim.querySelector(".ask"); if (old) old.remove();
   scrim._s4back = document.activeElement; scrim.hidden = false;
   var f = scrim.querySelector("[autofocus], .modal footer .btn.primary, input, select, textarea, button"); if (f) f.focus();
   if (!scrim._s4wired) {
     scrim._s4wired = true;
     scrim.addEventListener("click", function (e) { if (e.target === scrim && !scrim.hasAttribute("data-dirty")) s4Close(scrim); });
     scrim.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") { e.stopPropagation(); s4Close(scrim); return; }
+      if (e.key === "Escape") {
+        if (e.defaultPrevented) return;   /* a dropdown or menu inside took it */
+        e.stopPropagation();
+        if (scrim.hasAttribute("data-dirty")) { s4Ask(scrim); return; }
+        s4Close(scrim); return;
+      }
       if (e.key !== "Tab") return;   /* keep focus inside the dialog */
       var els = Array.prototype.filter.call(scrim.querySelectorAll("a[href], button:not(:disabled), input:not(:disabled), select, textarea, [tabindex]:not([tabindex='-1'])"), function (x) { return x.offsetParent !== null; });
       if (!els.length) return; var first = els[0], last = els[els.length - 1];
       if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     });
   }
+}
+/* Unsaved input: Escape on a dialog with data-dirty="what would be lost" asks inside the dialog (Keep Editing / Discard); Escape again goes back to editing. */
+function s4Ask(scrim) {
+  var modal = scrim.querySelector(".modal"), ask = modal.querySelector(".ask");
+  function leave(then) { var back = ask._s4back; ask.remove(); if (then) then(); else if (back && back.focus) back.focus(); }   /* focus returns to where it was, so keys keep reaching the dialog */
+  if (ask) { leave(); return; }
+  var what = scrim.getAttribute("data-dirty") || "your changes", back = document.activeElement;
+  ask = document.createElement("div"); ask.className = "ask"; ask.setAttribute("role", "alertdialog"); ask.setAttribute("aria-label", "Discard changes?"); ask._s4back = back;
+  var q = document.createElement("span"); q.textContent = "Discard " + what + "?"; ask.appendChild(q);
+  var row = document.createElement("span"); row.className = "row"; ask.appendChild(row);
+  var keep = document.createElement("button"); keep.type = "button"; keep.className = "btn"; keep.textContent = "Keep Editing"; keep.onclick = function () { leave(); };
+  var drop = document.createElement("button"); drop.type = "button"; drop.className = "btn danger-fill"; drop.textContent = "Discard"; drop.onclick = function () { leave(function () { s4Close(scrim); }); };   /* the app clears data-dirty when it resets the dialog */
+  row.appendChild(keep); row.appendChild(drop);
+  var foot = modal.querySelector("footer"); if (foot) modal.insertBefore(ask, foot); else modal.appendChild(ask);
+  keep.focus();
 }
 /* Closing: focus goes back at once (keys never wait), the dialog fades out (a phone sheet slides down), then it hides. */
 function s4Close(scrim) {
@@ -141,12 +256,18 @@ function s4Close(scrim) {
 }
 
 function s4Toast(text, opt) {
-  opt = opt || {}; var old = document.querySelector(".toast[data-s4]"); if (old) old.remove();
+  opt = opt || {}; var old = document.querySelector(".toast[data-s4]"); if (old) { clearTimeout(old._s4t); old.remove(); }
   var t = document.createElement("div"); t.className = "toast"; t.setAttribute("data-s4", ""); t.setAttribute("role", "status");
   var s = document.createElement("span"); s.textContent = text; t.appendChild(s);
-  if (opt.action) { var b = document.createElement("button"); b.type = "button"; b.textContent = opt.action; b.onclick = function () { t.remove(); if (opt.onAction) opt.onAction(); }; t.appendChild(b); }
+  if (opt.action) { var b = document.createElement("button"); b.type = "button"; b.textContent = opt.action; b.onclick = function () { clearTimeout(t._s4t); t.remove(); if (opt.onAction) opt.onAction(); }; t.appendChild(b); }
   document.body.appendChild(t);
-  setTimeout(function () { t.classList.add("leaving"); setTimeout(function () { t.remove(); }, s4Still() ? 0 : 160); }, opt.ms || 4000);
+  if (opt.anchor) {   /* an undo pop-up: under (or above, near the bottom) the button it belongs to, with a pointer to it */
+    t.classList.add("undo-pop"); var a = opt.anchor.getBoundingClientRect(), w = t.offsetWidth, h = t.offsetHeight;
+    var up = a.bottom + 12 + h > innerHeight - 8 && a.top > h + 12, x = Math.min(Math.max(8, a.right - w), innerWidth - w - 8);
+    t.style.left = x + "px"; t.style.top = (up ? a.top - h - 10 : a.bottom + 10) + "px"; t.classList.toggle("up", up);
+    t.style.setProperty("--arrow-x", Math.min(Math.max(16, a.left + a.width / 2 - x), w - 16) + "px");
+  }
+  t._s4t = setTimeout(function () { t.classList.add("leaving"); setTimeout(function () { t.remove(); }, s4Still() ? 0 : 160); }, opt.ms || (opt.action ? 6500 : 4000));
 }
 
 /* Folds: <details class="fold"> grows and shrinks instead of jumping. The open state is set at once when opening and at
@@ -188,6 +309,7 @@ function s4Sort(table) {
   Array.prototype.forEach.call(body.rows, function (r, i) { r._s4i = i; });
   function key(td) {
     var v = td ? (td.getAttribute("data-sort") != null ? td.getAttribute("data-sort") : td.textContent.trim()) : "";
+    if (/^\s*[–—-]?\s*$/.test(v)) return { blank: true };
     var n = v.replace(/[,$€£\s)]/g, "").replace(/^\(/, "-");
     return n !== "" && !isNaN(n) ? { n: parseFloat(n) } : { s: v.toLowerCase() };
   }
@@ -201,6 +323,7 @@ function s4Sort(table) {
       rows.sort(function (a, b) {
         if (dir === "none") return a._s4i - b._s4i;
         var x = key(a.cells[col]), y = key(b.cells[col]);
+        if (x.blank || y.blank) return x.blank && y.blank ? a._s4i - b._s4i : x.blank ? 1 : -1;   /* blanks always last, whichever way it sorts */
         var c = x.n != null && y.n != null ? x.n - y.n : String(x.s != null ? x.s : x.n).localeCompare(String(y.s != null ? y.s : y.n), undefined, { numeric: true });
         return (dir === "ascending" ? c : -c) || a._s4i - b._s4i;
       });
@@ -225,6 +348,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".seg").forEach(function (s) { s4Slider(s, "button.on"); });
   document.querySelectorAll(".ptabs").forEach(function (s) { s4Slider(s, "button.on"); });
   document.querySelectorAll("table.t").forEach(function (t) { if (t.querySelector("th.sortable")) s4Sort(t); });
+  document.querySelectorAll("select").forEach(s4Select);
   s4Tips();
 });
 </script>
@@ -610,6 +734,16 @@ label.f.row { flex-direction: row; align-items: center; gap: var(--s-2); }
 label.f .err, .err { color: var(--bad); font-size: var(--fs-xs); font-weight: 500; }
 label.f .hint { color: var(--text3); font-size: var(--fs-xs); }
 .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3) var(--s-4); } .form-grid .span2 { grid-column: 1 / -1; }
+/* dropdown (s4Select): replaces the browser's own list. The native <select> stays in the page, hidden, as the value; on touch screens it is left alone (the phone's picker is better). */
+button.sel { display: inline-flex; align-items: center; justify-content: space-between; gap: 10px; min-width: 0; max-width: 100%; min-height: 34px; padding: 6px 10px 6px 11px; border: 1px solid var(--field-line); border-radius: var(--r-md); background: var(--field-bg); color: var(--text); font: inherit; text-align: left; cursor: pointer; transition: background-color var(--dur-2), border-color var(--dur-2); }
+button.sel:hover:not(:disabled) { background: var(--hov); } button.sel:disabled { opacity: .5; cursor: default; }
+button.sel[aria-expanded="true"] { border-color: var(--field-focus-line); background-color: var(--field-focus-bg); }   /* open = the focused-field look, not an accent ring */
+button.sel:focus-visible { outline: none; border-color: var(--field-focus-line); background-color: var(--field-focus-bg); }
+button.sel .sel-v { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } button.sel .sel-c { flex: none; width: 12px; height: 12px; color: var(--text2); transition: transform var(--dur-2) var(--ease); }
+button.sel[aria-expanded="true"] .sel-c { transform: rotate(180deg); }
+label.f button.sel { width: 100%; font-size: var(--fs-base); } td button.sel { width: 100%; }
+/* a setting someone else locked: shows as a plain value, not a field: <div class="f locked-f">Closing Day<span>Sep 30, 2026</span></div> */
+.f.locked-f { display: flex; flex-direction: column; gap: 4px; font-size: var(--fs-xs); color: var(--text2); } .locked-f > span { font-size: var(--fs-base); color: var(--text); }
 
 /* ---------- 8. choosers ---------- */
 /* segmented filter: "All 46 | Still to Do 12 | Done 34". Starts on All, changes only on a click. s4Slider() adds the sliding pill. */
@@ -677,6 +811,8 @@ input[type=radio] { accent-color: var(--btn); width: 16px; height: 16px; margin:
 .badge.accent { color: var(--accent-ink); background: var(--accent-chip); }
 .badge.solid { color: var(--btn-fg); background: var(--btn); }
 .chip { display: inline-flex; align-items: center; gap: 4px; padding: 1px 7px; border: 1px solid var(--border); border-radius: var(--r-xs); background: var(--well); font-size: var(--fs-badge); }   /* a small code or ID */
+.chip-x { display: inline-grid; place-items: center; width: 18px; height: 18px; margin-right: -3px; padding: 0; border: 0; border-radius: var(--r-xs); background: none; color: var(--text3); cursor: pointer; }   /* the x on a removable chip: <span class="chip">GL 6150<button class="chip-x" aria-label="Remove GL 6150"><svg data-ic="close-circle"></svg></button></span> */
+.chip-x:hover, .chip-x:focus-visible { color: var(--bad); background: var(--well); } .chip-x svg { width: 12px; height: 12px; }
 .dot { display: inline-block; width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--mute-bar); }
 .dot.ok { background: var(--ok-bar); } .dot.warn { background: var(--warn-bar); } .dot.bad { background: var(--bad-bar); } .dot.accent { background: var(--btn); }
 /* progress: <div class="bar"><i class="ok" style="width:40%"></i>…</div> */
@@ -773,6 +909,18 @@ table.t:not(.cards) th:is(.sticky-l, .sticky-l2, .sticky-r) { z-index: 3; backdr
 .t-foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); padding: 8px 14px; border-top: 1px solid var(--border); color: var(--text2); font-size: var(--fs-sm); } .t-foot .grow { flex: 1; } .t-foot select { width: auto; }
 .pager { display: inline-flex; align-items: center; gap: 4px; } .pager .btn[disabled] { opacity: .4; }
 
+/* row quick actions and owner pills: small inline choices on a table row, with a quiet on-state. <span class="qs"><button class="qb on">Match</button><button class="qb">JE</button></span> · <span class="pp-row"><button class="pp on">Dana</button><button class="pp hint">Lee</button></span> */
+.qs, .pp-row { display: inline-flex; gap: 3px; }
+.qb, .pp { box-sizing: border-box; border: 1px solid var(--border); background: transparent; font: inherit; font-size: var(--fs-xs); line-height: 1.5; white-space: nowrap; cursor: pointer; transition: background-color var(--dur-2), color var(--dur-2), border-color var(--dur-2); }
+.pp { padding: 2px 8px; border-radius: var(--r-pill); color: var(--text3); } .pp:hover { border-color: var(--soft-ring); color: var(--text); }
+.pp.on, .pp.on:hover { background: var(--fill2); border-color: var(--soft-ring); color: var(--accent-ink); font-weight: 600; }
+.pp.hint { border-style: dashed; border-color: var(--soft-ring); color: var(--accent-text); }   /* the suggested owner, not yet chosen */
+.qb { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: var(--r-sm); color: var(--text2); }
+.qb:hover:not(:disabled) { color: var(--text); } .qb:hover:not(:disabled):not(.on) { border-color: var(--border2); background: var(--hov); }
+.qb:disabled { opacity: .35; cursor: default; }
+.qb.on { background: var(--fill2); border-color: var(--soft-ring); color: var(--accent-ink); font-weight: 600; } .qb.on:hover:not(:disabled) { color: var(--text); }
+.qb svg { width: 14px; height: 14px; flex: none; }
+
 /* ---------- 11b. charts: marks are SVG you draw; this styles the pieces around them ---------- */
 .plot { position: relative; width: 100%; } .plot svg { display: block; overflow: visible; }
 .plot text { fill: var(--text3); font-family: inherit; font-size: var(--fs-xs); font-feature-settings: "ss01", "cv09"; font-variant-numeric: tabular-nums; }   /* axis and labels wear text tokens, never the series colour */
@@ -804,6 +952,16 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3 4.7-5' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3 4.7-5' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat; }
 .copy.empty { border-style: dashed; color: var(--text3); cursor: default; background: transparent; }   /* "–" placeholder for a value still to come */
+.copy.fade { transition: background-color .14s linear; }   /* s4Copy: the green fades out while the tick stays, so colour and icon go back together */
+.copy.fade, table .copy.fade { border-color: transparent; background: transparent; } .copy.fade > svg { display: none; }
+.copy.fade::after { content: ""; flex: none; width: 13px; height: 13px; background: var(--ok);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3 4.7-5' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3 4.7-5' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat; }
+.copy.empty { min-width: 44px; justify-content: center; } table .copy.empty { border-color: var(--border2); } td.num > .copy.empty { display: flex; width: fit-content; margin-left: auto; }   /* "–" where an amount is still to come */
+.copy.icon-only { padding: 6px; justify-content: center; } table .copy.icon-only:not(:hover):not(:focus-visible):not(.done) svg { opacity: .8; }   /* just the icon: for a cell that is only a copy action */
+.copy.icon-only.disabled { opacity: .35; cursor: default; }
+.copy.block { display: flex; text-align: left; align-items: flex-start; justify-content: space-between; width: 100%; padding: 8px 10px; white-space: normal; } .copy.block > svg { margin-top: 2px; }   /* several lines in one copy box (an address, a posting) */
+.copy.date { padding: 1px 7px; }   /* a date: copies as M/D/YYYY */
 .kbd { display: inline-flex; align-items: center; justify-content: center; gap: 3px; min-width: 20px; height: 20px; padding: 0 6px; font: 600 var(--fs-cap)/1 var(--font); letter-spacing: .02em; color: var(--text); border-radius: var(--r-xs); border: 1px solid var(--kbd-line); background: var(--kbd-bg); box-shadow: var(--kbd-shadow); vertical-align: middle; }
 .btn .kbd { height: 18px; min-width: 18px; }
 .kbd.on-pri { color: #fff; background: rgba(0,0,0,.14); border-color: rgba(255,255,255,.32); box-shadow: 0 1.5px 0 rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.2); }
@@ -819,6 +977,13 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
 .menu b { display: block; font-weight: 600; } .menu small { display: block; margin-top: 1px; color: var(--text3); font-size: var(--fs-xs); }
 .menu .menu-h { padding: 4px 6px 6px; font-size: var(--fs-xs); font-weight: 600; color: var(--text3); }
 .menu hr { width: 100%; margin: 3px 0; border: 0; border-top: 1px solid var(--border); }
+.menu:has(.menu-sec) { width: 400px; }   /* with sections the menu has a fixed width, so counts line up at the right edge and long rows get an ellipsis */
+.menu-sec { margin-top: 3px; padding: 8px 4px 2px; border-top: 1px solid var(--border); } .menu-sec .menu-h { padding: 0 6px 6px; }
+.menu.opts { width: min(330px, 80vw); min-width: 0; } .menu.opts button { flex-direction: column; gap: 3px; padding: 10px 12px; } .menu.opts button.on b { color: var(--accent-text); }   /* an options menu: each choice has a line saying what it does */
+.sel-list { position: fixed; z-index: var(--z-menu); margin: 0; padding: 6px; list-style: none; overflow: auto; border: 1px solid var(--border2); border-radius: var(--r); background: var(--pop-bg); color: var(--text); box-shadow: var(--shadow-2); animation: s4-pop .14s var(--ease); transform-origin: top left; }
+.sel-list.up { transform-origin: bottom left; }
+.sel-list li { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 7px 10px; border-radius: var(--r-sm); white-space: nowrap; cursor: pointer; }
+.sel-list li.act { background: var(--hov); } .sel-list li.on { font-weight: 600; color: var(--accent-text); } .sel-list li svg { width: 14px; height: 14px; flex: none; }
 .scrim { position: fixed; inset: 0; z-index: var(--z-modal); display: grid; place-items: center; padding: var(--s-4); background: var(--scrim); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: s4-fade var(--dur-2) ease-out; }
 .modal { display: flex; flex-direction: column; width: min(560px, 100%); max-height: 92vh; max-height: 92dvh; overflow: clip; background: var(--modal-bg); border: 1px solid var(--modal-line); border-radius: var(--r-xl); box-shadow: var(--shadow-3); animation: s4-grow var(--dur-3) var(--ease); }
 .modal.wide { width: min(1000px, 100%); } .modal.narrow { width: min(440px, 100%); }
@@ -826,9 +991,13 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
 .modal .body { display: flex; flex-direction: column; gap: 14px; padding: 6px var(--s-5) var(--s-4); overflow: auto; overscroll-behavior: contain; } .modal .body > * { min-width: 0; }
 .modal footer { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; padding: var(--s-3) var(--s-5); border-top: 1px solid var(--border); }
 .modal .grab { display: none; }   /* the handle on a phone bottom sheet */
+.modal .ask { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); align-items: center; justify-content: space-between; padding: var(--s-3) var(--s-5); border-top: 1px solid var(--border); background: var(--bad-bg); color: var(--bad-ink); font-weight: 500; } .modal .ask .row { display: inline-flex; gap: var(--s-2); }   /* Escape on a dialog with unsaved input asks "Discard …?" here (s4Dialog + data-dirty) */
 .scrim.closing { pointer-events: none; animation: s4-fade-out .15s ease-in forwards; } .scrim.closing .modal { animation: s4-shrink .15s ease-in forwards; }   /* s4Close: a short exit; focus is already back */
 .toast { position: fixed; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: var(--z-toast); display: flex; align-items: center; gap: 14px; width: max-content; max-width: min(560px, calc(100vw - 32px)); padding: 10px 16px; border-radius: var(--r-sm); background: var(--toast-bg); color: var(--on-dark); border: 1px solid rgba(255,255,255,.12); box-shadow: var(--shadow-1); font-size: var(--fs-ui); animation: s4-rise var(--dur-3) var(--ease); }
 .toast.leaving { animation: s4-sink .16s ease-in forwards; }   /* s4Toast fades it out rather than cutting it */
+.toast.undo-pop { left: auto; bottom: auto; transform: none; max-width: min(380px, calc(100vw - 16px)); z-index: var(--z-toast); animation: s4-pop .14s var(--ease); }   /* s4Toast(…, {anchor}): next to the Undo and Redo buttons, with a pointer to them */
+.toast.undo-pop::before { content: ""; position: absolute; top: -5px; left: var(--arrow-x, 24px); width: 10px; height: 10px; margin-left: -5px; background: inherit; border-left: 1px solid rgba(255,255,255,.12); border-top: 1px solid rgba(255,255,255,.12); transform: rotate(45deg); }
+.toast.undo-pop.up::before { top: auto; bottom: -5px; transform: rotate(225deg); }
 .toast button { flex: none; min-height: 30px; padding: 0 12px; border: 1px solid rgba(255,255,255,.28); border-radius: 7px; background: rgba(255,255,255,.12); color: var(--on-dark); font: inherit; font-weight: 600; cursor: pointer; } .toast button:hover { background: rgba(255,255,255,.22); }   /* "Undone: … [Redo]" */
 .tip { position: fixed; z-index: var(--z-tip); max-width: min(480px, calc(100vw - 24px)); padding: 8px 11px; border: 1px solid var(--tip-line); border-radius: var(--r-md); background: var(--tip-bg); color: var(--on-dark); font-size: var(--fs-ui); line-height: 1.4; box-shadow: var(--shadow-2); pointer-events: none; overflow-wrap: anywhere; animation: s4-fade .12s ease-out; }   /* the full text of something cut off */
 .tip small { display: block; margin-top: 2px; color: var(--on-dark2); font-size: var(--fs-xs); }

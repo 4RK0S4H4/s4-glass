@@ -251,7 +251,19 @@
 &lt;span class=&quot;copy empty&quot;&gt;–&lt;/span&gt;
 &lt;div class=&quot;keys&quot;&gt;&lt;span class=&quot;kh&quot;&gt;&lt;span class=&quot;kbd&quot;&gt;J&lt;/span&gt;Journal Entry&lt;/span&gt;&lt;span class=&quot;kh&quot;&gt;&lt;span class=&quot;kbd&quot;&gt;Enter ↵&lt;/span&gt;Match&lt;/span&gt;&lt;/div&gt;
 </code></pre>
-<p>Wrap the value in its own <code>&lt;span&gt;</code> (the chip is a flex box). Negatives copy as <code>-1289.30</code>.</p>
+<p>Wrap the value in its own <code>&lt;span&gt;</code> (the chip is a flex box). Negatives copy as <code>-1289.30</code>. The green and the tick stay 0.6s, then the green fades (<code>.fade</code>, 0.14s) with the tick still there.</p>
+<p>Variants (all <code>.copy</code> + a modifier):</p>
+<pre><code class="language-html">&lt;button class=&quot;copy icon-only&quot; data-copy=&quot;40117&quot; aria-label=&quot;Copy Reference&quot;&gt;&lt;svg data-ic=&quot;copy&quot;&gt;&lt;/svg&gt;&lt;/button&gt;          &lt;!-- just the icon --&gt;
+&lt;button class=&quot;copy block&quot; data-copy=&quot;Northwind Tech, 100 Harbour Way&quot;&gt;&lt;span&gt;Northwind Tech&lt;br&gt;100 Harbour Way&lt;/span&gt;&lt;svg data-ic=&quot;copy&quot;&gt;&lt;/svg&gt;&lt;/button&gt;   &lt;!-- several lines --&gt;
+&lt;button class=&quot;copy date&quot; data-copy=&quot;9/28/2026&quot;&gt;&lt;span&gt;9/28&lt;/span&gt;&lt;svg data-ic=&quot;copy&quot;&gt;&lt;/svg&gt;&lt;/button&gt;   &lt;!-- a date copies as M/D/YYYY --&gt;
+&lt;span class=&quot;copy empty&quot;&gt;–&lt;/span&gt;   &lt;!-- a value still to come; in td.num it aligns right --&gt;
+</code></pre>
+<h3 id="row-quick-actions-owner-pills-removable-chip-locked-setting">Row quick actions, owner pills, removable chip, locked setting</h3>
+<pre><code class="language-html">&lt;span class=&quot;qs&quot;&gt;&lt;button class=&quot;qb on&quot;&gt;&lt;svg data-ic=&quot;link-circle&quot;&gt;&lt;/svg&gt;Match&lt;/button&gt;&lt;button class=&quot;qb&quot;&gt;JE&lt;/button&gt;&lt;button class=&quot;qb&quot; disabled&gt;Pay&lt;/button&gt;&lt;/span&gt;
+&lt;span class=&quot;pp-row&quot;&gt;&lt;button class=&quot;pp on&quot;&gt;Dana&lt;/button&gt;&lt;button class=&quot;pp hint&quot;&gt;Lee&lt;/button&gt;&lt;/span&gt;   &lt;!-- .hint = suggested, not yet chosen --&gt;
+&lt;span class=&quot;chip&quot;&gt;6150 · Rent&lt;button class=&quot;chip-x&quot; aria-label=&quot;Remove 6150 · Rent&quot;&gt;&lt;svg data-ic=&quot;close-circle&quot;&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/span&gt;
+&lt;div class=&quot;f locked-f&quot;&gt;Closing Day&lt;span&gt;Sep 30, 2026&lt;/span&gt;&lt;/div&gt;   &lt;!-- a setting someone else locked: a plain value, not a field --&gt;
+</code></pre>
 <h2 id="menus">Menus</h2>
 <pre><code class="language-html">&lt;button class=&quot;btn&quot; data-menu=&quot;backup&quot; aria-haspopup=&quot;menu&quot; aria-expanded=&quot;false&quot;&gt;Backup&lt;svg data-ic=&quot;alt-arrow-down&quot;&gt;&lt;/svg&gt;&lt;/button&gt;
 &lt;div class=&quot;menu&quot; id=&quot;backup&quot; role=&quot;menu&quot; hidden&gt;
@@ -261,10 +273,16 @@
   &lt;button role=&quot;menuitem&quot;&gt;&lt;svg data-ic=&quot;history&quot;&gt;&lt;/svg&gt;&lt;span&gt;&lt;b&gt;Restore from a Backup…&lt;/b&gt;&lt;/span&gt;&lt;/button&gt;
 &lt;/div&gt;
 </code></pre>
-<p><code>s4Menu()</code> places it under the button and inside the window; Escape and outside clicks close it.</p>
+<p><code>s4Menu()</code> places it under the button and inside the window; Escape and outside clicks close it. Arrow keys, Home and End move between items and Enter picks; opened from the keyboard, the first item takes focus.
+- <strong>Sections</strong>: wrap a group in <code>&lt;div class="menu-sec"&gt;&lt;div class="menu-h"&gt;Changes&lt;/div&gt;…&lt;/div&gt;</code>. A menu with sections has a fixed width (400px) so counts line up at the right edge and long rows get an ellipsis (<code>&lt;b class="trunc"&gt;</code>).
+- <strong>Options menu</strong> (<code>.menu.opts</code>): each choice is <code>&lt;button class="on"&gt;&lt;b&gt;Matched First&lt;/b&gt;&lt;small&gt;what it does&lt;/small&gt;&lt;/button&gt;</code>; the current one has <code>.on</code>.</p>
+<h3 id="dropdown">Dropdown</h3>
+<pre><code class="language-html">&lt;label class=&quot;f&quot;&gt;Company&lt;select&gt;&lt;option&gt;2101 · Northwind Tech&lt;/option&gt;&lt;option&gt;2102 · Northwind US&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+</code></pre>
+<p><code>s4Select()</code> wraps every <code>&lt;select&gt;</code> on load (call it for ones added later): a <code>button.sel</code> + <code>ul.sel-list</code> listbox with arrows, Home/End, type-ahead, Enter or Space to pick, a tick on the current option, opening upward near the bottom. The <code>&lt;select&gt;</code> stays in the page, hidden, and keeps the value and the <code>change</code> event. Touch screens keep the native select; <code>data-native</code> opts one out. In React use <code>&lt;Select&gt;</code> (<code>toolkit/react/</code>).</p>
 <h2 id="dialogs-and-sheets">Dialogs and sheets</h2>
 <pre><code class="language-html">&lt;button class=&quot;btn&quot; data-open=&quot;del&quot;&gt;Delete All Data…&lt;/button&gt;
-&lt;div class=&quot;scrim&quot; id=&quot;del&quot; hidden&gt;                     &lt;!-- add data-dirty to stop backdrop clicks closing it --&gt;
+&lt;div class=&quot;scrim&quot; id=&quot;del&quot; hidden&gt;                     &lt;!-- data-dirty=&quot;the queued files&quot;: a backdrop click does nothing and Escape asks &quot;Discard the queued files?&quot; first --&gt;
   &lt;div class=&quot;modal narrow&quot; role=&quot;dialog&quot; aria-modal=&quot;true&quot; aria-labelledby=&quot;del-h&quot;&gt;
     &lt;div class=&quot;grab&quot;&gt;&lt;/div&gt;                             &lt;!-- the handle, shown on phones --&gt;
     &lt;header&gt;&lt;h2 id=&quot;del-h&quot;&gt;Delete all data?&lt;/h2&gt;&lt;button class=&quot;btn icon subtle&quot; data-close aria-label=&quot;Close&quot;&gt;&lt;svg data-ic=&quot;close-circle&quot;&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/header&gt;
@@ -275,9 +293,11 @@
 </code></pre>
 <p>On phones every dialog is a bottom sheet with full-width footer buttons. Close with <code>s4Close(scrim)</code> (or a <code>data-close</code> button) rather than setting <code>hidden</code>, so it gets its short exit.</p>
 <h2 id="toasts-and-tooltips">Toasts and tooltips</h2>
-<pre><code class="language-js">s4Toast(&quot;Undone: Match 40&quot;, { action: &quot;Redo&quot;, onAction: redo });   // rises in, fades out after ~4s
+<pre><code class="language-js">s4Toast(&quot;Undone: Match 40&quot;, { action: &quot;Redo&quot;, onAction: redo });   // rises in; fades out after ~4s, 6.5s with an action
+s4Toast(&quot;Match 40 undone&quot;, { action: &quot;Redo&quot;, anchor: undoButton }); // an undo pop-up: next to the Undo button, with a pointer to it
 </code></pre>
-<p>Cut-off text with <code>.trunc</code> gets a <code>.tip</code> tooltip on hover automatically (<code>s4Tips</code>), only when it is actually cut off.</p>
+<p>With <code>data-dirty</code> on the scrim, Escape shows a "Discard …?" bar inside the dialog (Keep Editing / Discard); set or clear the attribute as the input changes.
+Cut-off text with <code>.trunc</code> gets a <code>.tip</code> tooltip on hover automatically (<code>s4Tips</code>), only when it is actually cut off, after a short delay, flipping above near the bottom. A <code>.sub</code> or <code>&lt;small&gt;</code> inside the element becomes a quieter second line.</p>
 <h2 id="folds-and-steps">Folds and steps</h2>
 <pre><code class="language-html">&lt;div class=&quot;card flush steps&quot;&gt;                          &lt;!-- numbered: only for a real sequence --&gt;
   &lt;details class=&quot;fold done&quot;&gt;&lt;summary&gt;&lt;b&gt;Fill In the Entry&lt;/b&gt;&lt;span class=&quot;sec-sub&quot;&gt;GL 61500000&lt;/span&gt;&lt;/summary&gt;&lt;div class=&quot;fold-body&quot;&gt;…&lt;/div&gt;&lt;/details&gt;
