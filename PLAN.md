@@ -32,6 +32,7 @@ Areas 6–11 go one at a time in this order; start the next only when the owner 
 - Repackage the skill (`tools/package_skill.py`) and send the owner `build/s4-glass.skill` so the installed copy matches.
 - Owner picks the next area, or proposes candidates (use the `frontend-design` skill, now available, and say so on the page).
 - Optional: re-check the recommendation boxes on the older samples pages with the skill.
+- Skills agreed 2026-10-29 (see CLAUDE.md → "Skills to use"): front-end design for decisions, the Design plugin for system consistency, accessibility and copy, Skill Creator to restructure `skill/SKILL.md` and add evals across app types. Suggested next: the Skill Creator restructure and evals; recheck area 7's recommendation with the front-end design skill.
 
 - Density Auto cutoff changed (owner, 2026-10-28): compact only 1300–2200px wide with a mouse, standard on 1440p and up.
 - Icons: a separate session is making `demo/samples/icons.html` (Solar Bold Duotone vs Phosphor Duotone). The owner wants Solar Bold Duotone across all glass apps going forward, pending the draft.
