@@ -267,6 +267,16 @@ Variants (all `.copy` + a modifier):
 - **Sections**: wrap a group in `<div class="menu-sec"><div class="menu-h">Changes</div>…</div>`. A menu with sections has a fixed width (400px) so counts line up at the right edge and long rows get an ellipsis (`<b class="trunc">`).
 - **Options menu** (`.menu.opts`): each choice is `<button class="on"><b>Matched First</b><small>what it does</small></button>`; the current one has `.on`.
 
+### Date and month picker
+```html
+<label class="f">Due Date
+<div class="dp-field" data-type="date" data-value="2026-11-24" data-min="2026-11-01" data-max="2026-12-31">   <!-- data-type="month" for "Sep 2026" -->
+  <input type="text" placeholder="M/D/YYYY" autocomplete="off">
+  <button class="btn icon subtle sm dp-open" type="button" aria-label="Choose Due Date"><svg data-ic="calendar"></svg></button>
+</div></label>
+```
+Wired on load by `s4Date()` (call it for fields added later). The value is ISO in `input.dataset.value` (`2026-11-24`, `2026-09` for a month) and a `change` event fires on the input. Typing works (`11/24/2026`, `2026-11-24`, `Sep 2026`) and is read when you leave the field; a bad or out-of-range date shows the message in the field's `.err`. The calendar: month header with previous / next, today a soft fill, the chosen day solid accent, other-month days quieter, days outside `data-min` / `data-max` dimmed; Clear and Today under the grid. Keys: arrows, Page Up / Down (Shift: a year), Home / End, Enter, Escape. Sunday-first; `s4Date.week = 1` for Monday. **On a touch screen the field becomes the phone's own date or month picker** (decided), the same rule as the dropdown. React: `<DateField label="Due Date" value={iso} onChange={setIso} min max />`, `type="month"`.
+
 ### Dropdown
 ```html
 <label class="f">Company<select><option>2101 · Northwind Tech</option><option>2102 · Northwind US</option></select></label>

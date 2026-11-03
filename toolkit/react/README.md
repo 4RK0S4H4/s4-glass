@@ -11,6 +11,7 @@ Small, plain TSX files for React apps. No build step for the toolkit itself: cop
 | `useSort`, `SortTh` | click-to-sort headers, blanks always last | `s4Sort` |
 | `SegFilter`, `useSlider` | segmented filter with a sliding pill | `s4Slider` |
 | `FoldCard` | a card folded by its header | `s4Fold` |
+| `DateField` (`type="month"`), `Calendar` | date and month picker, native on touch | `s4Date` |
 | `DescTip` | tooltip for cut-off text, main line + quieter sub line | `s4Tips` |
 
 ```tsx

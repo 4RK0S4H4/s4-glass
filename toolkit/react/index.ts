@@ -8,3 +8,4 @@ export { SortTh } from './SortTh';
 export { SegFilter, useSlider } from './SegFilter';
 export { FoldCard } from './FoldCard';
 export { DescTip } from './DescTip';
+export { DateField, Calendar } from './DateField';

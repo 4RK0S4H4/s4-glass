@@ -15,6 +15,7 @@
    s4Copy(el, text)                      copy + the 0.6s green flash (the tick stays until the green has faded); any [data-copy] element copies on click
    s4Tips(root)                          tooltips (.tip) for .trunc / .dcol text, only when it is actually cut off: a main line, a quieter sub line (<small> or .sub), a short delay, flips above near the bottom
    s4Menu(button, menu)                  open a .menu under its button; arrows / Home / End move, Enter picks; any [data-menu="id"] button opens #id
+   s4Date(field)                         date / month picker: <div class="dp-field" data-type="date|month" data-min data-max data-value><input><button class="dp-open">…</button></div>. Every .dp-field is wired on load; the ISO value is in input.dataset.value and a change event fires. Touch screens get the phone's own picker (type=date / month)
    s4Select(select)                      a themed dropdown for a <select> (every select is wired on load; add data-native to keep the browser's; touch screens keep it anyway)
    s4Dialog(scrim) / s4Close(scrim)      open / close a .scrim dialog: focus moves in and back, Escape closes, a 0.15s exit. With data-dirty="the queued files", Escape asks "Discard the queued files?" first
    s4Toast("Saved", {action, onAction, anchor})  a dark toast for ~4s (6.5s with an action, time to reach "Undo"); anchor = the button it points to (an undo pop-up)
@@ -207,6 +208,160 @@ function s4Select(sel) {
   });
 }
 
+/* Date and month picker (decided: S4 calendar pop-over on desktop, the phone's own picker on touch). A .dp-field holds a text input that still accepts a
+   typed date (M/D/YYYY, YYYY-MM-DD; "Sep 2026" for a month) and a calendar button. The value is ISO ("2026-09-30" / "2026-09") in input.dataset.value;
+   a change event fires on the input. Keys in the calendar: arrows (a day or a week), Page Up / Down (a month; with Shift a year), Home / End (week start / end),
+   Enter picks, Escape closes. Weeks start on Sunday; set s4Date.week = 1 for Monday. */
+var s4Date = (function () {
+  var MON = ["January","February","March","April","May","June","July","August","September","October","November","December"], MS = MON.map(function (m) { return m.slice(0, 3); });
+  var DOW = ["Su","Mo","Tu","We","Th","Fr","Sa"];
+  function p2(n) { return (n < 10 ? "0" : "") + n; }
+  function iso(y, m, d) { return y + "-" + p2(m + 1) + "-" + p2(d); }
+  function dateOf(s) { var a = s.split("-"); return new Date(+a[0], +a[1] - 1, +(a[2] || 1)); }
+  function isoOf(dt) { return iso(dt.getFullYear(), dt.getMonth(), dt.getDate()); }
+  function monthOf(dt) { return iso(dt.getFullYear(), dt.getMonth(), 1).slice(0, 7); }
+  function fmtDate(s) { var d = dateOf(s); return (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear(); }
+  function fmtLong(s) { var d = dateOf(s); return MS[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear(); }
+  function fmtMonth(s) { var d = dateOf(s); return MS[d.getMonth()] + " " + d.getFullYear(); }
+  function parseDate(t) {
+    var m = t.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2}|\d{4})$/), y, mo, d;
+    if (m) { mo = +m[1] - 1; d = +m[2]; y = +m[3]; if (y < 100) y += 2000; }
+    else if ((m = t.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/))) { y = +m[1]; mo = +m[2] - 1; d = +m[3]; } else return null;
+    var dt = new Date(y, mo, d); return dt.getMonth() === mo && dt.getDate() === d ? iso(y, mo, d) : null;
+  }
+  function parseMonth(t) {
+    var m = t.match(/^([A-Za-z]{3,9})\.?\s+(\d{4})$/), y, mo;
+    if (m) { mo = MS.indexOf(m[1].slice(0, 1).toUpperCase() + m[1].slice(1, 3).toLowerCase()); y = +m[2]; }
+    else if ((m = t.match(/^(\d{1,2})[\/\-](\d{4})$/)) || (m = t.match(/^(\d{4})-(\d{1,2})$/))) { var a = +m[1], b = +m[2]; if (a > 31) { y = a; mo = b - 1; } else { mo = a - 1; y = b; } } else return null;
+    return mo >= 0 && mo < 12 ? iso(y, mo, 1).slice(0, 7) : null;
+  }
+  var CL = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var CR = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  /* the calendar itself: fills host, calls cfg.onPick(iso or "") */
+  function build(host, cfg) {
+    var type = cfg.type, month = type === "month", W = s4Date.week || 0, today = isoOf(new Date()), tNow = month ? today.slice(0, 7) : today;
+    var lo = cfg.min ? (month ? cfg.min.slice(0, 7) : cfg.min) : "", hi = cfg.max ? (month ? cfg.max.slice(0, 7) : cfg.max) : "";
+    var sel = cfg.value || "", base = sel || (lo && tNow < lo ? lo : hi && tNow > hi ? hi : tNow);
+    var view = { y: dateOf(base).getFullYear(), m: dateOf(base).getMonth() }, cur = base;
+    function ok(k) { return !(lo && k < lo) && !(hi && k > hi); }
+    host.innerHTML = '<div class="dp-head"><button class="btn icon subtle" type="button" data-nav="-1" aria-label="' + (month ? "Previous Year" : "Previous Month") + '">' + CL + '</button><b class="dp-title" aria-live="polite"></b><button class="btn icon subtle" type="button" data-nav="1" aria-label="' + (month ? "Next Year" : "Next Month") + '">' + CR + '</button></div><div class="dp-body"></div><div class="dp-foot"><button class="btn subtle sm" type="button" data-act="clear">Clear</button><button class="btn subtle sm" type="button" data-act="today">' + (month ? "This Month" : "Today") + '</button></div>';
+    var title = host.querySelector(".dp-title"), body = host.querySelector(".dp-body");
+    host.querySelector('[data-act="today"]').disabled = !ok(tNow);
+    function paint(focus) {
+      var html = "", i;
+      if (month) {
+        title.textContent = view.y;
+        for (i = 0; i < 12; i++) { var k = iso(view.y, i, 1).slice(0, 7); html += '<button type="button" class="dp-m' + (k === sel ? " on" : k === tNow ? " today" : "") + '" data-v="' + k + '" tabindex="' + (k === cur ? 0 : -1) + '"' + (ok(k) ? "" : " disabled") + ' aria-pressed="' + (k === sel) + '" aria-label="' + MON[i] + " " + view.y + '">' + MS[i] + '</button>'; }
+        body.innerHTML = '<div class="dp-months" role="group" aria-label="' + view.y + '">' + html + '</div>';
+      } else {
+        title.textContent = MON[view.m] + " " + view.y;
+        var lead = (new Date(view.y, view.m, 1).getDay() - W + 7) % 7;
+        for (i = 0; i < 7; i++) html += '<span class="dp-dow" aria-hidden="true">' + DOW[(i + W) % 7] + '</span>';
+        for (i = 0; i < 42; i++) {
+          var dt = new Date(view.y, view.m, 1 - lead + i), k2 = isoOf(dt);
+          html += '<button type="button" class="dp-d' + (k2 === sel ? " on" : k2 === today ? " today" : "") + (dt.getMonth() !== view.m ? " dim" : "") + '" data-v="' + k2 + '" tabindex="' + (k2 === cur ? 0 : -1) + '"' + (ok(k2) ? "" : " disabled") + ' aria-pressed="' + (k2 === sel) + '" aria-label="' + fmtLong(k2) + '">' + dt.getDate() + '</button>';
+        }
+        body.innerHTML = '<div class="dp-grid" role="group" aria-label="' + MON[view.m] + " " + view.y + '">' + html + '</div>';
+      }
+      if (!body.querySelector('[tabindex="0"]')) { var f = body.querySelector(".dp-d:not(.dim):not(:disabled), .dp-m:not(:disabled)"); if (f) f.tabIndex = 0; }
+      if (focus) { var t = body.querySelector('[tabindex="0"]'); if (t) t.focus(); }
+    }
+    function go(k, focus) { cur = k; var d = dateOf(k); view = { y: d.getFullYear(), m: d.getMonth() }; paint(focus); }
+    host.addEventListener("click", function (e) {
+      var n = e.target.closest("[data-nav]"), b = e.target.closest("[data-v]"), a = e.target.closest("[data-act]");
+      if (n) { var k = +n.dataset.nav; if (month) view.y += k; else { var d = new Date(view.y, view.m + k, 1); view = { y: d.getFullYear(), m: d.getMonth() }; } cur = ""; paint(false); return; }
+      if (b && !b.disabled) { sel = b.dataset.v; cfg.onPick(sel); return; }
+      if (a && !a.disabled) cfg.onPick(a.dataset.act === "clear" ? "" : tNow);
+    });
+    host.addEventListener("keydown", function (e) {
+      var t = e.target.closest("[data-v]"); if (!t) return;
+      var d = dateOf(cur || t.dataset.v), k = e.key, nx = null;
+      if (month) {
+        var st = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -3, ArrowDown: 3 }[k];
+        if (st) nx = iso(d.getFullYear(), d.getMonth() + st, 1).slice(0, 7);
+        else if (k === "PageUp" || k === "PageDown") nx = iso(d.getFullYear() + (k === "PageUp" ? -1 : 1), d.getMonth(), 1).slice(0, 7);
+        else if (k === "Home") nx = iso(d.getFullYear(), 0, 1).slice(0, 7); else if (k === "End") nx = iso(d.getFullYear(), 11, 1).slice(0, 7);
+      } else {
+        var dd = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 }[k], wd = (d.getDay() - W + 7) % 7;
+        if (dd) nx = isoOf(new Date(d.getFullYear(), d.getMonth(), d.getDate() + dd));
+        else if (k === "PageUp" || k === "PageDown") { var mv = (k === "PageUp" ? -1 : 1) * (e.shiftKey ? 12 : 1), last = new Date(d.getFullYear(), d.getMonth() + mv + 1, 0).getDate(); nx = isoOf(new Date(d.getFullYear(), d.getMonth() + mv, Math.min(d.getDate(), last))); }
+        else if (k === "Home") nx = isoOf(new Date(d.getFullYear(), d.getMonth(), d.getDate() - wd));
+        else if (k === "End") nx = isoOf(new Date(d.getFullYear(), d.getMonth(), d.getDate() + 6 - wd));
+      }
+      if (nx) { e.preventDefault(); if (ok(month ? nx : nx)) go(nx, true); }
+    });
+    paint(false);
+    return { focus: function () { var t = body.querySelector('[tabindex="0"]'); if (t) t.focus(); } };
+  }
+
+  var pop, openField;
+  function closePop(refocus) {
+    if (!openField) return; var f = openField; openField = null;
+    pop.hidden = true; pop.innerHTML = ""; f.btn.setAttribute("aria-expanded", "false");
+    document.removeEventListener("mousedown", away, true); removeEventListener("resize", closePop);
+    if (refocus) f.input.focus();
+  }
+  function away(e) { if (openField && !pop.contains(e.target) && !openField.el.contains(e.target)) closePop(false); }
+  function message(f, msg) {
+    var w = f.el.closest("label.f, .fld"), er = w && w.querySelector(".err");
+    f.input.classList.toggle("bad", !!msg); f.input.setAttribute("aria-invalid", msg ? "true" : "false");
+    if (w) w.classList.toggle("bad", !!msg);
+    if (!er && msg && w) { er = document.createElement("span"); er.className = "err"; er.setAttribute("role", "alert"); er._s4made = true; w.appendChild(er); }   /* no .err in the markup: make one under the field */
+    if (er) { if (!msg && er._s4made) er.remove(); else er.textContent = msg || ""; }
+  }
+  function show(f) { return f.value ? (f.type === "month" ? fmtMonth(f.value) : fmtDate(f.value)) : ""; }
+  function commit(f, v) {
+    var changed = f.value !== v; f.value = v; f.input.dataset.value = v; if (!f.native) f.input.value = show(f); message(f, "");
+    if (changed) f.input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  function openPop(f) {
+    if (openField === f) { closePop(true); return; } closePop(false); openField = f;
+    if (!pop) { pop = document.createElement("div"); pop.className = "dp-pop"; pop.hidden = true; document.body.appendChild(pop); }
+    f.btn.setAttribute("aria-expanded", "true");
+    pop.innerHTML = '<div class="dp"></div>'; pop.hidden = false;
+    var cal = build(pop.firstChild, { type: f.type, value: f.value, min: f.min, max: f.max, onPick: function (v) { commit(f, v); closePop(true); } });
+    var r = f.el.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight;
+    pop.style.left = Math.min(Math.max(8, r.left), innerWidth - w - 8) + "px";
+    pop.style.top = (r.bottom + 6 + h > innerHeight - 8 && r.top > h + 14 ? r.top - h - 6 : r.bottom + 6) + "px";
+    cal.focus();
+    pop.onkeydown = function (e) { if (e.key === "Escape") { e.stopPropagation(); e.preventDefault(); closePop(true); } else if (e.key === "Tab") closePop(false); };
+    setTimeout(function () { document.addEventListener("mousedown", away, true); addEventListener("resize", closePop); });
+  }
+
+  function wire(el) {
+    if (el._s4dp) return; el._s4dp = true;
+    var input = el.querySelector("input"), btn = el.querySelector(".dp-open"); if (!input) return;
+    var type = el.dataset.type === "month" ? "month" : "date", native = !!(window.matchMedia && matchMedia("(pointer: coarse)").matches);
+    var f = { el: el, input: input, btn: btn, type: type, min: el.dataset.min || "", max: el.dataset.max || "", value: el.dataset.value || input.dataset.value || "", native: native };
+    var mn = type === "month" ? f.min.slice(0, 7) : f.min, mx = type === "month" ? f.max.slice(0, 7) : f.max;
+    if (!f.value && input.value && !native) { f.value = (type === "month" ? parseMonth : parseDate)(input.value.trim()) || ""; }
+    input.dataset.value = f.value;
+    if (native) {   /* the phone's own picker: it brings the right wheel or calendar, the language and the accessibility for free */
+      el.classList.add("native"); input.type = type; if (mn) input.min = mn; if (mx) input.max = mx; input.value = f.value;
+      input.addEventListener("change", function () { f.value = input.value; input.dataset.value = f.value; });
+      return;
+    }
+    input.value = show(f);
+    input.addEventListener("change", function (e) { if (e.isTrusted) e.stopImmediatePropagation(); });   /* typing fires the browser's own change with a display string; ours (ISO value) is the one that counts */
+    if (btn) { btn.setAttribute("aria-haspopup", "dialog"); btn.setAttribute("aria-expanded", "false"); btn.addEventListener("click", function () { openPop(f); }); }
+    input.addEventListener("keydown", function (e) { if (e.key === "ArrowDown" && e.altKey) { e.preventDefault(); openPop(f); } });
+    input.addEventListener("blur", function () {   /* a typed date is read when you leave the field */
+      var t = input.value.trim(); if (!t) { if (f.value) commit(f, ""); else message(f, ""); return; }
+      var v = (type === "month" ? parseMonth : parseDate)(t);
+      if (!v) { message(f, type === "month" ? "Use a month and year, like Sep 2026" : "Use M/D/YYYY, like 9/30/2026"); return; }
+      if ((mn && v < mn) || (mx && v > mx)) { message(f, "Pick a date between " + (f.min ? fmtLong(f.min) : "the start") + " and " + (f.max ? fmtLong(f.max) : "any later day")); return; }
+      commit(f, v);
+    });
+    el._s4f = f;
+  }
+  function api(el) { if (el && el.classList) wire(el); }
+  api.week = 0; api.wire = wire;
+  api.set = function (el, v) { wire(el); var f = el._s4f; if (f) commit(f, v); else { var i = el.querySelector("input"); i.value = v; i.dataset.value = v; } };
+  api.get = function (el) { var i = el.querySelector("input"); return i ? i.dataset.value || "" : ""; };
+  return api;
+})();
+
 /* Dialogs: <div class="scrim" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="…">…</div></div> */
 function s4Dialog(scrim) {
   clearTimeout(scrim._s4t); scrim.classList.remove("closing"); var old = scrim.querySelector(".ask"); if (old) old.remove();
@@ -346,6 +501,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".ptabs").forEach(function (s) { s4Slider(s, "button.on"); });
   document.querySelectorAll("table.t").forEach(function (t) { if (t.querySelector("th.sortable")) s4Sort(t); });
   document.querySelectorAll("select").forEach(s4Select);
+  document.querySelectorAll(".dp-field").forEach(s4Date);
   s4Tips();
 });
 </script>
@@ -613,7 +769,7 @@ img, svg, video { max-width: 100%; }
 a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 a:hover { color: var(--accent-text); }
 /* glass surfaces blur what is behind them */
-.nav, .topbar, .card, .modal, .toast, .banner, .tabbar, .site-head, .input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=date], textarea {
+.nav, .topbar, .card, .modal, .toast, .banner, .tabbar, .site-head, .input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=date], input[type=month], textarea {
   -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--sat)); backdrop-filter: blur(var(--blur)) saturate(var(--sat)); }
 /* numbers: the house number style. Tabular figures on everything that holds data; running paragraphs stay proportional.
    There is no separate mono font: --mono is Inter, so document numbers and IDs match the amounts around them. */
@@ -716,7 +872,7 @@ table, input, select, textarea, .num, .mono, .chip, .kbd, .badge, .count, .pill,
 button.lnk { border: 0; background: none; padding: 0; color: inherit; font: inherit; cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; text-align: left; } button.lnk:hover { color: var(--accent-text); }
 
 /* ---------- 7. fields: focus = a slightly brighter fill and a neutral border, never an accent ring ---------- */
-.input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=date], select, textarea {
+.input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=date], input[type=month], select, textarea {
   min-width: 0; min-height: 34px; padding: 6px 9px; border: 1px solid var(--field-line); border-radius: var(--r-md); background-color: var(--field-bg); color: var(--text); font: inherit; }
 select { appearance: none; -webkit-appearance: none; padding-right: 30px; background-image: var(--chev); background-repeat: no-repeat; background-position: right 10px center; background-size: 12px; cursor: pointer; }
 textarea { min-height: 72px; resize: vertical; }
@@ -981,6 +1137,23 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
 .sel-list.up { transform-origin: bottom left; }
 .sel-list li { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 7px 10px; border-radius: var(--r-sm); white-space: nowrap; cursor: pointer; }
 .sel-list li.act { background: var(--hov); } .sel-list li.on { font-weight: 600; color: var(--accent-text); } .sel-list li svg { width: 14px; height: 14px; flex: none; }
+/* date and month picker (s4Date): a text input + calendar button; the calendar is a pop-over on desktop, the phone's own picker on touch. Chosen = solid accent, today = a soft fill with no ring. */
+.dp-field { position: relative; display: flex; align-items: center; } .dp-field > input { width: 100%; padding-right: 40px; font-variant-numeric: tabular-nums; }
+.dp-open { position: absolute; right: 3px; } .dp-field.native .dp-open { display: none; } .dp-field.native > input { padding-right: 9px; }
+.dp-pop { position: fixed; z-index: var(--z-menu); border: 1px solid var(--border2); border-radius: var(--r); background: var(--pop-bg); color: var(--text); box-shadow: var(--shadow-2); animation: s4-pop .14s var(--ease); }
+.dp { display: flex; flex-direction: column; gap: var(--s-2); width: 296px; max-width: 100%; padding: var(--s-3); }
+.dp-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); } .dp-title { font-size: var(--fs-base); font-weight: 600; }
+.dp-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.dp-dow { padding: 4px 0; text-align: center; color: var(--text3); font-size: var(--fs-xs); font-weight: 600; }
+.dp-d, .dp-m { height: 34px; padding: 0; border: 0; border-radius: var(--r-sm); background: transparent; color: var(--text); font: inherit; font-size: var(--fs-ui); font-variant-numeric: tabular-nums; cursor: pointer; transition: background-color var(--dur-1), color var(--dur-1); }
+.dp-d:hover:not(:disabled):not(.on), .dp-m:hover:not(:disabled):not(.on) { background: var(--hov); }
+.dp-d.dim { color: var(--text3); }   /* a day of the next or previous month: still pickable */
+.dp-d.today, .dp-m.today { background: var(--fill2); color: var(--accent-ink); font-weight: 600; }
+.dp-d.on, .dp-m.on { background: var(--btn); color: var(--btn-fg); font-weight: 600; }
+.dp-d:disabled, .dp-m:disabled { opacity: .35; cursor: default; }   /* outside the earliest / latest date */
+.dp-d:focus-visible, .dp-m:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.dp-months { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; } .dp-m { height: 40px; }
+.dp-foot { display: flex; justify-content: space-between; padding-top: var(--s-2); border-top: 1px solid var(--border); }
 .scrim { position: fixed; inset: 0; z-index: var(--z-modal); display: grid; place-items: center; padding: var(--s-4); background: var(--scrim); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: s4-fade var(--dur-2) ease-out; }
 .modal { display: flex; flex-direction: column; width: min(560px, 100%); max-height: 92vh; max-height: 92dvh; overflow: clip; background: var(--modal-bg); border: 1px solid var(--modal-line); border-radius: var(--r-xl); box-shadow: var(--shadow-3); animation: s4-grow var(--dur-3) var(--ease); }
 .modal.wide { width: min(1000px, 100%); } .modal.narrow { width: min(440px, 100%); }
@@ -1068,7 +1241,7 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
 
 /* ---------- 17. touch screens: 40px targets ---------- */
 @media (pointer: coarse) {
-  .btn, .btn.sm, .input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=date], select, .nav .item, .th-sort, .copy, .menu button, .menu a, .toast button, .fchip, .site-nav a { min-height: var(--tap); }
+  .btn, .btn.sm, .input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=date], input[type=month], select, .nav .item, .th-sort, .copy, .menu button, .menu a, .toast button, .fchip, .site-nav a { min-height: var(--tap); }
   .site-foot a { display: inline-flex; align-items: center; min-height: var(--tap); }
   .btn.icon, .btn.sm.icon { width: var(--tap); }
   .seg button { min-height: 36px; } .switch { min-height: var(--tap); }
@@ -1117,7 +1290,7 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
   .topbar .actions { margin-left: 0; gap: 6px; }
   .content { padding: 14px; padding-left: max(14px, env(safe-area-inset-left)); padding-right: max(14px, env(safe-area-inset-right)); }
   /* iOS zooms into any field under 16px: fields are 16px on phones */
-  .input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=date], select, textarea, label.f :is(.input, input, select, textarea) { font-size: 16px; }
+  .input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=date], input[type=month], select, textarea, label.f :is(.input, input, select, textarea) { font-size: 16px; }
   .search, .t-bar .search { width: 100%; }
   .form-grid, .grid-4 { grid-template-columns: minmax(0, 1fr); }
   .ptabs { grid-template-columns: repeat(2, 1fr); } .keys { display: none; }

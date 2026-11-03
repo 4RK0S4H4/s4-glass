@@ -99,11 +99,13 @@
 
   <section class="g-sec">
     <h2>Fields</h2>
-    <p>Dropdowns are drawn by S4 Glass (<code>s4Select</code> wraps every <code>&lt;select&gt;</code>: arrows, Home/End, type-ahead, a tick on the current option, opens upward near the bottom); on a touch screen the phone's own picker stays. Focus brightens the fill and darkens the border; it never draws an accent ring. On a phone fields are 16px so iOS doesn't zoom.</p>
+    <p>Dropdowns are drawn by S4 Glass (<code>s4Select</code> wraps every <code>&lt;select&gt;</code>: arrows, Home/End, type-ahead, a tick on the current option, opens upward near the bottom); on a touch screen the phone's own picker stays. Dates and months have an S4 calendar pop-over (<code>s4Date</code>; typing still works; on a touch screen the phone's own picker). Focus brightens the fill and darkens the border; it never draws an accent ring. On a phone fields are 16px so iOS doesn't zoom.</p>
     <div class="card form-page">
       <div class="form-grid">
         <label class="f">Company<select><option>2101 · Northwind Tech</option><option>2102 · Northwind US</option></select></label>
-        <label class="f">Posting Date<input type="date" value="2026-09-30"></label>
+        <label class="f">Posting Date<div class="dp-field" data-type="date" data-value="2026-09-30"><input id="g-post" type="text" placeholder="M/D/YYYY" autocomplete="off"><button class="btn icon subtle sm dp-open" type="button" aria-label="Choose Posting Date"><svg data-ic="calendar"></svg></button></div></label>
+        <label class="f">Invoice Date<div class="dp-field" data-type="date" data-min="2026-09-01" data-max="2026-12-31"><input id="g-close" type="text" placeholder="M/D/YYYY" autocomplete="off"><button class="btn icon subtle sm dp-open" type="button" aria-label="Choose Invoice Date"><svg data-ic="calendar"></svg></button></div><span class="hint">Sep 1 to Dec 31, 2026 only</span></label>
+        <label class="f">Month<div class="dp-field" data-type="month" data-value="2026-09"><input id="g-month" type="text" placeholder="Sep 2026" autocomplete="off"><button class="btn icon subtle sm dp-open" type="button" aria-label="Choose Month"><svg data-ic="calendar"></svg></button></div></label>
         <label class="f">Offset GL Account<input type="text" inputmode="numeric" placeholder="e.g. 61500000"><span class="hint">8 digits</span></label>
         <label class="f">SAP Document<input type="text" class="bad" value="10000"><span class="err">10 digits needed</span></label>
         <div class="f locked-f">Closing Day<span>Sep 30, 2026</span></div>
