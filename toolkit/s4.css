@@ -255,7 +255,7 @@ img, svg, video { max-width: 100%; }
 a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 a:hover { color: var(--accent-text); }
 /* glass surfaces blur what is behind them */
-.nav, .topbar, .card, .modal, .toast, .banner, .tabbar, .site-head, .input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=date], textarea {
+.nav, .topbar, .card, .modal, .toast, .banner, .tabbar, .site-head, .input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=date], input[type=month], textarea {
   -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--sat)); backdrop-filter: blur(var(--blur)) saturate(var(--sat)); }
 /* numbers: the house number style. Tabular figures on everything that holds data; running paragraphs stay proportional.
    There is no separate mono font: --mono is Inter, so document numbers and IDs match the amounts around them. */
@@ -358,7 +358,7 @@ table, input, select, textarea, .num, .mono, .chip, .kbd, .badge, .count, .pill,
 button.lnk { border: 0; background: none; padding: 0; color: inherit; font: inherit; cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; text-align: left; } button.lnk:hover { color: var(--accent-text); }
 
 /* ---------- 7. fields: focus = a slightly brighter fill and a neutral border, never an accent ring ---------- */
-.input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=date], select, textarea {
+.input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=date], input[type=month], select, textarea {
   min-width: 0; min-height: 34px; padding: 6px 9px; border: 1px solid var(--field-line); border-radius: var(--r-md); background-color: var(--field-bg); color: var(--text); font: inherit; }
 select { appearance: none; -webkit-appearance: none; padding-right: 30px; background-image: var(--chev); background-repeat: no-repeat; background-position: right 10px center; background-size: 12px; cursor: pointer; }
 textarea { min-height: 72px; resize: vertical; }
@@ -623,6 +623,23 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
 .sel-list.up { transform-origin: bottom left; }
 .sel-list li { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 7px 10px; border-radius: var(--r-sm); white-space: nowrap; cursor: pointer; }
 .sel-list li.act { background: var(--hov); } .sel-list li.on { font-weight: 600; color: var(--accent-text); } .sel-list li svg { width: 14px; height: 14px; flex: none; }
+/* date and month picker (s4Date): a text input + calendar button; the calendar is a pop-over on desktop, the phone's own picker on touch. Chosen = solid accent, today = a soft fill with no ring. */
+.dp-field { position: relative; display: flex; align-items: center; } .dp-field > input { width: 100%; padding-right: 40px; font-variant-numeric: tabular-nums; }
+.dp-open { position: absolute; right: 3px; } .dp-field.native .dp-open { display: none; } .dp-field.native > input { padding-right: 9px; }
+.dp-pop { position: fixed; z-index: var(--z-menu); border: 1px solid var(--border2); border-radius: var(--r); background: var(--pop-bg); color: var(--text); box-shadow: var(--shadow-2); animation: s4-pop .14s var(--ease); }
+.dp { display: flex; flex-direction: column; gap: var(--s-2); width: 296px; max-width: 100%; padding: var(--s-3); }
+.dp-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); } .dp-title { font-size: var(--fs-base); font-weight: 600; }
+.dp-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.dp-dow { padding: 4px 0; text-align: center; color: var(--text3); font-size: var(--fs-xs); font-weight: 600; }
+.dp-d, .dp-m { height: 34px; padding: 0; border: 0; border-radius: var(--r-sm); background: transparent; color: var(--text); font: inherit; font-size: var(--fs-ui); font-variant-numeric: tabular-nums; cursor: pointer; transition: background-color var(--dur-1), color var(--dur-1); }
+.dp-d:hover:not(:disabled):not(.on), .dp-m:hover:not(:disabled):not(.on) { background: var(--hov); }
+.dp-d.dim { color: var(--text3); }   /* a day of the next or previous month: still pickable */
+.dp-d.today, .dp-m.today { background: var(--fill2); color: var(--accent-ink); font-weight: 600; }
+.dp-d.on, .dp-m.on { background: var(--btn); color: var(--btn-fg); font-weight: 600; }
+.dp-d:disabled, .dp-m:disabled { opacity: .35; cursor: default; }   /* outside the earliest / latest date */
+.dp-d:focus-visible, .dp-m:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.dp-months { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; } .dp-m { height: 40px; }
+.dp-foot { display: flex; justify-content: space-between; padding-top: var(--s-2); border-top: 1px solid var(--border); }
 .scrim { position: fixed; inset: 0; z-index: var(--z-modal); display: grid; place-items: center; padding: var(--s-4); background: var(--scrim); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: s4-fade var(--dur-2) ease-out; }
 .modal { display: flex; flex-direction: column; width: min(560px, 100%); max-height: 92vh; max-height: 92dvh; overflow: clip; background: var(--modal-bg); border: 1px solid var(--modal-line); border-radius: var(--r-xl); box-shadow: var(--shadow-3); animation: s4-grow var(--dur-3) var(--ease); }
 .modal.wide { width: min(1000px, 100%); } .modal.narrow { width: min(440px, 100%); }
@@ -710,7 +727,7 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
 
 /* ---------- 17. touch screens: 40px targets ---------- */
 @media (pointer: coarse) {
-  .btn, .btn.sm, .input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=date], select, .nav .item, .th-sort, .copy, .menu button, .menu a, .toast button, .fchip, .site-nav a { min-height: var(--tap); }
+  .btn, .btn.sm, .input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=date], input[type=month], select, .nav .item, .th-sort, .copy, .menu button, .menu a, .toast button, .fchip, .site-nav a { min-height: var(--tap); }
   .site-foot a { display: inline-flex; align-items: center; min-height: var(--tap); }
   .btn.icon, .btn.sm.icon { width: var(--tap); }
   .seg button { min-height: 36px; } .switch { min-height: var(--tap); }
@@ -759,7 +776,7 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
   .topbar .actions { margin-left: 0; gap: 6px; }
   .content { padding: 14px; padding-left: max(14px, env(safe-area-inset-left)); padding-right: max(14px, env(safe-area-inset-right)); }
   /* iOS zooms into any field under 16px: fields are 16px on phones */
-  .input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=date], select, textarea, label.f :is(.input, input, select, textarea) { font-size: 16px; }
+  .input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=date], input[type=month], select, textarea, label.f :is(.input, input, select, textarea) { font-size: 16px; }
   .search, .t-bar .search { width: 100%; }
   .form-grid, .grid-4 { grid-template-columns: minmax(0, 1fr); }
   .ptabs { grid-template-columns: repeat(2, 1fr); } .keys { display: none; }

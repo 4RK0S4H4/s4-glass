@@ -276,6 +276,14 @@
 <p><code>s4Menu()</code> places it under the button and inside the window; Escape and outside clicks close it. Arrow keys, Home and End move between items and Enter picks; opened from the keyboard, the first item takes focus.
 - <strong>Sections</strong>: wrap a group in <code>&lt;div class="menu-sec"&gt;&lt;div class="menu-h"&gt;Changes&lt;/div&gt;…&lt;/div&gt;</code>. A menu with sections has a fixed width (400px) so counts line up at the right edge and long rows get an ellipsis (<code>&lt;b class="trunc"&gt;</code>).
 - <strong>Options menu</strong> (<code>.menu.opts</code>): each choice is <code>&lt;button class="on"&gt;&lt;b&gt;Matched First&lt;/b&gt;&lt;small&gt;what it does&lt;/small&gt;&lt;/button&gt;</code>; the current one has <code>.on</code>.</p>
+<h3 id="date-and-month-picker">Date and month picker</h3>
+<pre><code class="language-html">&lt;label class=&quot;f&quot;&gt;Due Date
+&lt;div class=&quot;dp-field&quot; data-type=&quot;date&quot; data-value=&quot;2026-11-24&quot; data-min=&quot;2026-11-01&quot; data-max=&quot;2026-12-31&quot;&gt;   &lt;!-- data-type=&quot;month&quot; for &quot;Sep 2026&quot; --&gt;
+  &lt;input type=&quot;text&quot; placeholder=&quot;M/D/YYYY&quot; autocomplete=&quot;off&quot;&gt;
+  &lt;button class=&quot;btn icon subtle sm dp-open&quot; type=&quot;button&quot; aria-label=&quot;Choose Due Date&quot;&gt;&lt;svg data-ic=&quot;calendar&quot;&gt;&lt;/svg&gt;&lt;/button&gt;
+&lt;/div&gt;&lt;/label&gt;
+</code></pre>
+<p>Wired on load by <code>s4Date()</code> (call it for fields added later). The value is ISO in <code>input.dataset.value</code> (<code>2026-11-24</code>, <code>2026-09</code> for a month) and a <code>change</code> event fires on the input. Typing works (<code>11/24/2026</code>, <code>2026-11-24</code>, <code>Sep 2026</code>) and is read when you leave the field; a bad or out-of-range date shows the message in the field's <code>.err</code>. The calendar: month header with previous / next, today a soft fill, the chosen day solid accent, other-month days quieter, days outside <code>data-min</code> / <code>data-max</code> dimmed; Clear and Today under the grid. Keys: arrows, Page Up / Down (Shift: a year), Home / End, Enter, Escape. Sunday-first; <code>s4Date.week = 1</code> for Monday. <strong>On a touch screen the field becomes the phone's own date or month picker</strong> (decided), the same rule as the dropdown. React: <code>&lt;DateField label="Due Date" value={iso} onChange={setIso} min max /&gt;</code>, <code>type="month"</code>.</p>
 <h3 id="dropdown">Dropdown</h3>
 <pre><code class="language-html">&lt;label class=&quot;f&quot;&gt;Company&lt;select&gt;&lt;option&gt;2101 · Northwind Tech&lt;/option&gt;&lt;option&gt;2102 · Northwind US&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
 </code></pre>
