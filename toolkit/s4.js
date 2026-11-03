@@ -420,7 +420,8 @@ var s4Date = (function () {
 function s4Dialog(scrim) {
   clearTimeout(scrim._s4t); scrim.classList.remove("closing"); var old = scrim.querySelector(".ask"); if (old) old.remove();
   scrim._s4back = document.activeElement; scrim.hidden = false;
-  var f = scrim.querySelector("[autofocus], .modal footer .btn.primary, input, select, textarea, button"); if (f) f.focus();
+  var f = ["[autofocus]", ".modal .body input, .modal .body select, .modal .body textarea, .modal .body button.sel", ".modal footer .btn.primary", "input, select, textarea, button"].reduce(function (a, q) {   /* in order of preference, not page order (the header Close comes first in the page) */
+    return a || Array.prototype.filter.call(scrim.querySelectorAll(q), function (el) { return el.offsetParent !== null && !el.disabled; })[0]; }, null); if (f) f.focus();   /* in order of preference, not page order (the header Close comes first in the page) */
   if (!scrim._s4wired) {
     scrim._s4wired = true;
     scrim.addEventListener("click", function (e) { if (e.target === scrim && !scrim.hasAttribute("data-dirty")) s4Close(scrim); });

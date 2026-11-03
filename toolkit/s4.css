@@ -93,7 +93,7 @@
   --shadow-3: 0 20px 56px rgba(0,0,0,.28);
   --mute-bg: color-mix(in srgb, var(--tint) 4%, #f2f2f2);
   /* states: one accent hover tint for every button-like control; rows and selections are neutral */
-  --hov: color-mix(in srgb, var(--accent) 7%, transparent); --press: color-mix(in srgb, var(--accent) 13%, transparent);
+  --hov: color-mix(in srgb, var(--accent) 7%, transparent); --press-bg: color-mix(in srgb, var(--accent) 13%, transparent);
   --fill: color-mix(in srgb, var(--btn) 12%, transparent); --fill2: color-mix(in srgb, var(--btn) 18%, transparent);
   --soft-ring: color-mix(in srgb, var(--btn) 34%, transparent);
   --bg-hover: color-mix(in srgb, var(--text) 5%, transparent); --bg-sel: color-mix(in srgb, var(--text) 8%, transparent);
@@ -151,7 +151,7 @@
   --text: #f2f2f2; --text2: #b9b9b9; --text3: #999999; --border: rgba(255,255,255,.10); --border2: rgba(255,255,255,.17);
   --shadow-1: none; --shadow-2: 0 18px 50px rgba(0,0,0,.6); --shadow-3: 0 24px 70px rgba(0,0,0,.5);
   --mute-bg: rgba(255,255,255,.07);
-  --hov: color-mix(in srgb, var(--accent-light) 11%, transparent); --press: color-mix(in srgb, var(--accent-light) 18%, transparent);
+  --hov: color-mix(in srgb, var(--accent-light) 11%, transparent); --press-bg: color-mix(in srgb, var(--accent-light) 18%, transparent);
   --bg-hover: rgba(255,255,255,.07);
   --field-line: rgba(255,255,255,.14);
   --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5l3 3 3-3' fill='none' stroke='%23b9b9b9' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
@@ -190,7 +190,7 @@
   --text: #f2f2f2; --text2: #b9b9b9; --text3: #999999; --border: rgba(255,255,255,.10); --border2: rgba(255,255,255,.17);
   --shadow-1: none; --shadow-2: 0 18px 50px rgba(0,0,0,.6); --shadow-3: 0 24px 70px rgba(0,0,0,.5);
   --mute-bg: rgba(255,255,255,.07);
-  --hov: color-mix(in srgb, var(--accent-light) 11%, transparent); --press: color-mix(in srgb, var(--accent-light) 18%, transparent);
+  --hov: color-mix(in srgb, var(--accent-light) 11%, transparent); --press-bg: color-mix(in srgb, var(--accent-light) 18%, transparent);
   --bg-hover: rgba(255,255,255,.07);
   --field-line: rgba(255,255,255,.14);
   --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5l3 3 3-3' fill='none' stroke='%23b9b9b9' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
@@ -340,7 +340,7 @@ table, input, select, textarea, .num, .mono, .chip, .kbd, .badge, .count, .pill,
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: var(--ctl-h); padding: 0 14px; border: 1px solid var(--border2); border-radius: var(--r-md); background: var(--bg2); color: var(--text); font: inherit; line-height: 1.2; white-space: nowrap; text-decoration: none; cursor: pointer; transition: background-color .15s, color .15s, border-color .15s, box-shadow .15s, transform var(--dur-2) var(--ease); }
 .btn:hover:not(:disabled) { background: var(--hov); color: var(--text); }
 .btn:disabled { opacity: .5; cursor: default; }
-.btn.subtle { background: transparent; border-color: transparent; } .btn.subtle:hover:not(:disabled) { background: var(--hov); } .btn.subtle:active:not(:disabled) { background: var(--press); }
+.btn.subtle { background: transparent; border-color: transparent; } .btn.subtle:hover:not(:disabled) { background: var(--hov); } .btn.subtle:active:not(:disabled) { background: var(--press-bg); }
 .btn.icon { width: var(--ctl-h); padding: 0; }
 .btn.sm { min-height: var(--ctl-h-sm); padding: 0 11px; gap: 6px; font-size: var(--fs-sm); border-radius: var(--r-sm); } .btn.sm > svg { width: 15px; height: 15px; } .btn.sm.icon { width: var(--ctl-h-sm); padding: 0; }
 .btn.lg { min-height: 44px; padding: 0 20px; font-size: var(--fs-title); border-radius: var(--r); }   /* web-page calls to action */

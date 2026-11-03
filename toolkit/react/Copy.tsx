@@ -49,12 +49,12 @@ export function DateCopy({ iso, short }: { iso: string; short?: boolean }) {
   return <CopyCell value={fmtSapDate(iso)} label="date" className="date">{short ? `${+iso.slice(5, 7)}/${+iso.slice(8, 10)}` : undefined}</CopyCell>;
 }
 
-/** An amount: a copy chip showing (1,234.56) for a negative, copying -1,234.56 so it pastes as a negative number. `cents` is an integer. */
+/** An amount: a copy chip showing (1,234.56) for a negative, copying -1234.56 so it pastes as a negative number. `cents` is an integer. */
 export function Money({ cents, copy = true }: { cents: number | undefined; copy?: boolean }) {
   if (cents === undefined) return <span className="copy empty">–</span>;
   const abs = (Math.abs(cents) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const shown = cents < 0 ? `(${abs})` : abs;
   const body = <>{bracketed(shown)}{cents >= 0 && <span className="psp" aria-hidden="true">)</span>}</>;   // positives reserve the ")" width so columns line up
   if (!copy) return <span className={cents < 0 ? 'neg' : 'pos'}>{body}</span>;
-  return <CopyCell value={(cents < 0 ? '-' : '') + abs} label="amount" className={cents < 0 ? '' : 'pos'}>{body}</CopyCell>;
+  return <CopyCell value={(cents < 0 ? '-' : '') + abs.replace(/,/g, '')} label="amount" className={cents < 0 ? '' : 'pos'}>{body}</CopyCell>;
 }

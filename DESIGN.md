@@ -53,7 +53,7 @@ Everything else is a `color-mix()` of the trio with a neutral (and OKLCH relativ
 
 - Surfaces: `--page`, `--bg`, `--glass`, `--glass2`, `--bg2`, `--bg3`, `--well`, `--nav-bg`, `--bar-bg`, `--th-bg`, `--field-bg`, `--panel-bg`, `--modal-bg`, `--pop-bg` (solid), `--toast-bg`, `--tip-bg`.
 - Text and lines: `--text`, `--text2`, `--text3` (the faintest text that still passes AA), `--border`, `--border2`.
-- States: `--hov`, `--press` (accent tint for button-like controls), `--fill`, `--fill2`, `--soft-ring`, `--tile-on` (selected), `--bg-hover`, `--bg-sel` (neutral, for rows), `--focus` (neutral ring).
+- States: `--hov`, `--press-bg` (accent tint for button-like controls; `--press` is the 97% press scale), `--fill`, `--fill2`, `--soft-ring`, `--tile-on` (selected), `--bg-hover`, `--bg-sel` (neutral, for rows), `--focus` (neutral ring).
 - Accent roles: `--btn`, `--btn-hover`, `--btn-edge`, `--accent-soft` (a quiet accent area), `--accent-chip` (a badge fill), `--accent-text` (accent text on plain surfaces; the text colour in dark), `--accent-ink` (text on accent fills; the accent darkened 25% in light so it passes AA), `--acc` (the accent as a line), `--nav-grad`, `--vivid`, `--backlight`.
 
 ### Status

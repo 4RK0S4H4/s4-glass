@@ -427,7 +427,8 @@ var s4Date = (function () {
 function s4Dialog(scrim) {
   clearTimeout(scrim._s4t); scrim.classList.remove("closing"); var old = scrim.querySelector(".ask"); if (old) old.remove();
   scrim._s4back = document.activeElement; scrim.hidden = false;
-  var f = scrim.querySelector("[autofocus], .modal footer .btn.primary, input, select, textarea, button"); if (f) f.focus();
+  var f = ["[autofocus]", ".modal .body input, .modal .body select, .modal .body textarea, .modal .body button.sel", ".modal footer .btn.primary", "input, select, textarea, button"].reduce(function (a, q) {   /* in order of preference, not page order (the header Close comes first in the page) */
+    return a || Array.prototype.filter.call(scrim.querySelectorAll(q), function (el) { return el.offsetParent !== null && !el.disabled; })[0]; }, null); if (f) f.focus();   /* in order of preference, not page order (the header Close comes first in the page) */
   if (!scrim._s4wired) {
     scrim._s4wired = true;
     scrim.addEventListener("click", function (e) { if (e.target === scrim && !scrim.hasAttribute("data-dirty")) s4Close(scrim); });
@@ -670,7 +671,7 @@ document.addEventListener("DOMContentLoaded", function () {
   --shadow-3: 0 20px 56px rgba(0,0,0,.28);
   --mute-bg: color-mix(in srgb, var(--tint) 4%, #f2f2f2);
   /* states: one accent hover tint for every button-like control; rows and selections are neutral */
-  --hov: color-mix(in srgb, var(--accent) 7%, transparent); --press: color-mix(in srgb, var(--accent) 13%, transparent);
+  --hov: color-mix(in srgb, var(--accent) 7%, transparent); --press-bg: color-mix(in srgb, var(--accent) 13%, transparent);
   --fill: color-mix(in srgb, var(--btn) 12%, transparent); --fill2: color-mix(in srgb, var(--btn) 18%, transparent);
   --soft-ring: color-mix(in srgb, var(--btn) 34%, transparent);
   --bg-hover: color-mix(in srgb, var(--text) 5%, transparent); --bg-sel: color-mix(in srgb, var(--text) 8%, transparent);
@@ -728,7 +729,7 @@ document.addEventListener("DOMContentLoaded", function () {
   --text: #f2f2f2; --text2: #b9b9b9; --text3: #999999; --border: rgba(255,255,255,.10); --border2: rgba(255,255,255,.17);
   --shadow-1: none; --shadow-2: 0 18px 50px rgba(0,0,0,.6); --shadow-3: 0 24px 70px rgba(0,0,0,.5);
   --mute-bg: rgba(255,255,255,.07);
-  --hov: color-mix(in srgb, var(--accent-light) 11%, transparent); --press: color-mix(in srgb, var(--accent-light) 18%, transparent);
+  --hov: color-mix(in srgb, var(--accent-light) 11%, transparent); --press-bg: color-mix(in srgb, var(--accent-light) 18%, transparent);
   --bg-hover: rgba(255,255,255,.07);
   --field-line: rgba(255,255,255,.14);
   --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5l3 3 3-3' fill='none' stroke='%23b9b9b9' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
@@ -767,7 +768,7 @@ document.addEventListener("DOMContentLoaded", function () {
   --text: #f2f2f2; --text2: #b9b9b9; --text3: #999999; --border: rgba(255,255,255,.10); --border2: rgba(255,255,255,.17);
   --shadow-1: none; --shadow-2: 0 18px 50px rgba(0,0,0,.6); --shadow-3: 0 24px 70px rgba(0,0,0,.5);
   --mute-bg: rgba(255,255,255,.07);
-  --hov: color-mix(in srgb, var(--accent-light) 11%, transparent); --press: color-mix(in srgb, var(--accent-light) 18%, transparent);
+  --hov: color-mix(in srgb, var(--accent-light) 11%, transparent); --press-bg: color-mix(in srgb, var(--accent-light) 18%, transparent);
   --bg-hover: rgba(255,255,255,.07);
   --field-line: rgba(255,255,255,.14);
   --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5l3 3 3-3' fill='none' stroke='%23b9b9b9' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
@@ -917,7 +918,7 @@ table, input, select, textarea, .num, .mono, .chip, .kbd, .badge, .count, .pill,
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: var(--ctl-h); padding: 0 14px; border: 1px solid var(--border2); border-radius: var(--r-md); background: var(--bg2); color: var(--text); font: inherit; line-height: 1.2; white-space: nowrap; text-decoration: none; cursor: pointer; transition: background-color .15s, color .15s, border-color .15s, box-shadow .15s, transform var(--dur-2) var(--ease); }
 .btn:hover:not(:disabled) { background: var(--hov); color: var(--text); }
 .btn:disabled { opacity: .5; cursor: default; }
-.btn.subtle { background: transparent; border-color: transparent; } .btn.subtle:hover:not(:disabled) { background: var(--hov); } .btn.subtle:active:not(:disabled) { background: var(--press); }
+.btn.subtle { background: transparent; border-color: transparent; } .btn.subtle:hover:not(:disabled) { background: var(--hov); } .btn.subtle:active:not(:disabled) { background: var(--press-bg); }
 .btn.icon { width: var(--ctl-h); padding: 0; }
 .btn.sm { min-height: var(--ctl-h-sm); padding: 0 11px; gap: 6px; font-size: var(--fs-sm); border-radius: var(--r-sm); } .btn.sm > svg { width: 15px; height: 15px; } .btn.sm.icon { width: var(--ctl-h-sm); padding: 0; }
 .btn.lg { min-height: 44px; padding: 0 20px; font-size: var(--fs-title); border-radius: var(--r); }   /* web-page calls to action */
@@ -1066,7 +1067,7 @@ input[type=radio]:disabled { opacity: .45; cursor: default; }
 .note { padding: 8px 12px; border-radius: var(--r-md); background: var(--bg-hover); font-size: var(--fs-ui); color: var(--text2); }
 .note.warn { background: var(--warn-bg); color: var(--text); } .note.bad { background: var(--bad-bg); color: var(--text); } .note.ok { background: var(--ok-bg); color: var(--text); }
 .hidden-note { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 8px 12px; border-radius: var(--r-md); background: var(--bg-hover); font-size: var(--fs-ui); }
-.empty { padding: var(--s-16) var(--s-5); text-align: center; color: var(--text2); } .empty h2 { margin: var(--s-2) 0; font-size: var(--fs-h2); color: var(--text); } .empty .ic.lg { color: var(--text3); }
+.empty { padding: var(--s-16) var(--s-5); text-align: center; color: var(--text2); } .empty h2 { margin: var(--s-2) 0; font-size: var(--fs-h2); color: var(--text); } .empty .ic.lg { width: 32px; height: 32px; color: var(--text3); }
 .drop { padding: 26px; text-align: center; color: var(--text2); background: var(--bg3); border: 2px dashed var(--border2); border-radius: var(--r); }
 .drop.over { background: var(--accent-soft); color: var(--text); }
 .skeleton { display: block; height: 1em; border-radius: var(--r-xs); background: linear-gradient(90deg, var(--mute-bg) 25%, var(--bg-hover) 50%, var(--mute-bg) 75%) 0 0 / 300% 100%; animation: s4-shimmer 1.4s linear infinite; }
@@ -1276,7 +1277,7 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
 .prose > * + * { margin-top: 1em; } .prose h2 { margin-top: 1.8em; } .prose ul, .prose ol { padding-left: 1.3em; } .prose li + li { margin-top: .35em; }
 .prose code { padding: 1px 5px; border-radius: var(--r-xs); background: var(--well); border: 1px solid var(--border); font-size: .9em; }
 .feature { display: flex; flex-direction: column; gap: var(--s-2); }
-.feature .ic.lg { color: var(--accent-text); margin-bottom: var(--s-1); }
+.feature .ic.lg { width: 32px; height: 32px; color: var(--accent-text); margin-bottom: var(--s-1); }
 .feature p { margin: 0; color: var(--text2); }
 .cta-band { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-5); padding: var(--s-10); border-radius: var(--r-2xl); background: var(--glass); border: 1px solid var(--border); box-shadow: var(--shadow-1); }
 .cta-band h2 { margin: 0; }
@@ -1446,7 +1447,7 @@ if (document.readyState === "loading") document.addEventListener("DOMContentLoad
     <header class="topbar">
       <div class="ttl"><h1>Orders</h1></div>
       <div class="actions">
-        <button class="btn icon subtle" type="button" data-theme-toggle aria-label="Switch Light or Dark" title="Switch Light or Dark"><svg data-ic="moon"></svg></button>
+        <button class="btn icon subtle" type="button" data-theme-toggle aria-label="Switch Light or Dark" data-tip="Switch Light or Dark"><svg data-ic="moon"></svg></button>
         <button class="btn squash" type="button" id="refresh" aria-label="Refresh"><svg data-ic="refresh"></svg><span>Refresh</span></button>
         <button class="btn squash" type="button" id="export" aria-label="Export"><svg data-ic="download"></svg><span>Export</span></button>
         <button class="btn primary" type="button" id="new-order"><svg data-ic="add-circle"></svg><span>New Order</span></button>
@@ -1474,19 +1475,19 @@ if (document.readyState === "loading") document.addEventListener("DOMContentLoad
             </tr></thead>
             <tbody>
               <tr class="st-bad" data-status="late" data-order="1001" data-customer="Harbour & Pine" data-total="-120" data-rank="0">
-                <td data-label="Order"><button class="copy" type="button" data-copy="1001" title="Copy"><span>1001</span><svg data-ic="copy"></svg></button></td>
+                <td data-label="Order"><button class="copy" type="button" data-copy="1001" aria-label="Copy Order 1001"><span>1001</span><svg data-ic="copy"></svg></button></td>
                 <td class="dcol lead"><span class="trunc">Harbour &amp; Pine</span></td>
                 <td data-label="Status"><span class="badge bad">Late</span></td>
                 <td class="num" data-label="Total"><span><span class="brk">(</span>120.00<span class="brk">)</span></span></td>
               </tr>
               <tr class="st-ok done" data-status="shipped" data-order="1002" data-customer="Meadow Lane Bakery" data-total="1280.5" data-rank="2">
-                <td data-label="Order"><button class="copy" type="button" data-copy="1002" title="Copy"><span>1002</span><svg data-ic="copy"></svg></button></td>
+                <td data-label="Order"><button class="copy" type="button" data-copy="1002" aria-label="Copy Order 1002"><span>1002</span><svg data-ic="copy"></svg></button></td>
                 <td class="dcol lead"><span class="trunc">Meadow Lane Bakery</span></td>
                 <td data-label="Status"><span class="badge ok">Shipped</span></td>
                 <td class="num" data-label="Total"><span>1,280.50<span class="psp">)</span></span></td>
               </tr>
               <tr class="st-accent" data-status="pending" data-order="1003" data-customer="Kestrel Outdoor Co." data-total="6400" data-rank="1">
-                <td data-label="Order"><button class="copy" type="button" data-copy="1003" title="Copy"><span>1003</span><svg data-ic="copy"></svg></button></td>
+                <td data-label="Order"><button class="copy" type="button" data-copy="1003" aria-label="Copy Order 1003"><span>1003</span><svg data-ic="copy"></svg></button></td>
                 <td class="dcol lead"><span class="trunc">Kestrel Outdoor Co.</span></td>
                 <td data-label="Status"><span class="badge accent">Pending</span></td>
                 <td class="num" data-label="Total"><span>6,400.00<span class="psp">)</span></span></td>
