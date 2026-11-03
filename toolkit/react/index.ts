@@ -9,3 +9,5 @@ export { SegFilter, useSlider } from './SegFilter';
 export { FoldCard } from './FoldCard';
 export { DescTip } from './DescTip';
 export { DateField, Calendar } from './DateField';
+export { Combo } from './Combo';
+export { SearchInput } from './SearchInput';

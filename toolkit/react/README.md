@@ -12,7 +12,9 @@ Small, plain TSX files for React apps. No build step for the toolkit itself: cop
 | `SegFilter`, `useSlider` | segmented filter with a sliding pill | `s4Slider` |
 | `FoldCard` | a card folded by its header | `s4Fold` |
 | `DateField` (`type="month"`), `Calendar` | date and month picker, native on touch | `s4Date` |
-| `DescTip` | tooltip for cut-off text, main line + quieter sub line | `s4Tips` |
+| `Combo` | suggestions while typing (replaces `<datalist>`) | `s4Combo` |
+| `SearchInput` | search with the S4 clear button | `s4Search` |
+| `DescTip` | tooltip for cut-off text and any `data-tip`, main line + quieter sub line | `s4Tips` |
 
 ```tsx
 import { Select, Modal, useToast, CopyCell, useSort, SortTh } from './s4-react';
