@@ -1,5 +1,17 @@
 # Changelog
 
+## Review fixes (2026-11-03)
+- **Press shrink works again**: `--press` (0.97) was overridden by the accent tint of the same name; the tint is now `--press-bg`.
+- **Dropdown (`s4Select`)**: the button follows `.value`, `selectedIndex`, form reset and new options; `.bad`/`aria-invalid`, focus, `<label for>` and `required` reach the button; disabled options skipped; long options wrap at the screen edge; closes on page scroll.
+- **Dialogs**: first focus is the first field in the body (not the header Close); a dialog opened from a dialog sits on top. **Date picker**: Tab leaves the calendar to the next field (it used to jump out of a dialog), the pop-over fits short windows, clearer messages for a day that doesn't exist and for months out of range. **Menus**: closing with their own button drops the key handler.
+- **Search** wrapped by `s4Search` keeps the width a bare `.search` had. Feature and empty-state icons are 32px, as specified.
+- `build_icons.mjs` takes `toolkit/icons.js` as its source for a page subset (no npm package needed). Skill description also excludes S4 Orion.
+
+## Phase 1: Bank Rec's components and S4 versions of browser controls (2026-11-03, PRs #33–#36)
+- Dropdown `s4Select` (native on touch), dialog with unsaved input (`data-dirty` → "Discard …?"), undo pop-up (`s4Toast(…, {anchor})`), menus with arrow keys, sections and options, copy chip variants, row quick actions `.qb` and owner pills `.pp`, truncation tooltip with a sub line, blanks-last sorting, `.locked-f`, `.chip-x`.
+- Date and month picker `s4Date` (the phone's own picker on touch, owner's pick B), suggestions `s4Combo`, S4 radios, `data-tip` tooltips, `s4Search` clear button, `::selection` colour, textarea grip.
+- `toolkit/react/`: a small React kit with the same components (Select, Modal, useToast, CopyCell, useSort/SortTh, SegFilter, FoldCard, DescTip, DateField, Combo, SearchInput).
+
 ## Tables at scale (2026-10-29)
 - **Option C, "Pages, Totals Below"** (owner's pick): `.t-bar`, `.t-applied` + `.xchip`, sticky columns (`.sticky-l`, `.sticky-l2`, `.sticky-r`, for tables that scroll sideways, not `.cards`), `.sel-dock` (the sum of the selected amounts under the table), `.t-foot` and `.pager`.
 
