@@ -53,7 +53,7 @@ Everything else is a `color-mix()` of the trio with a neutral (and OKLCH relativ
 
 - Surfaces: `--page`, `--bg`, `--glass`, `--glass2`, `--bg2`, `--bg3`, `--well`, `--nav-bg`, `--bar-bg`, `--th-bg`, `--field-bg`, `--panel-bg`, `--modal-bg`, `--pop-bg` (solid), `--toast-bg`, `--tip-bg`.
 - Text and lines: `--text`, `--text2`, `--text3` (the faintest text that still passes AA), `--border`, `--border2`.
-- States: `--hov`, `--press` (accent tint for button-like controls), `--fill`, `--fill2`, `--soft-ring`, `--tile-on` (selected), `--bg-hover`, `--bg-sel` (neutral, for rows), `--focus` (neutral ring).
+- States: `--hov`, `--press-bg` (accent tint for button-like controls; `--press` is the 97% press scale), `--fill`, `--fill2`, `--soft-ring`, `--tile-on` (selected), `--bg-hover`, `--bg-sel` (neutral, for rows), `--focus` (neutral ring).
 - Accent roles: `--btn`, `--btn-hover`, `--btn-edge`, `--accent-soft` (a quiet accent area), `--accent-chip` (a badge fill), `--accent-text` (accent text on plain surfaces; the text colour in dark), `--accent-ink` (text on accent fills; the accent darkened 25% in light so it passes AA), `--acc` (the accent as a line), `--nav-grad`, `--vivid`, `--backlight`.
 
 ### Status
@@ -231,7 +231,7 @@ Option A of the chart samples ("Accent First"); the reference implementation is 
 
 ## Icons
 
-**Solar Bold Duotone** (CC BY 4.0, 480 Design), for every icon in every app: nav, tabs, buttons, chips, row actions, close, arrows, empty states. One style, no Linear and no second set (the owner picked this, see below). The faded half is the icon's `[opacity]` group, so an icon is one `color`: the text colour, or the accent colour where the accent is allowed (never accent on dark). Where an icon sits on an accent fill (active nav item, tab, primary button) it is white and its faded half is 62%. Sizes: 12px badge, 14–15px small buttons, 18px default, 20px nav, 24px tab bar, 32px feature and empty state. **Credit Solar** (480 Design, CC BY 4.0) in each app's About or footer and keep the credit line in `icons.js`. `toolkit/icons.js` holds a curated set (`tools/build_icons.mjs` adds more). A single-file page inlines only the icons it uses (`build_icons.mjs --only copy,moon,refresh --out icons-page.js`); built apps inline only the SVGs they use. Icons use `currentColor`.
+**Solar Bold Duotone** (CC BY 4.0, 480 Design), for every icon in every app: nav, tabs, buttons, chips, row actions, close, arrows, empty states. One style, no Linear and no second set (the owner picked this, see below). The faded half is the icon's `[opacity]` group, so an icon is one `color`: the text colour, or the accent colour where the accent is allowed (never accent on dark). Where an icon sits on an accent fill (active nav item, tab, primary button) it is white and its faded half is 62%. Sizes: 12px badge, 14–15px small buttons, 18px default, 20px nav, 24px tab bar, 32px feature and empty state. **Credit Solar** (480 Design, CC BY 4.0) in each app's About or footer and keep the credit line in `icons.js`. `toolkit/icons.js` holds a curated set (`tools/build_icons.mjs` adds more). A single-file page inlines only the icons it uses (`node tools/build_icons.mjs toolkit/icons.js --only copy,moon,refresh --out icons-page.js`); built apps inline only the SVGs they use. Icons use `currentColor`.
 
 ## Accessibility
 

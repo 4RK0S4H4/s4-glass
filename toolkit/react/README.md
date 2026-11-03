@@ -17,7 +17,7 @@ Small, plain TSX files for React apps. No build step for the toolkit itself: cop
 | `DescTip` | tooltip for cut-off text and any `data-tip`, main line + quieter sub line | `s4Tips` |
 
 ```tsx
-import { Select, Modal, useToast, CopyCell, useSort, SortTh } from './s4-react';
+import { Select, Modal, useToast, CopyCell, useSort, SortTh } from './react'   // the toolkit/react folder, copied into your app;
 ```
 
 Icons: `Icon` reads names from `S4_ICONS` (the global `icons.js` defines) or from `setS4Icons(map)` if you bundle your own.
