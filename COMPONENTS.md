@@ -277,6 +277,15 @@ Variants (all `.copy` + a modifier):
 ```
 Wired on load by `s4Date()` (call it for fields added later). The value is ISO in `input.dataset.value` (`2026-11-24`, `2026-09` for a month) and a `change` event fires on the input. Typing works (`11/24/2026`, `2026-11-24`, `Sep 2026`) and is read when you leave the field; a bad or out-of-range date shows the message in the field's `.err`. The calendar: month header with previous / next, today a soft fill, the chosen day solid accent, other-month days quieter, days outside `data-min` / `data-max` dimmed; Clear and Today under the grid. Keys: arrows, Page Up / Down (Shift: a year), Home / End, Enter, Escape. Sunday-first; `s4Date.week = 1` for Monday. **On a touch screen the field becomes the phone's own date or month picker** (decided), the same rule as the dropdown. React: `<DateField label="Due Date" value={iso} onChange={setIso} min max />`, `type="month"`.
 
+### Suggestions while typing, search, tooltips, radios
+```html
+<input type="text" list="vendors" placeholder="Start typing a vendor"><datalist id="vendors"><option value="Acme Supplies"><option value="Northwind Tech"></datalist>
+<input class="input search" type="search" placeholder="Search Description or Reference" aria-label="Search">
+<button class="btn icon" aria-label="Undo" data-tip="Undo" data-tip-sub="Ctrl+Z"><svg data-ic="undo-left"></svg></button>
+<label class="chk"><input type="radio" name="side" checked>Debit</label>
+```
+`s4Combo()` replaces the browser's `<datalist>` list with the dropdown's look (matches contain what you typed, starting-with first, the typed part in bold; arrows, Enter, Escape); free text is still allowed. `s4Search()` hides the browser's clear "×" and adds an S4 one; Escape clears. `data-tip` shows an S4 tooltip on hover (0.28s) and on keyboard focus; keep the `aria-label` (the tooltip is not read as the name) and never use `title=`. `data-native` on any of these keeps the browser's version. Radios and selected text (`::selection`, the accent) are styled by `s4.css`; the textarea grip is a quiet S4 one.
+
 ### Dropdown
 ```html
 <label class="f">Company<select><option>2101 · Northwind Tech</option><option>2102 · Northwind US</option></select></label>

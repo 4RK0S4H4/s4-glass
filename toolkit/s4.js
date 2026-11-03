@@ -9,6 +9,9 @@
    s4Tips(root)                          tooltips (.tip) for .trunc / .dcol text, only when it is actually cut off: a main line, a quieter sub line (<small> or .sub), a short delay, flips above near the bottom
    s4Menu(button, menu)                  open a .menu under its button; arrows / Home / End move, Enter picks; any [data-menu="id"] button opens #id
    s4Date(field)                         date / month picker: <div class="dp-field" data-type="date|month" data-min data-max data-value><input><button class="dp-open">…</button></div>. Every .dp-field is wired on load; the ISO value is in input.dataset.value and a change event fires. Touch screens get the phone's own picker (type=date / month)
+   s4Combo(input)                        suggestions while typing, replacing <datalist>: an <input list="id"> is wired on load (free text still allowed; add data-native to keep the browser's)
+   s4Search(input)                       an S4 clear button in every input[type=search] / .search (Escape clears too)
+   data-tip="Copy Amount"                a tooltip on hover and keyboard focus for icon-only buttons and short hints (keep aria-label; data-tip-sub = a quieter second line)
    s4Select(select)                      a themed dropdown for a <select> (every select is wired on load; add data-native to keep the browser's; touch screens keep it anyway)
    s4Dialog(scrim) / s4Close(scrim)      open / close a .scrim dialog: focus moves in and back, Escape closes, a 0.15s exit. With data-dirty="the queued files", Escape asks "Discard the queued files?" first
    s4Toast("Saved", {action, onAction, anchor})  a dark toast for ~4s (6.5s with an action, time to reach "Undo"); anchor = the button it points to (an undo pop-up)
@@ -81,26 +84,34 @@ function s4Copy(el, text) {
    inside the element becomes a quieter second line. Shows under the text, above it near the bottom of the window. */
 function s4Tips(root) {
   var tip = document.createElement("div"); tip.className = "tip"; tip.hidden = true; tip.setAttribute("role", "tooltip"); document.body.appendChild(tip);
-  var timer, cur, SEL = ".trunc, .tip-on-cut";
+  var timer, cur, SEL = ".trunc, .tip-on-cut, [data-tip]";
   function hide() { clearTimeout(timer); cur = null; tip.hidden = true; }
   function show(el) {
     if (cur !== el || !el.isConnected) return;
-    var sub = el.querySelector("small, .sub"), subText = sub ? sub.textContent.trim() : "";
-    var main = (sub ? Array.prototype.map.call(el.childNodes, function (n) { return n === sub || (n.nodeType === 1 && n.contains(sub)) ? "" : n.textContent; }).join("") : el.textContent).trim();
-    if (subText.toLowerCase() === main.toLowerCase()) subText = "";
+    var main, subText = "";
+    if (el.hasAttribute("data-tip")) { main = el.getAttribute("data-tip"); subText = el.getAttribute("data-tip-sub") || ""; }
+    else {
+      var sub = el.querySelector("small, .sub"); subText = sub ? sub.textContent.trim() : "";
+      main = (sub ? Array.prototype.map.call(el.childNodes, function (n) { return n === sub || (n.nodeType === 1 && n.contains(sub)) ? "" : n.textContent; }).join("") : el.textContent).trim();
+      if (subText.toLowerCase() === main.toLowerCase()) subText = "";
+    }
     tip.textContent = ""; var m = document.createElement("div"); m.textContent = main; tip.appendChild(m);
     if (subText) { var sm = document.createElement("small"); sm.textContent = subText; tip.appendChild(sm); }
     tip.hidden = false;
     var r = el.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
-    var x = Math.min(Math.max(8, r.left - 9), innerWidth - w - 8), y = r.bottom + 6 + h > innerHeight - 8 ? r.top - h - 6 : r.bottom + 6;
+    var x = Math.min(Math.max(8, r.left + (el.hasAttribute("data-tip") ? r.width / 2 - w / 2 : -9)), innerWidth - w - 8), y = r.bottom + 6 + h > innerHeight - 8 ? r.top - h - 6 : r.bottom + 6;
     tip.style.left = x + "px"; tip.style.top = y + "px";
   }
-  (root || document).addEventListener("mouseover", function (e) {
-    var el = e.target.closest && e.target.closest(SEL); if (el === cur) return;
-    hide(); if (!el || el.scrollWidth <= el.clientWidth + 1) return;
-    cur = el; timer = setTimeout(function () { show(el); }, 280);
-  });
-  (root || document).addEventListener("mouseout", function (e) { if (cur && !(e.relatedTarget && cur.contains(e.relatedTarget))) hide(); });
+  function want(el, delay) {   /* cut-off text only when it is really cut off; a data-tip always */
+    if (el === cur) return; hide();
+    if (!el || (!el.hasAttribute("data-tip") && el.scrollWidth <= el.clientWidth + 1)) return;
+    cur = el; timer = setTimeout(function () { show(el); }, delay);
+  }
+  (root || document).addEventListener("mouseover", function (e) { want(e.target.closest && e.target.closest(SEL), 280); });
+  (root || document).addEventListener("mouseout", function (e) { if (cur && !(e.relatedTarget && cur.contains(e.relatedTarget)) && document.activeElement !== cur) hide(); });
+  (root || document).addEventListener("focusin", function (e) { var el = e.target.closest && e.target.closest("[data-tip]"); if (el && el.matches(":focus-visible")) want(el, 0); });
+  (root || document).addEventListener("focusout", hide);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") hide(); });
   document.addEventListener("mousedown", hide); addEventListener("blur", hide); addEventListener("scroll", hide, true);
 }
 
@@ -199,6 +210,56 @@ function s4Select(sel) {
       if (hit >= 0) { if (list) mark(hit); else if (sel.selectedIndex !== hit) { sel.selectedIndex = hit; sel.dispatchEvent(new Event("change", { bubbles: true })); } }
     }
   });
+}
+
+/* Suggestions while typing: <input list="vendors"> + <datalist id="vendors"><option value="…"></datalist>. The browser's own list is replaced by the dropdown's look;
+   free text is still allowed (nothing is forced to match). Arrows move, Enter or a click picks, Escape closes; matches are those containing what was typed, starting-with first. */
+function s4Combo(input) {
+  var dl = input.getAttribute("list") && document.getElementById(input.getAttribute("list"));
+  if (input._s4combo || !dl || input.hasAttribute("data-native")) return; input._s4combo = true;
+  var src = Array.prototype.map.call(dl.options, function (o) { return o.value; });
+  input.removeAttribute("list"); input.setAttribute("autocomplete", "off"); input.setAttribute("role", "combobox"); input.setAttribute("aria-autocomplete", "list"); input.setAttribute("aria-expanded", "false");
+  var list, act = -1, uid = "s4cb" + Math.random().toString(36).slice(2, 7), hits = [];
+  function esc(t) { return t.replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
+  function shut() { if (!list) return; list.remove(); list = null; act = -1; input.setAttribute("aria-expanded", "false"); input.removeAttribute("aria-activedescendant"); document.removeEventListener("mousedown", away); removeEventListener("resize", shut); }
+  function away(e) { if (e.target !== input && !(list && list.contains(e.target))) shut(); }
+  function mark(i) { act = i; if (!list) return; Array.prototype.forEach.call(list.children, function (li, k) { li.classList.toggle("act", k === i); }); if (i >= 0) { input.setAttribute("aria-activedescendant", uid + "-" + i); list.children[i].scrollIntoView({ block: "nearest" }); } else input.removeAttribute("aria-activedescendant"); }
+  function pick(v) { input.value = v; shut(); input.dispatchEvent(new Event("input", { bubbles: true })); input.dispatchEvent(new Event("change", { bubbles: true })); }
+  function refresh() {
+    var q = input.value.trim().toLowerCase();
+    hits = src.filter(function (v) { return v.toLowerCase().indexOf(q) >= 0 && v.toLowerCase() !== q; });
+    hits.sort(function (a, b) { return (b.toLowerCase().indexOf(q) === 0) - (a.toLowerCase().indexOf(q) === 0); });
+    hits = hits.slice(0, 50);
+    if (!hits.length || document.activeElement !== input) { shut(); return; }
+    if (!list) { list = document.createElement("ul"); list.className = "sel-list"; list.id = uid; list.setAttribute("role", "listbox"); document.body.appendChild(list); input.setAttribute("aria-expanded", "true"); input.setAttribute("aria-controls", uid);
+      document.addEventListener("mousedown", away); addEventListener("resize", shut); }
+    list.innerHTML = hits.map(function (v, i) { var k = q ? v.toLowerCase().indexOf(q) : -1; return '<li id="' + uid + "-" + i + '" role="option"><span>' + (k >= 0 ? esc(v.slice(0, k)) + "<mark>" + esc(v.slice(k, k + q.length)) + "</mark>" + esc(v.slice(k + q.length)) : esc(v)) + "</span></li>"; }).join("");
+    Array.prototype.forEach.call(list.children, function (li, i) { li.addEventListener("mousemove", function () { mark(i); }); li.addEventListener("mousedown", function (e) { e.preventDefault(); pick(hits[i]); }); });
+    var r = input.getBoundingClientRect(), below = innerHeight - r.bottom - 12, above = r.top - 12, up = below < 180 && above > below;
+    list.style.left = Math.min(r.left, innerWidth - 168) + "px"; list.style.minWidth = Math.max(r.width, 160) + "px"; list.style.maxHeight = Math.min(280, up ? above : below) + "px";
+    list.classList.toggle("up", up); list.style.top = up ? "" : r.bottom + 4 + "px"; list.style.bottom = up ? innerHeight - r.top + 4 + "px" : "";
+    mark(-1);
+  }
+  input.addEventListener("input", refresh); input.addEventListener("focus", function () { if (input.value) refresh(); }); input.addEventListener("blur", shut);
+  input.addEventListener("keydown", function (e) {
+    var k = e.key;
+    if (k === "ArrowDown" || k === "ArrowUp") { if (!list) { refresh(); if (!list) return; } e.preventDefault(); mark(k === "ArrowDown" ? Math.min(hits.length - 1, act + 1) : Math.max(0, act - 1)); }
+    else if (k === "Enter" && list && act >= 0) { e.preventDefault(); pick(hits[act]); }
+    else if (k === "Escape" && list) { e.preventDefault(); e.stopPropagation(); shut(); }
+  });
+}
+
+/* Search fields: the browser's own clear x is hidden; this adds an S4 one that shows while there is text. */
+function s4Search(input) {
+  if (input._s4search || input.closest(".search-field") || input.hasAttribute("data-native")) return; input._s4search = true;
+  var w = document.createElement("span"); w.className = "search-field"; input.parentNode.insertBefore(w, input); w.appendChild(input);
+  var b = document.createElement("button"); b.type = "button"; b.className = "search-x"; b.setAttribute("aria-label", "Clear Search"); b.hidden = !input.value; b.tabIndex = -1;
+  b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>';
+  w.appendChild(b);
+  function sync() { b.hidden = !input.value; }
+  function clear() { input.value = ""; sync(); input.dispatchEvent(new Event("input", { bubbles: true })); input.focus(); }
+  input.addEventListener("input", sync); b.addEventListener("mousedown", function (e) { e.preventDefault(); }); b.addEventListener("click", clear);
+  input.addEventListener("keydown", function (e) { if (e.key === "Escape" && input.value) { e.preventDefault(); e.stopPropagation(); clear(); } });
 }
 
 /* Date and month picker (decided: S4 calendar pop-over on desktop, the phone's own picker on touch). A .dp-field holds a text input that still accepts a
@@ -495,5 +556,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll("table.t").forEach(function (t) { if (t.querySelector("th.sortable")) s4Sort(t); });
   document.querySelectorAll("select").forEach(s4Select);
   document.querySelectorAll(".dp-field").forEach(s4Date);
+  document.querySelectorAll("input[list]").forEach(s4Combo);
+  document.querySelectorAll("input[type=search], input.search").forEach(s4Search);
   s4Tips();
 });

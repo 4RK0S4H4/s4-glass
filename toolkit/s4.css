@@ -362,6 +362,12 @@ button.lnk { border: 0; background: none; padding: 0; color: inherit; font: inhe
   min-width: 0; min-height: 34px; padding: 6px 9px; border: 1px solid var(--field-line); border-radius: var(--r-md); background-color: var(--field-bg); color: var(--text); font: inherit; }
 select { appearance: none; -webkit-appearance: none; padding-right: 30px; background-image: var(--chev); background-repeat: no-repeat; background-position: right 10px center; background-size: 12px; cursor: pointer; }
 textarea { min-height: 72px; resize: vertical; }
+textarea::-webkit-resizer { background: linear-gradient(135deg, transparent 0 52%, var(--text3) 52% 60%, transparent 60% 72%, var(--text3) 72% 80%, transparent 80%); border-radius: 0 0 var(--r-md) 0; }   /* a quiet grip instead of the OS one */
+::selection { background: color-mix(in srgb, var(--accent) 28%, transparent); color: var(--text); }   /* selected text: the accent, readable in both themes */
+.search-field { position: relative; display: inline-flex; align-items: center; max-width: 100%; } .search-field > input { padding-right: 32px; }
+input[type=search]::-webkit-search-cancel-button, input[type=search]::-webkit-search-decoration { -webkit-appearance: none; appearance: none; display: none; }   /* the browser's own clear x: S4 draws its own (.search-x) */
+.search-x { position: absolute; right: 6px; display: grid; place-items: center; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 50%; background: var(--bg-hover); color: var(--text2); cursor: pointer; transition: background-color var(--dur-1), color var(--dur-1); }
+.search-x:hover, .search-x:focus-visible { background: var(--bg-sel); color: var(--text); } .search-x svg { width: 12px; height: 12px; } .search-x[hidden] { display: none; }
 ::placeholder { color: var(--text3); opacity: 1; }
 :is(.input, input, select, textarea):not([type=checkbox]):not([type=radio]):focus { outline: none; border-color: var(--field-focus-line); background-color: var(--field-focus-bg); }
 :is(.input, input, select, textarea).bad, :is(.input, input, select, textarea).bad:focus { border-color: var(--bad); }
@@ -436,7 +442,12 @@ input[type=checkbox]:not(.switch input):not(:checked):not(:disabled):hover { bor
 input[type=checkbox]:not(.switch input):focus { outline: none; }
 input[type=checkbox]:not(.switch input):focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--btn) 25%, transparent); }
 input[type=checkbox]:disabled { opacity: .45; cursor: default; }
-input[type=radio] { accent-color: var(--btn); width: 16px; height: 16px; margin: 0 2px; cursor: pointer; }
+input[type=radio] { appearance: none; -webkit-appearance: none; flex: none; width: 18px; height: 18px; margin: 0 2px; display: inline-grid; place-items: center; vertical-align: middle; cursor: pointer; background: var(--bg2); border: 1.5px solid var(--border2); border-radius: 50%; transition: background-color var(--dur-2), border-color var(--dur-2), transform var(--dur-1); }
+input[type=radio]::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--btn); scale: 0; transition: scale var(--dur-2) var(--ease); }   /* on: a soft fill and a solid accent dot that grows in */
+input[type=radio]:checked { background: var(--fill2); border-color: var(--btn); } input[type=radio]:checked::after { scale: 1; }
+input[type=radio]:active:not(:disabled) { transform: scale(.9); } input[type=radio]:not(:checked):not(:disabled):hover { border-color: var(--acc); background: var(--bg-hover); }
+input[type=radio]:focus { outline: none; } input[type=radio]:focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--btn) 25%, transparent); }
+input[type=radio]:disabled { opacity: .45; cursor: default; }
 .chk { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
 .chk.big { align-items: flex-start; gap: 10px; } .chk.big input { margin-top: 2px; } .chk.big small { display: block; margin-top: 1px; color: var(--text3); font-size: var(--fs-xs); }
 
@@ -620,6 +631,8 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
 .menu-sec { margin-top: 3px; padding: 8px 4px 2px; border-top: 1px solid var(--border); } .menu-sec .menu-h { padding: 0 6px 6px; }
 .menu.opts { width: min(330px, 80vw); min-width: 0; } .menu.opts button { flex-direction: column; gap: 3px; padding: 10px 12px; } .menu.opts button.on b { color: var(--accent-text); }   /* an options menu: each choice has a line saying what it does */
 .sel-list { position: fixed; z-index: var(--z-menu); margin: 0; padding: 6px; list-style: none; overflow: auto; border: 1px solid var(--border2); border-radius: var(--r); background: var(--pop-bg); color: var(--text); box-shadow: var(--shadow-2); animation: s4-pop .14s var(--ease); transform-origin: top left; }
+.sel-list li mark { background: none; color: inherit; font-weight: 600; }   /* the part of a suggestion you typed */
+.sel-list li.none { color: var(--text3); cursor: default; }
 .sel-list.up { transform-origin: bottom left; }
 .sel-list li { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 7px 10px; border-radius: var(--r-sm); white-space: nowrap; cursor: pointer; }
 .sel-list li.act { background: var(--hov); } .sel-list li.on { font-weight: 600; color: var(--accent-text); } .sel-list li svg { width: 14px; height: 14px; flex: none; }
