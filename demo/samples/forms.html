@@ -30,7 +30,7 @@
   .hint { display: flex; justify-content: space-between; gap: var(--s-2); color: var(--text3); font-size: var(--fs-xs); }
   .err { display: none; align-items: flex-start; gap: 5px; color: var(--bad); font-size: var(--fs-xs); font-weight: 500; } .err svg { width: 14px; height: 14px; flex: none; margin-top: 1px; }
   .fld.bad .err { display: flex; } .fld.bad .hint { display: none; }
-  .fld.bad :is(input, select, textarea) { border-color: var(--bad); background-color: var(--bad-bg); }
+  .fld.bad :is(input, select, textarea, button.sel) { border-color: var(--bad); background-color: var(--bad-bg); }
   .fld.bad :is(input, select, textarea):focus { background-color: var(--bad-bg); }
   .fld.over .cnt { color: var(--bad); font-weight: 600; }
   :is(input, select, textarea):disabled { opacity: .55; cursor: not-allowed; }
@@ -94,7 +94,7 @@
     <tr><td>Where</td><td>Under the field</td><td>A summary on top plus under each field</td><td>Under the field, one step at a time</td></tr>
     <tr><td>When it clears</td><td>As you type the fix</td><td>As you type the fix; the summary shrinks</td><td>As you type the fix</td></tr>
     <tr><td>Best for</td><td>Everyday forms</td><td>Very long forms</td><td>Imports, setup, anything with a review</td></tr>
-    <tr><td>All options</td><td colspan="3">Errors always have an icon and words, never colour alone; fields keep their label above; the invoice and due dates use the phone's own date picker with quick "Today" and "Net 30" buttons; the note has a live character count.</td></tr>
+    <tr><td>All options</td><td colspan="3">Errors always have an icon and words, never colour alone; fields keep their label above; the invoice and due dates use the S4 date picker (the phone's own on touch screens) with quick "Today" and "Net 30" buttons; the note has a live character count.</td></tr>
   </tbody></table>
 </main>
 
@@ -122,7 +122,7 @@
   function fieldHtml(f) {
     var d = f.id + "-h " + f.id + "-e", ctl;
     if (f.type === "select") ctl = '<select id="' + f.id + '" name="' + f.id + '" aria-describedby="' + d + '"><option value="">Choose…</option>' + VENDORS.map(function (v) { return "<option>" + v + "</option>"; }).join("") + "</select>";
-    else if (f.type === "date") ctl = '<input id="' + f.id + '" name="' + f.id + '" type="date" aria-describedby="' + d + '">';
+    else if (f.type === "date") ctl = '<div class="dp-field" data-type="date"><input id="' + f.id + '" name="' + f.id + '" type="text" inputmode="numeric" placeholder="M/D/YYYY" autocomplete="off" aria-describedby="' + d + '"><button type="button" class="btn icon subtle sm dp-open" aria-label="Choose ' + f.label + '"><svg data-ic="calendar"></svg></button></div>';   /* the S4 date picker; the phone's own on touch screens */
     else if (f.type === "textarea") ctl = '<textarea id="' + f.id + '" name="' + f.id + '" rows="3" aria-describedby="' + d + '"></textarea>';
     else if (f.type === "seg") return '<div class="fld' + (f.span ? " span2" : "") + '"><span class="lbl" id="method-l">' + f.label + '</span><div class="seg" role="radiogroup" aria-labelledby="method-l" id="method"><button type="button" role="radio" class="on" aria-checked="true" data-v="ACH">ACH</button><button type="button" role="radio" aria-checked="false" data-v="Wire">Wire</button><button type="button" role="radio" aria-checked="false" data-v="Check">Check</button></div></div>';
     else ctl = (f.pre ? '<span class="pre">' + f.pre + "</span>" : "") + '<input id="' + f.id + '" name="' + f.id + '" type="' + (f.inputType || "text") + '"' + (f.mode ? ' inputmode="' + f.mode + '"' : "") + (f.ph ? ' placeholder="' + f.ph + '"' : "") + ' autocomplete="off" aria-describedby="' + d + '">' + (f.tick ? '<svg class="tick" data-ic="check-circle"></svg>' : "");
@@ -132,9 +132,11 @@
   }
   [0, 1, 2].forEach(function (s) { document.getElementById("s" + s).innerHTML = F.filter(function (f) { return f.step === s; }).map(fieldHtml).join(""); });
   if (window.s4Icons) s4Icons(form);
+  form.querySelectorAll(".dp-field").forEach(s4Date);
+  form.addEventListener("change", function (e) { if (e.target.closest(".dp-field")) e.target.dispatchEvent(new Event("input", { bubbles: true })); });   /* a day picked in the calendar checks the field like typing does */
 
   var st = { o: "a", attempted: false, step: 0, errors: {}, touched: {}, method: "ACH" };
-  function g(id) { var e = document.getElementById(id); return e ? e.value.trim() : ""; }
+  function g(id) { var e = document.getElementById(id); if (!e) return ""; var dp = e.closest(".dp-field"); return dp ? s4Date.get(dp) : e.value.trim(); }   /* a date field holds its ISO value in data-value */
   function fld(id) { return form.querySelector('[data-f="' + id + '"]'); }
   function showErr(f, msg) { var w = fld(f.id), inp = document.getElementById(f.id); w.classList.toggle("bad", !!msg); w.classList.remove("ok"); if (inp) inp.setAttribute("aria-invalid", msg ? "true" : "false"); w.querySelector(".err span").textContent = msg || ""; if (msg) st.errors[f.id] = msg; else delete st.errors[f.id]; }
   function validate(f, quiet) { var v = g(f.id), msg = f.check ? f.check(v, g) : ""; if (quiet) return msg; showErr(f, msg); if (!msg && v && f.tick) fld(f.id).classList.add("ok"); if (st.o === "b") renderSum(); return msg; }
@@ -146,7 +148,7 @@
   }
   form.addEventListener("click", function (e) {
     var j = e.target.closest("[data-jump]"); if (j) { e.preventDefault(); document.getElementById(j.dataset.jump).focus(); return; }
-    var p = e.target.closest("[data-preset]"); if (p) { var a = p.dataset.preset.split("|"), f = F.filter(function (x) { return x.id === a[0]; })[0], v = f.presets[+a[1]][1], inp = document.getElementById(f.id); inp.value = typeof v === "function" ? v() : plus(g("idate") || today, v); inp.dispatchEvent(new Event("input", { bubbles: true })); if (st.o !== "b" || st.attempted) validate(f); return; }
+    var p = e.target.closest("[data-preset]"); if (p) { var a = p.dataset.preset.split("|"), f = F.filter(function (x) { return x.id === a[0]; })[0], v = f.presets[+a[1]][1], inp = document.getElementById(f.id); s4Date.set(inp.closest(".dp-field"), typeof v === "function" ? v() : plus(g("idate") || today, v)); inp.dispatchEvent(new Event("input", { bubbles: true })); if (st.o !== "b" || st.attempted) validate(f); return; }
     var m = e.target.closest("#method button"); if (m) { form.querySelectorAll("#method button").forEach(function (b) { b.classList.toggle("on", b === m); b.setAttribute("aria-checked", b === m); }); st.method = m.dataset.v; }
     var ed = e.target.closest("[data-edit]"); if (ed) { goStep(+ed.dataset.edit); }
   });
@@ -172,7 +174,7 @@
   });
   document.getElementById("back").addEventListener("click", function () { goStep(st.step - 1); });
   function finish() { form.hidden = true; document.getElementById("done").classList.add("on"); }
-  function reset() { form.reset(); form.hidden = false; document.getElementById("done").classList.remove("on"); st.attempted = false; st.errors = {}; st.step = 0; st.method = "ACH"; form.querySelectorAll(".fld").forEach(function (w) { w.classList.remove("bad", "ok", "over"); }); form.querySelectorAll("[aria-invalid]").forEach(function (i) { i.removeAttribute("aria-invalid"); }); form.querySelectorAll("#method button").forEach(function (b, i) { b.classList.toggle("on", i === 0); b.setAttribute("aria-checked", i === 0); }); document.getElementById("note-c").textContent = "0 / 200"; document.getElementById("status").textContent = ""; document.getElementById("sum").classList.remove("on"); form.querySelectorAll("#stepper li").forEach(function (li, i) { li.classList.toggle("on", i === 0); li.classList.remove("done"); }); layout(); }
+  function reset() { form.reset(); form.querySelectorAll(".dp-field").forEach(function (el) { s4Date.set(el, ""); }); form.hidden = false; document.getElementById("done").classList.remove("on"); st.attempted = false; st.errors = {}; st.step = 0; st.method = "ACH"; form.querySelectorAll(".fld").forEach(function (w) { w.classList.remove("bad", "ok", "over"); }); form.querySelectorAll("[aria-invalid]").forEach(function (i) { i.removeAttribute("aria-invalid"); }); form.querySelectorAll("#method button").forEach(function (b, i) { b.classList.toggle("on", i === 0); b.setAttribute("aria-checked", i === 0); }); document.getElementById("note-c").textContent = "0 / 200"; document.getElementById("status").textContent = ""; document.getElementById("sum").classList.remove("on"); form.querySelectorAll("#stepper li").forEach(function (li, i) { li.classList.toggle("on", i === 0); li.classList.remove("done"); }); layout(); }
   document.getElementById("again").addEventListener("click", reset);
   function setOpt(o) { st.o = o; root.setAttribute("data-o", o); form.setAttribute("data-o", o); mark("opt", o); reset(); try { sessionStorage.setItem("s4-form-opt", o); } catch (x) {} }
   document.getElementById("opt").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) setOpt(b.dataset.v); });

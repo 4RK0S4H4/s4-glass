@@ -19,13 +19,13 @@
   .rec { margin: 0; padding: var(--s-3) var(--s-4); border: 1px solid var(--border2); border-radius: var(--r-md); background: var(--accent-soft); color: var(--text); font-size: var(--fs-ui); max-width: 78ch; } .rec b { font-weight: 600; } .rec .tag { display: inline-block; margin-right: 6px; padding: 1px 8px; border-radius: var(--r-pill); background: var(--accent-chip); color: var(--accent-ink); font-size: var(--fs-xs); font-weight: 600; }
   .readout { margin: 0; font-size: var(--fs-sm); color: var(--text3); }
   .tbl-spec { width: 100%; max-width: 820px; border-collapse: collapse; font-size: var(--fs-sm); } .tbl-spec th, .tbl-spec td { padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; } .tbl-spec th { color: var(--text2); font-weight: 600; font-size: var(--fs-xs); }
-  @media (max-width: 760px) { .tb-bar .search { width: 100%; } table.t .sl1 { min-width: 150px; max-width: 160px; } table.t td.dcol1 { max-width: 160px; }
+  @media (max-width: 760px) { .tb-bar .tb-filters :is(.search, .search-field:has(> .search)) { width: 100%; } table.t .sl1 { min-width: 150px; max-width: 160px; } table.t td.dcol1 { max-width: 160px; }
     .g-bar { padding-inline: var(--s-4); } .g-bar .title { flex-basis: 100%; } }
 
   /* the table under test */
   .tb-card { position: relative; overflow: clip; }
   .tb-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); padding: 10px 14px; border-bottom: 1px solid var(--border); background: var(--bar-bg); min-height: 56px; }
-  .tb-bar .search { width: clamp(160px, 22vw, 260px); } .tb-bar select { width: auto; max-width: 100%; }
+  .tb-bar :is(.search, .search-field:has(> .search)) { width: clamp(160px, 22vw, 260px); } .tb-bar select { width: auto; max-width: 100%; }
   .tb-sel { display: none; width: 100%; align-items: center; gap: var(--s-2); flex-wrap: wrap; }
   .tb-sel b { font-weight: 600; } .tb-sel .grow { flex: 1; }
   [data-has-sel="1"][data-o="a"] .tb-filters, [data-has-sel="1"][data-o="b"] .tb-filters { display: none; }

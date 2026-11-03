@@ -290,7 +290,7 @@ Wired on load by `s4Date()` (call it for fields added later). The value is ISO i
 ```html
 <label class="f">Company<select><option>2101 · Northwind Tech</option><option>2102 · Northwind US</option></select></label>
 ```
-`s4Select()` wraps every `<select>` on load (call it for ones added later): a `button.sel` + `ul.sel-list` listbox with arrows, Home/End, type-ahead, Enter or Space to pick, a tick on the current option, opening upward near the bottom. The `<select>` stays in the page, hidden, and keeps the value and the `change` event. Touch screens keep the native select; `data-native` opts one out. In React use `<Select>` (`toolkit/react/`).
+`s4Select()` wraps every `<select>` on load (call it for ones added later): a `button.sel` + `ul.sel-list` listbox with arrows, Home/End, type-ahead, Enter or Space to pick, a tick on the current option, opening upward near the bottom. The `<select>` stays in the page, hidden, and keeps the value and the `change` event. Touch screens keep the native select; `data-native` opts one out. In React use `<Select>` (`toolkit/react/`). Form code can keep talking to the `<select>`: setting `.value` / `selectedIndex`, a form reset or new options update the button; `.bad` and `aria-invalid` on the select show on the button; `select.focus()`, its `<label for>` and the browser's `required` check all land on the button. Disabled options are skipped by the arrows and type-ahead. The list, the date pop-over and menus close when the page scrolls.
 
 ## Dialogs and sheets
 

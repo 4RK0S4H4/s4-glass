@@ -125,7 +125,8 @@ function s4Tips(root) {
 /* Menus: placed under (or above) the button, kept inside the window; Escape or a click outside closes. Arrow keys, Home and End move between
    the items, Enter picks; opened from the keyboard, the first item takes focus. */
 function s4Menu(btn, menu) {
-  var open = !menu.hidden; document.querySelectorAll(".menu:not(.static)").forEach(function (x) { x.hidden = true; });
+  var open = !menu.hidden; if (menu._s4close) menu._s4close();   /* closing with its own button also drops its key handler */
+  document.querySelectorAll(".menu:not(.static)").forEach(function (x) { x.hidden = true; });
   if (open) return;
   var byKey = btn.matches && btn.matches(":focus-visible");
   menu.hidden = false; btn.setAttribute("aria-expanded", "true");
@@ -144,11 +145,13 @@ function s4Menu(btn, menu) {
       if (k !== "Escape") return;
     }
     if (e && e.type === "click" && (menu.contains(e.target) && !e.target.closest("button, a") || btn.contains(e.target))) return;
-    menu.hidden = true; btn.setAttribute("aria-expanded", "false");
-    document.removeEventListener("click", close, true); document.removeEventListener("keydown", close);
+    menu.hidden = true; btn.setAttribute("aria-expanded", "false"); menu._s4close = null;
+    document.removeEventListener("click", close, true); document.removeEventListener("keydown", close); removeEventListener("scroll", scrolled, true);
     if (e && e.type === "keydown") btn.focus();
   }
-  setTimeout(function () { document.addEventListener("click", close, true); document.addEventListener("keydown", close); });
+  function scrolled(e) { if (!menu.contains(e.target)) close(); }
+  menu._s4close = function () { close(); };
+  setTimeout(function () { document.addEventListener("click", close, true); document.addEventListener("keydown", close); addEventListener("scroll", scrolled, true); });
 }
 
 /* Dropdown: wraps a <select>. The select stays in the page, hidden, and keeps the value (forms, change events); a button + listbox shows and sets it.
@@ -161,11 +164,29 @@ function s4Select(sel) {
   if (lab) btn.setAttribute("aria-label", lab); else if (sel.closest("label")) btn.setAttribute("aria-label", sel.closest("label").textContent.replace(sel.textContent, "").trim());
   btn.setAttribute("role", "combobox"); btn.setAttribute("aria-haspopup", "listbox"); btn.setAttribute("aria-expanded", "false"); btn.disabled = sel.disabled;
   btn.innerHTML = '<span class="sel-v"></span><svg class="sel-c" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  sel.parentNode.insertBefore(btn, sel); sel.hidden = true;
+  sel.parentNode.insertBefore(btn, sel); sel.classList.add("sel-native"); sel.tabIndex = -1; sel.setAttribute("aria-hidden", "true");   /* hidden from sight, not display:none, so the browser's own "required" check can still point at it */
   var list, act = 0, typed = "", typedAt = 0, uid = "s4sel" + Math.random().toString(36).slice(2, 7);
   function opts() { return Array.prototype.slice.call(sel.options); }
   function sync() { var o = sel.options[sel.selectedIndex]; btn.querySelector(".sel-v").textContent = o ? o.textContent : ""; btn.disabled = sel.disabled; }
-  sync(); sel.addEventListener("change", sync);
+  function mirror() {   /* the error look and aria-invalid follow the select, so form code can keep talking to the <select> */
+    var bad = sel.classList.contains("bad") || sel.getAttribute("aria-invalid") === "true"; btn.classList.toggle("bad", bad);
+    if (sel.hasAttribute("aria-invalid")) btn.setAttribute("aria-invalid", sel.getAttribute("aria-invalid")); else btn.removeAttribute("aria-invalid");
+    if (sel.hasAttribute("aria-describedby")) btn.setAttribute("aria-describedby", sel.getAttribute("aria-describedby"));
+  }
+  sync(); mirror(); sel.addEventListener("change", sync);
+  /* code that sets sel.value / selectedIndex, a form reset, or new options all update the button */
+  ["value", "selectedIndex"].forEach(function (k) {
+    var d = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, k);
+    Object.defineProperty(sel, k, { configurable: true, get: function () { return d.get.call(sel); }, set: function (v) { d.set.call(sel, v); sync(); } });
+  });
+  if (sel.form) sel.form.addEventListener("reset", function () { setTimeout(sync); });
+  if (window.MutationObserver) new MutationObserver(function () { sync(); mirror(); }).observe(sel, { attributes: true, attributeFilter: ["class", "aria-invalid", "aria-describedby", "disabled"], childList: true, subtree: true, characterData: true });
+  sel.focus = function () { btn.focus(); };   /* error summaries and validation focus the select: send it to the button */
+  sel.addEventListener("focus", function () { btn.focus(); });
+  sel.addEventListener("invalid", function () { btn.classList.add("bad"); });
+  Array.prototype.forEach.call(sel.labels || [], function (l) { l.addEventListener("click", function (e) { if (!btn.contains(e.target)) { e.preventDefault(); btn.focus(); } }); });
+  function ok(i) { var o = sel.options[i]; return o && !o.disabled; }
+  function step(from, dir) { var n = sel.options.length; for (var i = from + dir; i >= 0 && i < n; i += dir) if (ok(i)) return i; return from; }
   function pick(i) {
     var o = opts()[i]; shut(true);
     if (o && !o.disabled && sel.selectedIndex !== i) { sel.selectedIndex = i; sel.dispatchEvent(new Event("change", { bubbles: true })); }
@@ -175,9 +196,10 @@ function s4Select(sel) {
     btn.setAttribute("aria-activedescendant", uid + "-" + i); var li = list.children[i]; if (li && li.scrollIntoView) li.scrollIntoView({ block: "nearest" });
   }
   function away(e) { if (!btn.contains(e.target) && !list.contains(e.target)) shut(); }
+  function scrolled(e) { if (list && !list.contains(e.target)) shut(); }   /* the list is fixed: close it rather than leave it behind when the page scrolls */
   function shut(focus) {
     if (!list) return; list.remove(); list = null; btn.setAttribute("aria-expanded", "false"); btn.removeAttribute("aria-activedescendant");
-    document.removeEventListener("mousedown", away); removeEventListener("resize", shut); removeEventListener("blur", shut); if (focus) btn.focus();
+    document.removeEventListener("mousedown", away); removeEventListener("resize", shut); removeEventListener("blur", shut); removeEventListener("scroll", scrolled, true); if (focus) btn.focus();
   }
   function show() {
     if (list) return;
@@ -191,10 +213,10 @@ function s4Select(sel) {
     });
     document.body.appendChild(list); btn.setAttribute("aria-expanded", "true"); btn.setAttribute("aria-controls", uid);
     var r = btn.getBoundingClientRect(), below = innerHeight - r.bottom - 12, above = r.top - 12, up = below < 180 && above > below;
-    list.style.left = Math.min(r.left, innerWidth - 168) + "px"; list.style.minWidth = Math.max(r.width, 160) + "px"; list.style.maxHeight = Math.min(320, up ? above : below) + "px";
+    list.style.minWidth = Math.min(Math.max(r.width, 160), innerWidth - 16) + "px"; list.style.left = Math.max(8, Math.min(r.left, innerWidth - list.offsetWidth - 8)) + "px"; list.style.maxHeight = Math.min(320, up ? above : below) + "px";
     if (up) { list.classList.add("up"); list.style.bottom = innerHeight - r.top + 4 + "px"; } else list.style.top = r.bottom + 4 + "px";
-    mark(Math.max(0, sel.selectedIndex));
-    document.addEventListener("mousedown", away); addEventListener("resize", shut); addEventListener("blur", shut);
+    mark(ok(sel.selectedIndex) ? sel.selectedIndex : step(-1, 1));
+    document.addEventListener("mousedown", away); addEventListener("resize", shut); addEventListener("blur", shut); addEventListener("scroll", scrolled, true);
   }
   btn.addEventListener("click", function () { if (list) shut(); else show(); });
   btn.addEventListener("keydown", function (e) {
@@ -207,13 +229,13 @@ function s4Select(sel) {
     e.preventDefault(); e.stopPropagation && k === "Escape" && e.stopPropagation();
     if (!list && !typing) { show(); return; }
     if (k === "Escape") { shut(true); return; }
-    if (k === "ArrowDown") mark(Math.min(n - 1, act + 1)); else if (k === "ArrowUp") mark(Math.max(0, act - 1));
-    else if (k === "Home") mark(0); else if (k === "End") mark(n - 1);
+    if (k === "ArrowDown") mark(step(act, 1)); else if (k === "ArrowUp") mark(step(act, -1));
+    else if (k === "Home") mark(ok(0) ? 0 : step(0, 1)); else if (k === "End") mark(ok(n - 1) ? n - 1 : step(n - 1, -1));
     else if (k === "Enter" || k === " ") pick(act);
     else {
       var now = Date.now(); typed = (now - typedAt > 700 ? "" : typed) + k.toLowerCase(); typedAt = now;
       var from = list ? act : Math.max(0, sel.selectedIndex), o = opts(), hit = -1;
-      for (var q = 0; q < n && hit < 0; q++) { var c = (q + from + (typed.length === 1 ? 1 : 0)) % n; if (o[c].textContent.toLowerCase().indexOf(typed) === 0) hit = c; }
+      for (var q = 0; q < n && hit < 0; q++) { var c = (q + from + (typed.length === 1 ? 1 : 0)) % n; if (!o[c].disabled && o[c].textContent.toLowerCase().indexOf(typed) === 0) hit = c; }
       if (hit >= 0) { if (list) mark(hit); else if (sel.selectedIndex !== hit) { sel.selectedIndex = hit; sel.dispatchEvent(new Event("change", { bubbles: true })); } }
     }
   });
@@ -360,16 +382,17 @@ var s4Date = (function () {
   function closePop(refocus) {
     if (!openField) return; var f = openField; openField = null;
     pop.hidden = true; pop.innerHTML = ""; f.btn.setAttribute("aria-expanded", "false");
-    document.removeEventListener("mousedown", away, true); removeEventListener("resize", closePop);
+    document.removeEventListener("mousedown", away, true); removeEventListener("resize", closePop); removeEventListener("scroll", scrolled, true);
     if (refocus) f.input.focus();
   }
   function away(e) { if (openField && !pop.contains(e.target) && !openField.el.contains(e.target)) closePop(false); }
+  function scrolled(e) { if (openField && !pop.contains(e.target)) closePop(false); }
   function message(f, msg) {
     var w = f.el.closest("label.f, .fld"), er = w && w.querySelector(".err");
     f.input.classList.toggle("bad", !!msg); f.input.setAttribute("aria-invalid", msg ? "true" : "false");
     if (w) w.classList.toggle("bad", !!msg);
     if (!er && msg && w) { er = document.createElement("span"); er.className = "err"; er.setAttribute("role", "alert"); er._s4made = true; w.appendChild(er); }   /* no .err in the markup: make one under the field */
-    if (er) { if (!msg && er._s4made) er.remove(); else er.textContent = msg || ""; }
+    if (er) { if (!msg && er._s4made) er.remove(); else (er.querySelector("span") || er).textContent = msg || ""; }   /* an .err with an icon keeps it: the words go in its <span> */
   }
   function show(f) { return f.value ? (f.type === "month" ? fmtMonth(f.value) : fmtDate(f.value)) : ""; }
   function commit(f, v) {
@@ -384,10 +407,10 @@ var s4Date = (function () {
     var cal = build(pop.firstChild, { type: f.type, value: f.value, min: f.min, max: f.max, onPick: function (v) { commit(f, v); closePop(true); } });
     var r = f.el.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight;
     pop.style.left = Math.min(Math.max(8, r.left), innerWidth - w - 8) + "px";
-    pop.style.top = (r.bottom + 6 + h > innerHeight - 8 && r.top > h + 14 ? r.top - h - 6 : r.bottom + 6) + "px";
+    pop.style.top = (r.bottom + 6 + h <= innerHeight - 8 ? r.bottom + 6 : r.top > h + 14 ? r.top - h - 6 : Math.max(8, innerHeight - h - 8)) + "px";   /* below, else above, else as low as fits */
     cal.focus();
-    pop.onkeydown = function (e) { if (e.key === "Escape") { e.stopPropagation(); e.preventDefault(); closePop(true); } else if (e.key === "Tab") closePop(false); };
-    setTimeout(function () { document.addEventListener("mousedown", away, true); addEventListener("resize", closePop); });
+    pop.onkeydown = function (e) { if (e.key === "Escape") { e.stopPropagation(); e.preventDefault(); closePop(true); } else if (e.key === "Tab") { closePop(false); (e.shiftKey ? f.input : f.btn || f.input).focus(); } };   /* the browser's Tab then carries on from the field, not from the end of the page */
+    setTimeout(function () { document.addEventListener("mousedown", away, true); addEventListener("resize", closePop); addEventListener("scroll", scrolled, true); });
   }
 
   function wire(el) {
@@ -410,8 +433,8 @@ var s4Date = (function () {
     input.addEventListener("blur", function () {   /* a typed date is read when you leave the field */
       var t = input.value.trim(); if (!t) { if (f.value) commit(f, ""); else message(f, ""); return; }
       var v = (type === "month" ? parseMonth : parseDate)(t);
-      if (!v) { message(f, type === "month" ? "Use a month and year, like Sep 2026" : "Use M/D/YYYY, like 9/30/2026"); return; }
-      if ((mn && v < mn) || (mx && v > mx)) { message(f, "Pick a date between " + (f.min ? fmtLong(f.min) : "the start") + " and " + (f.max ? fmtLong(f.max) : "any later day")); return; }
+      if (!v) { message(f, type === "month" ? "Use a month and year, like Sep 2026" : /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(t) ? "There is no " + t + ": check the day and month" : "Use M/D/YYYY, like 9/30/2026"); return; }
+      if ((mn && v < mn) || (mx && v > mx)) { message(f, type === "month" ? "Pick a month between " + (mn ? fmtMonth(mn) : "the start") + " and " + (mx ? fmtMonth(mx) : "any later month") : "Pick a date between " + (f.min ? fmtLong(f.min) : "the start") + " and " + (f.max ? fmtLong(f.max) : "any later day")); return; }
       commit(f, v);
     });
     el._s4f = f;
@@ -426,9 +449,11 @@ var s4Date = (function () {
 /* Dialogs: <div class="scrim" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="…">…</div></div> */
 function s4Dialog(scrim) {
   clearTimeout(scrim._s4t); scrim.classList.remove("closing"); var old = scrim.querySelector(".ask"); if (old) old.remove();
-  scrim._s4back = document.activeElement; scrim.hidden = false;
+  scrim._s4back = document.activeElement;
+  var up = document.querySelectorAll(".scrim:not([hidden])").length; scrim.style.zIndex = up ? "calc(var(--z-modal) + " + up + ")" : "";   /* a dialog opened from a dialog sits on top of it */
+  scrim.hidden = false;
   var f = ["[autofocus]", ".modal .body input, .modal .body select, .modal .body textarea, .modal .body button.sel", ".modal footer .btn.primary", "input, select, textarea, button"].reduce(function (a, q) {   /* in order of preference, not page order (the header Close comes first in the page) */
-    return a || Array.prototype.filter.call(scrim.querySelectorAll(q), function (el) { return el.offsetParent !== null && !el.disabled; })[0]; }, null); if (f) f.focus();   /* in order of preference, not page order (the header Close comes first in the page) */
+    return a || Array.prototype.filter.call(scrim.querySelectorAll(q), function (el) { return el.offsetParent !== null && !el.disabled; })[0]; }, null); if (f) f.focus();
   if (!scrim._s4wired) {
     scrim._s4wired = true;
     scrim.addEventListener("click", function (e) { if (e.target === scrim && !scrim.hasAttribute("data-dirty")) s4Close(scrim); });
@@ -440,7 +465,7 @@ function s4Dialog(scrim) {
         s4Close(scrim); return;
       }
       if (e.key !== "Tab") return;   /* keep focus inside the dialog */
-      var els = Array.prototype.filter.call(scrim.querySelectorAll("a[href], button:not(:disabled), input:not(:disabled), select, textarea, [tabindex]:not([tabindex='-1'])"), function (x) { return x.offsetParent !== null; });
+      var els = Array.prototype.filter.call(scrim.querySelectorAll("a[href], button:not(:disabled), input:not(:disabled), select:not(.sel-native), textarea, [tabindex]:not([tabindex='-1'])"), function (x) { return x.offsetParent !== null; });
       if (!els.length) return; var first = els[0], last = els[els.length - 1];
       if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     });
@@ -943,12 +968,13 @@ textarea { min-height: 72px; resize: vertical; }
 textarea::-webkit-resizer { background: linear-gradient(135deg, transparent 0 52%, var(--text3) 52% 60%, transparent 60% 72%, var(--text3) 72% 80%, transparent 80%); border-radius: 0 0 var(--r-md) 0; }   /* a quiet grip instead of the OS one */
 ::selection { background: color-mix(in srgb, var(--accent) 28%, transparent); color: var(--text); }   /* selected text: the accent, readable in both themes */
 .search-field { position: relative; display: inline-flex; align-items: center; max-width: 100%; } .search-field > input { padding-right: 32px; }
+.search-field:has(> .search) { width: clamp(220px, 21vw, 380px); } .t-bar .search-field:has(> .search) { width: clamp(160px, 22vw, 260px); } .search-field > .search { width: 100%; }   /* s4Search wraps the field: the wrapper takes the width the bare .search had */
 input[type=search]::-webkit-search-cancel-button, input[type=search]::-webkit-search-decoration { -webkit-appearance: none; appearance: none; display: none; }   /* the browser's own clear x: S4 draws its own (.search-x) */
 .search-x { position: absolute; right: 6px; display: grid; place-items: center; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 50%; background: var(--bg-hover); color: var(--text2); cursor: pointer; transition: background-color var(--dur-1), color var(--dur-1); }
 .search-x:hover, .search-x:focus-visible { background: var(--bg-sel); color: var(--text); } .search-x svg { width: 12px; height: 12px; } .search-x[hidden] { display: none; }
 ::placeholder { color: var(--text3); opacity: 1; }
 :is(.input, input, select, textarea):not([type=checkbox]):not([type=radio]):focus { outline: none; border-color: var(--field-focus-line); background-color: var(--field-focus-bg); }
-:is(.input, input, select, textarea).bad, :is(.input, input, select, textarea).bad:focus { border-color: var(--bad); }
+:is(.input, input, select, textarea, button.sel).bad, :is(.input, input, select, textarea, button.sel).bad:focus, button.sel[aria-invalid="true"] { border-color: var(--bad); }
 select option { background-color: var(--pop-bg); color: var(--text); }
 .search { width: clamp(220px, 21vw, 380px); padding-left: 12px; padding-right: 12px; }
 label.f { display: flex; flex-direction: column; gap: 4px; font-size: var(--fs-xs); color: var(--text2); }
@@ -965,6 +991,7 @@ button.sel:focus-visible { outline: none; border-color: var(--field-focus-line);
 button.sel .sel-v { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } button.sel .sel-c { flex: none; width: 12px; height: 12px; color: var(--text2); transition: transform var(--dur-2) var(--ease); }
 button.sel[aria-expanded="true"] .sel-c { transform: rotate(180deg); }
 label.f button.sel { width: 100%; font-size: var(--fs-base); } td button.sel { width: 100%; }
+.sel-native { position: absolute; width: 1px; height: 1px; margin: 0; padding: 0; opacity: 0; pointer-events: none; }   /* s4Select: the real <select>, out of sight but still there for forms and the browser's own checks */
 /* a setting someone else locked: shows as a plain value, not a field: <div class="f locked-f">Closing Day<span>Sep 30, 2026</span></div> */
 .f.locked-f { display: flex; flex-direction: column; gap: 4px; font-size: var(--fs-xs); color: var(--text2); } .locked-f > span { font-size: var(--fs-base); color: var(--text); }
 
@@ -1212,7 +1239,8 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
 .sel-list li mark { background: none; color: inherit; font-weight: 600; }   /* the part of a suggestion you typed */
 .sel-list li.none { color: var(--text3); cursor: default; }
 .sel-list.up { transform-origin: bottom left; }
-.sel-list li { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 7px 10px; border-radius: var(--r-sm); white-space: nowrap; cursor: pointer; }
+.sel-list { max-width: calc(100vw - 16px); } .sel-list li { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 7px 10px; border-radius: var(--r-sm); overflow-wrap: anywhere; cursor: pointer; }   /* long options wrap only when the list meets the screen edge */
+.sel-list li[aria-disabled="true"] { color: var(--text3); cursor: default; }
 .sel-list li.act { background: var(--hov); } .sel-list li.on { font-weight: 600; color: var(--accent-text); } .sel-list li svg { width: 14px; height: 14px; flex: none; }
 /* date and month picker (s4Date): a text input + calendar button; the calendar is a pop-over on desktop, the phone's own picker on touch. Chosen = solid accent, today = a soft fill with no ring. */
 .dp-field { position: relative; display: flex; align-items: center; } .dp-field > input { width: 100%; padding-right: 40px; font-variant-numeric: tabular-nums; }
@@ -1368,7 +1396,7 @@ table .copy:not(:hover):not(:focus-visible) { border-color: transparent; backgro
   .content { padding: 14px; padding-left: max(14px, env(safe-area-inset-left)); padding-right: max(14px, env(safe-area-inset-right)); }
   /* iOS zooms into any field under 16px: fields are 16px on phones */
   .input, input:not([type]), input[type=text], input[type=search], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=date], input[type=month], select, textarea, label.f :is(.input, input, select, textarea) { font-size: 16px; }
-  .search, .t-bar .search { width: 100%; }
+  .search, .t-bar .search, .search-field:has(> .search), .t-bar .search-field:has(> .search) { width: 100%; }
   .form-grid, .grid-4 { grid-template-columns: minmax(0, 1fr); }
   .ptabs { grid-template-columns: repeat(2, 1fr); } .keys { display: none; }
   .phone-only { display: revert; } .desk-only { display: none; }
