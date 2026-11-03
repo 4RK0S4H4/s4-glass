@@ -3,7 +3,8 @@
 // Usage: node tools/build_icons.mjs [path/to/@iconify-json/solar/icons.json]   (npm i @iconify-json/solar@1.2.13 first)
 // Add names to NAMES (without the -linear / -bold-duotone suffix) and re-run.
 // Single-file page: `node tools/build_icons.mjs <icons.json> --only copy,moon,refresh --out icons-page.js` writes a file with just those
-// icons (Bold Duotone), so the page doesn't carry the whole ~100 KB set.
+// icons (Bold Duotone), so the page doesn't carry the whole ~100 KB set. No npm package to hand? Use the toolkit's own set as the
+// source: `node tools/build_icons.mjs toolkit/icons.js --only copy,moon,refresh --out icons-page.js`.
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const src = process.argv[2] || 'node_modules/@iconify-json/solar/icons.json';
@@ -16,9 +17,15 @@ const NAMES = ['widget-5','checklist-minimalistic','document-text','card','walle
   'chat-round','phone','global','sale','box','delivery','bookmark','pin','paperclip','cloud-upload','cloud-download','widget-2','check','check-read'];
 const arg = (k) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : null; };
 const only = arg('--only'), outFile = arg('--out');
-const j = JSON.parse(fs.readFileSync(src.startsWith('--') ? 'node_modules/@iconify-json/solar/icons.json' : src, 'utf8')); const out = {}; const miss = [];
-for (const n of (only ? only.split(',') : NAMES)) { const ic = j.icons[n + '-bold-duotone']; if (ic) out[n] = ic.body; else miss.push(n + '-bold-duotone'); }
-if (!only && j.icons['close-circle-bold-duotone']) out.close = j.icons['close-circle-bold-duotone'].body;   /* 'close' = the close-circle icon */
+const file = src.startsWith('--') ? 'node_modules/@iconify-json/solar/icons.json' : src, out = {}, miss = [];
+if (file.endsWith('.js')) {   /* the toolkit's own icons.js as the source: a subset with --only needs no npm package */
+  const set = JSON.parse(fs.readFileSync(file, 'utf8').match(/const S4_ICONS = (\{.*\});/)[1]);
+  for (const n of (only ? only.split(',') : Object.keys(set))) { if (set[n]) out[n] = set[n]; else miss.push(n); }
+} else {
+  const j = JSON.parse(fs.readFileSync(file, 'utf8'));
+  for (const n of (only ? only.split(',') : NAMES)) { const ic = j.icons[n + '-bold-duotone']; if (ic) out[n] = ic.body; else miss.push(n + '-bold-duotone'); }
+  if (!only && j.icons['close-circle-bold-duotone']) out.close = j.icons['close-circle-bold-duotone'].body;   /* 'close' = the close-circle icon */
+}
 const js = `/* S4 Glass icons: a curated subset of Solar Bold Duotone (CC BY 4.0, 480 Design – https://www.figma.com/community/file/1166831539721848736), built by tools/build_icons.mjs.
    Credit Solar in the app's About or footer. Use inline SVG in production apps (copy the markup s4Icon() returns). For quick pages: <svg class="ic" data-ic="widget-5"></svg>
    is filled in on load (data-ic-duo works too). One style for every icon: the faded half is the [opacity] group, so the icon follows the text or accent colour. */
