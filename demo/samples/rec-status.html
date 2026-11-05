@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Month-End Status Samples · S4 Glass</title>
+<script data-s4 src="../../toolkit/s4.js"></script>
+<link data-s4 rel="stylesheet" href="../../toolkit/fonts.css">
+<link data-s4 rel="stylesheet" href="../../toolkit/s4.css">
+<style>
+  :root { --accent: #ce0057; --accent-2: #8a0069; --accent-light: #ff5c9d; }
+  .g-bar { position: sticky; top: 0; z-index: var(--z-bar); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); padding: 10px var(--s-6); padding-top: max(10px, env(safe-area-inset-top)); border-bottom: 1px solid var(--border); background: var(--bar-bg); -webkit-backdrop-filter: blur(var(--blur)); backdrop-filter: blur(var(--blur)); }
+  .g-bar .title { margin-right: auto; }
+  .g-main { display: flex; flex-direction: column; gap: var(--s-6); padding-top: var(--s-8); padding-bottom: var(--s-16); }
+  .lede { margin: 0; color: var(--text2); max-width: 70ch; }
+  .opt-note { margin: 0; padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--well); color: var(--text2); font-size: var(--fs-sm); max-width: 78ch; }
+  .opt-note b { color: var(--text); }
+  .rec { margin: 0; padding: var(--s-3) var(--s-4); border: 1px solid var(--border2); border-radius: var(--r-md); background: var(--accent-soft); color: var(--text); font-size: var(--fs-ui); max-width: 78ch; } .rec b { font-weight: 600; } .rec .tag { display: inline-block; margin-right: 6px; padding: 1px 8px; border-radius: var(--r-pill); background: var(--accent-chip); color: var(--accent-ink); font-size: var(--fs-xs); font-weight: 600; }
+  @media (max-width: 760px) { .g-bar { padding-inline: var(--s-4); } .g-bar .title { flex-basis: 100%; } }
+
+  /* the overview */
+  .ov { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-6); padding: var(--s-5) var(--s-6); }
+  .ov .k { color: var(--text2); font-size: var(--fs-sm); }
+  .ov .big { font-size: var(--fs-title); font-weight: 600; }
+  .ov .parts { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-left: auto; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--s-4); align-items: start; }
+  .co { display: flex; flex-direction: column; gap: var(--s-4); padding: var(--s-5); }
+  .co-top { display: flex; justify-content: space-between; gap: var(--s-3); align-items: flex-start; }
+  .co-name { font-weight: 600; font-size: var(--fs-lead); }
+  .co-sub { color: var(--text3); font-size: var(--fs-sm); }
+  .co-case { color: var(--text3); font-size: var(--fs-xs); }
+  .co-hero { display: flex; flex-direction: column; gap: 2px; }
+  .co-hero .k, .figs .k { color: var(--text2); font-size: var(--fs-sm); }
+  .co-hero .v { font-size: var(--fs-hero); font-weight: 600; line-height: 1.1; }
+  .co-hero .s { color: var(--text3); font-size: var(--fs-sm); }
+  .ok-t { color: var(--ok-ink); } .bad-t { color: var(--bad-ink); } .warn-t { color: var(--warn-ink); } .acc-t { color: var(--accent-ink); } .faint { color: var(--text3); }
+  .figs { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
+  .figs div { display: flex; flex-direction: column; gap: 2px; } .figs b { font-weight: 600; }
+  /* B: the bridge */
+  .bridge { display: grid; grid-template-columns: 1fr auto; gap: 6px var(--s-3); padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--well); font-size: var(--fs-ui); }
+  .bridge .num { text-align: right; }
+  .bridge .tot { border-top: 1px solid var(--border2); padding-top: 6px; font-weight: 600; }
+  /* C: the list on the card */
+  .carry { display: flex; flex-direction: column; gap: 6px; padding: var(--s-3) var(--s-4); border-radius: var(--r-md); font-size: var(--fs-sm); }
+  .carry.acc { background: var(--accent-soft); } .carry.warn { background: var(--warn-bg); }
+  .carry .h { display: flex; justify-content: space-between; gap: var(--s-2); font-weight: 600; font-size: var(--fs-ui); }
+  .carry .it { display: grid; grid-template-columns: 52px 1fr auto; gap: var(--s-2); color: var(--text2); }
+  .todo { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+</style>
+<script data-s4 src="../../toolkit/icons.js"></script>
+</head>
+<body>
+<div class="g-bar">
+  <span class="title">Month-End Status Samples</span>
+  <div class="seg" id="opt" data-manual role="group" aria-label="Option"><button type="button" class="on" data-v="a">A · Badge Only</button><button type="button" data-v="b">B · Show the Bridge ★</button><button type="button" data-v="c">C · List on the Card</button></div>
+  <div class="seg" id="theme" data-manual role="group" aria-label="Theme"><button type="button" data-v="light">Light</button><button type="button" data-v="dark">Dark</button><button type="button" data-v="auto">Auto</button></div>
+</div>
+
+<main class="container g-main">
+  <p class="lede">A month-end dashboard card for one company, in three situations: items still open and not flagged, bank and books agreeing outright, and books agreeing only because some items are flagged for next month. Today the last two look the same (green, 0.00). Fictional companies and amounts.</p>
+  <p class="opt-note" id="note"></p>
+  <p class="rec"><span class="tag">Recommended</span><b>B · Show the Bridge.</b> The worry is that "0.00" hides money that hasn't hit the books yet. B answers it with the numbers themselves: the real bank-to-SAP gap, minus what's flagged for next month, equals what's left. A reviewer sees the size of the carry-over at a glance, and the same three lines read the same in every state, so the eye learns one place to look. A only changes a word, which is easy to miss when scanning several companies; C is the most complete, but listing items makes cards different heights and long on a phone.<br><b>Recommendation basis:</b> the front-end design skill (used), applied within the S4 Glass rules.</p>
+  <section class="card ov" aria-label="Month overview"><div><div class="k">November 2026 Month End</div><div class="big">1 of 3 companies reconciled</div></div><div class="parts" id="parts"></div></section>
+  <div class="grid" id="grid"></div>
+</main>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var fmt = function (c) { var s = Math.abs(c).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); return (c < 0 ? "-" : "") + s; };
+  var items = [["Nov 28", "Card Settlement – Late Batch", -1820.00], ["Nov 29", "Wire Fee", -45.00], ["Nov 30", "Merchant Deposit Return", -585.00]];
+  var cos = [
+    { name: "Northwind Ops", sub: "USD", kase: "Items open, not flagged", bank: 482910.44, sap: 485360.44, carry: 0, open: -2450.00, flagged: false },
+    { name: "Harbor Lane Ltd", sub: "USD", kase: "Bank equals SAP", bank: 1204377.10, sap: 1204377.10, carry: 0, open: 0 },
+    { name: "Copperfield Inc", sub: "USD", kase: "Ties with items flagged for December", bank: 96512.80, sap: 98962.80, carry: -2450.00, open: 0, flagged: true }
+  ];
+  function state(c) { return c.open ? "warn" : c.carry ? "accent" : "ok"; }
+  function badge(c, o) {
+    if (c.open) return '<span class="badge warn">3 Not Flagged Yet</span>';
+    if (!c.carry) return '<span class="badge ok"><svg data-ic="check"></svg>Reconciled</span>';
+    return o === "a" ? '<span class="badge accent">Reconciled · 3 Carry to Dec</span>' : '<span class="badge accent">Ties With Carry-Over</span>';
+  }
+  function figs(c) { return '<div class="figs"><div><span class="k">Bank Balance</span><b class="num">' + fmt(c.bank) + '</b><span class="co-case">as of Nov 30</span></div><div><span class="k">SAP Balance</span><b class="num">' + fmt(c.sap) + '</b><span class="co-case">per books</span></div></div>'; }
+  function heroA(c) {
+    if (c.open) return hero("Difference", fmt(c.open), "bad-t", "3 items not in SAP and not flagged");
+    if (!c.carry) return hero("Difference", "0.00 ✓", "ok-t", "bank and SAP agree");
+    return hero("Difference", "0.00", "acc-t", "after 3 items carried to December");
+  }
+  function hero(k, v, cls, s) { return '<div class="co-hero"><span class="k">' + k + '</span><span class="v num ' + cls + '">' + v + '</span><span class="s">' + s + '</span></div>'; }
+  function bridge(c) {
+    var gap = c.bank - c.sap, left = gap - c.carry;
+    var rows = '<span>Bank Minus SAP</span><span class="num">' + fmt(gap) + '</span>';
+    rows += '<span>' + (c.flagged ? 'Of That, Flagged for December (3)' : 'Of That, Flagged for December (0)') + '</span><span class="num ' + (c.carry ? 'acc-t' : 'faint') + '">' + (c.carry ? fmt(c.carry) : '0.00') + '</span>';
+    rows += '<span class="tot">Left to Explain</span><span class="num tot ' + (left ? 'bad-t' : 'ok-t') + '">' + (left ? fmt(left) : '0.00 ✓') + '</span>';
+    return '<div class="bridge">' + rows + '</div>';
+  }
+  function heroB(c) {
+    var gap = c.bank - c.sap;
+    if (!gap) return hero("Bank Minus SAP", "0.00 ✓", "ok-t", "bank and SAP agree, nothing carried");
+    return hero("Bank Minus SAP", fmt(gap), c.open ? "bad-t" : "", c.open ? "3 items not flagged yet" : "all of it carries to December");
+  }
+  function list(c) {
+    if (!c.open && !c.carry) return "";
+    var h = c.open ? 'Not Flagged Yet (3)' : 'Carries to December (3)';
+    var tot = c.open || c.carry;
+    return '<div class="carry ' + (c.open ? 'warn' : 'acc') + '"><div class="h"><span>' + h + '</span><span class="num">' + fmt(tot) + '</span></div>' +
+      items.map(function (i) { return '<div class="it"><span>' + i[0] + '</span><span>' + i[1] + '</span><span class="num">' + fmt(i[2]) + '</span></div>'; }).join("") + '</div>';
+  }
+  function todo(c) { return '<div class="todo"><button class="btn sm">' + (c.open ? '<b>3</b> To Sort' : '<b>0</b> To Sort') + '</button><button class="btn sm">' + (c.carry ? '<b>3</b> Next Month' : '<b>0</b> Next Month') + '</button></div>'; }
+  var notes = {
+    a: "<b>A · Badge Only.</b> The card layout stays as it is today. Only the badge and the colour of the 0.00 change when items are carried: accent instead of green, with the count and month.",
+    b: "<b>B · Show the Bridge.</b> The big number is the real gap between bank and SAP. Under it, three lines: the gap, what's flagged for next month, and what's left to explain. Green only when nothing is left and nothing is carried.",
+    c: "<b>C · List on the Card.</b> As today, plus a tinted box listing the items: amber when they still need flagging, accent when they're flagged for next month. Tap a line to open it."
+  };
+  function render() {
+    var o = root.getAttribute("data-o") || "a";
+    document.getElementById("note").innerHTML = notes[o];
+    document.getElementById("parts").innerHTML = '<span class="badge ok">1 Reconciled</span><span class="badge accent">1 Ties With Carry-Over</span><span class="badge warn">1 Needs Flagging</span>';
+    document.getElementById("grid").innerHTML = cos.map(function (c) {
+      var body = o === "a" ? heroA(c) + figs(c) : o === "b" ? heroB(c) + bridge(c) + figs(c) : heroA(c) + list(c) + figs(c);
+      return '<article class="card edge ' + state(c) + ' co"><div class="co-top"><div><div class="co-name">' + c.name + '</div><div class="co-sub">' + c.sub + ' · Case: ' + c.kase + '</div></div>' + badge(c, o) + '</div>' + body + todo(c) + '</article>';
+    }).join("");
+    if (window.s4Icons) window.s4Icons(document.getElementById("grid"));
+  }
+  function mark(id, v) { document.querySelectorAll("#" + id + " button").forEach(function (b) { b.classList.toggle("on", b.dataset.v === v); }); }
+  var th = "auto"; try { th = localStorage.getItem("s4-theme") || "auto"; } catch (e) {} mark("theme", th);
+  document.getElementById("theme").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; s4Theme(b.dataset.v); mark("theme", b.dataset.v); });
+  root.setAttribute("data-o", "a");
+  try { var saved = sessionStorage.getItem("s4-recst-opt"); if (saved) root.setAttribute("data-o", saved); } catch (e) {}
+  mark("opt", root.getAttribute("data-o"));
+  document.getElementById("opt").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; root.setAttribute("data-o", b.dataset.v); mark("opt", b.dataset.v); try { sessionStorage.setItem("s4-recst-opt", b.dataset.v); } catch (x) {} render(); });
+  render();
+})();
+</script>
+</body>
+</html>
