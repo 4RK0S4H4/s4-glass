@@ -16,7 +16,7 @@ jobs:
           git diff --exit-code -- index.html guide/ || (echo 'Run python3 tools/build_site.py and commit the result' && exit 1)
       - name: Pages at phone, laptop and desktop in both themes
         run: |
-          npm i --no-save playwright@1.64
+          npm i --no-save playwright@1
           npx playwright install --with-deps chromium
           node tools/check_pages.mjs
       - uses: actions/upload-artifact@v4

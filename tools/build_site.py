@@ -22,7 +22,6 @@ DEMOS = [  # (title, path, what it shows, duotone icon)
     ("Habit Tracker", "demo/examples/habits.html", "A phone-first app built by a fresh Claude session from the skill alone.", "smartphone"),
     ("Icon Samples (draft)", "demo/samples/icons.html", "Solar Bold Duotone next to Phosphor Duotone in the rail, buttons, chips and table rows.", "stars"),
     ("Wide-Screen Layouts (draft)", "demo/samples/wide-screen.html", "Three ways to use a 1080p and a 1440p monitor: fill, cap and centre, or cap and widen the detail panel.", "monitor"),
-    ("Month-End Status Samples (draft)", "demo/samples/rec-status.html", "A month-end company card when items are open, when bank equals the books, and when it ties only because items carry to next month: three ways to show it.", "checklist-minimalistic"),
     ("Table Samples (draft)", "demo/samples/tables.html", "A 240-row table with search, filters, bulk select, sticky columns and three ways to page and show the selection.", "checklist-minimalistic"),
     ("Form Samples (draft)", "demo/samples/forms.html", "One payment form three ways: check as you go, check on submit, or one step at a time; with every field state.", "pen"),
     ("Date Picker Samples (draft)", "demo/samples/date-picker.html", "An S4 calendar and month picker instead of the browser's, and two ways to handle a phone: a calendar sheet or the phone's own picker.", "calendar"),
